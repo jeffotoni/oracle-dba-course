@@ -1,0 +1,35 @@
+# Diretórios locais que não devem ir para o repositório
+professor/
+nao-precisa/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# JetBrains (GoLand, IntelliJ, DataGrip, etc.)
+.idea/
+*.iml
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.temp
+
+# Binários comuns de build local
+bin/
+dist/
+build/
+
+# Go
+*.test
+coverage.out
