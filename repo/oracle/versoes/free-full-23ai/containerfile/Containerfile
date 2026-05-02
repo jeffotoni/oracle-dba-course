@@ -1,0 +1,6 @@
+FROM container-registry.oracle.com/database/free:latest
+
+ENV ORACLE_PWD=OraclePwd123
+ENV ORACLE_PDB=FREEPDB1
+
+EXPOSE 1521

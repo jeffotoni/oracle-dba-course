@@ -1,0 +1,41 @@
+# Oracle 12c Enterprise - Podman Compose
+#
+# Executar a partir deste diretorio:
+#   cd repo/oracle/versoes/oracle-12c/compose
+#
+# Build da imagem local:
+#   podman compose build
+#
+# Subir em background:
+#   podman compose up -d
+#
+# Ver status:
+#   podman compose ps
+#
+# Ver logs:
+#   podman compose logs -f oracle-12c
+#
+# Derrubar sem apagar volume:
+#   podman compose down
+#
+# Derrubar apagando volume:
+#   podman compose down -v
+
+services:
+  oracle-12c:
+    container_name: oracle-12c
+    image: oracle-12c:12c
+    build:
+      context: ..
+      dockerfile: containerfile/Containerfile
+    ports:
+      - "1529:1521"
+      - "5508:5500"
+    environment:
+      ORACLE_PWD: Oracle123
+    volumes:
+      - oracle-12c-data:/opt/oracle/oradata:Z
+
+volumes:
+  oracle-12c-data:
+    name: oracle-12c-data
