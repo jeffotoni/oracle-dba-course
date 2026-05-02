@@ -1,6 +1,26 @@
 # Curso Oracle Database Administration (DBA)
 
-Este repositorio concentra o material do curso de Oracle Database Administration, do `Modulo 0` ao `Modulo 5`, com apoio pratico em Oracle Free / XE, Podman, IDE SQL e exemplos de aplicacao em Go.
+## ✦ Sobre o autor
+
+Desenvolvido por **Jefferson Otoni Lima (Jeffotoni)**, **Engenheiro de Software Sênior**, **Arquiteto de Soluções** e **instrutor técnico**, com mais de **22 anos de experiência** na construção de sistemas distribuídos de alta performance.
+
+Atua com foco em **arquitetura de software**, **design de APIs**, **backend em escala**, **cloud-native**, **Go**, **containers**, **DevOps**, **observabilidade** e **infraestrutura moderna para aplicações críticas**.
+
+Também possui forte atuação em **bancos de dados** e **administração de dados** em diferentes modelos, incluindo:
+
+- **relacionais**
+- **NoSQL**
+- **vetoriais**
+- **temporais**
+- **graph**
+- **cache**
+- **motores especializados para alta escala e baixa latência**
+
+É criador do **Quick Framework**, autor do **Go Bootcamp** e contribuidor ativo da comunidade **Go** no Brasil e no exterior.
+
+## ✦ Sobre este curso
+
+Este repositorio concentra o material do curso de Oracle Database Administration, do `Modulo 0` ao `Modulo 5`, com apoio pratico em Oracle Free / XE, Podman, CloudBeaver e exemplos de aplicacao em Go.
 
 O objetivo nao e apenas apresentar teoria de Oracle. O curso foi organizado para que seja possivel:
 
@@ -9,6 +29,24 @@ O objetivo nao e apenas apresentar teoria de Oracle. O curso foi organizado para
 - conectar corretamente na instancia e na PDB;
 - criar usuario, schema, tabela e consultas;
 - evoluir depois para administracao, seguranca, backup, tuning e multitenant.
+
+## ✦ Público-alvo
+
+Este curso foi pensado para:
+
+- iniciantes em Oracle;
+- desenvolvedores que precisam entender melhor banco de dados;
+- analistas e administradores que querem consolidar base em Oracle DBA;
+- pessoas que preferem aprender com laboratório real.
+
+## ✦ Abordagem do curso
+
+A abordagem do curso e direta e progressiva:
+
+- primeiro entender a base conceitual;
+- depois subir o ambiente;
+- em seguida conectar, consultar e criar objetos;
+- so entao avancar para administracao, seguranca, backup, tuning e multitenant.
 
 ## Regra central do curso
 
