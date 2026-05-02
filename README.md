@@ -48,6 +48,18 @@ A abordagem do curso e direta e progressiva:
 - em seguida conectar, consultar e criar objetos;
 - so entao avancar para administracao, seguranca, backup, tuning e multitenant.
 
+## ✦ Conteúdo complementar em áudio
+
+Para apoiar estudo, revisão e introdução aos temas do curso, também foram publicados materiais complementares no NotebookLM:
+
+- Curso Oracle Database Administration - INTRODUÇÃO - 1  
+  https://notebooklm.google.com/notebook/d690f188-b0c1-4a9d-b71f-1d19f8ead61e
+
+- Curso Oracle Database Administration - modulo 0 - 2  
+  https://notebooklm.google.com/notebook/d068ae4e-0845-475e-a502-bbfc167c1966
+
+Esses materiais funcionam como apoio complementar ao conteúdo escrito, especialmente para revisão conceitual, preparação de aula e reforço dos tópicos do `modulo0-material` e `modulo0-guia-pratico`.
+
 ## Regra central do curso
 
 Se esta sequencia nao estiver clara:
@@ -68,8 +80,8 @@ Na pratica, isso significa que a entrada real do curso e:
 - `modulo0-material`
 - `modulo0-guia-pratico`
 - `podman`
-- `repositorio/oracle`
-- `repositorio/go.oracle/v1`
+- `repo/oracle`
+- `repo/go.oracle/v1`
 
 antes de entrar forte em `modulo1-material`.
 
@@ -81,9 +93,9 @@ A trilha inicial recomendada e esta:
 2. ler `modulo0-guia-pratico/README.md`;
 3. aprofundar a duvida sobre `CDB`, `PDB`, `SID`, `Service Name` e `CREATE DATABASE` em `modulo0-guia-pratico/oracle_create_database_guide-v2.md`;
 4. preparar ambiente com `podman/README.md`;
-5. subir Oracle com `repositorio/oracle/versoes/README.md`;
+5. subir Oracle com `repo/oracle/versoes/README.md`;
 6. validar conexao e operacoes basicas na IDE;
-7. testar exemplo de aplicacao com `repositorio/go.oracle/v1/README.md`;
+7. testar exemplo de aplicacao com `repo/go.oracle/v1/README.md`;
 8. entrar depois em `modulo1-material`.
 
 ## Mapa do repositorio
@@ -115,25 +127,29 @@ A trilha inicial recomendada e esta:
   - uso de Podman no curso;
   - comandos base;
   - build, run, volumes e compose;
-  - ponte para exemplos reais.
+  - ponte para o laboratório Oracle e para os exemplos em Go.
 
 - `podman/go-exemplos.md`
-  - exemplos praticos com projetos Go.
+  - exemplos praticos com projetos Go;
+  - continuação natural do laboratório depois do Oracle estar rodando.
 
 - `podman/oracle-exemplos.md`
-  - exemplos de Oracle rodando com Podman.
+  - exemplos de Oracle rodando com Podman;
+  - caminho mais direto para sair da teoria e entrar no ambiente real.
 
-- `repositorio/oracle/versoes/README.md`
+- `repo/oracle/versoes/README.md`
   - catalogo das versoes Oracle usadas no laboratorio;
-  - visao macro das diferentes formas de subir Oracle.
+  - visao macro das diferentes formas de subir Oracle;
+  - referencia principal para escolher a imagem e o tipo de laboratório.
 
-- `repositorio/oracle/versoes/free-full-23ai/README.md`
+- `repo/oracle/versoes/free-full-23ai/README.md`
   - versao mais completa e didatica do laboratorio Oracle;
   - referencia principal para demonstracao.
 
-- `repositorio/go.oracle/v1/README.md`
+- `repo/go.oracle/v1/README.md`
   - exemplo simples de API em Go conectando ao Oracle;
-  - CRUD HTTP para mostrar Oracle em uso real.
+  - CRUD HTTP para mostrar Oracle em uso real;
+  - ajuda a conectar banco de dados, aplicação e operação no mesmo fluxo.
 
 ### Modulos do curso
 
@@ -229,7 +245,7 @@ Para acompanhar as praticas, e recomendavel ter pelo menos:
 ### Software essencial
 
 - `Podman`
-- `DBeaver Community` ou outra IDE SQL equivalente
+- `CloudBeaver` ou outra IDE SQL equivalente
 - `Git`
 - `Visual Studio Code`
 - `Go`, quando a aula entrar no exemplo de aplicacao
@@ -246,14 +262,14 @@ Para acompanhar as praticas, e recomendavel ter pelo menos:
 Fluxo minimo recomendado para a primeira pratica:
 
 1. abrir `podman/README.md`;
-2. escolher uma versao em `repositorio/oracle/versoes/README.md`;
-3. subir preferencialmente `repositorio/oracle/versoes/free-full-23ai/README.md`;
+2. escolher uma versao em `repo/oracle/versoes/README.md`;
+3. subir preferencialmente `repo/oracle/versoes/free-full-23ai/README.md`;
 4. conectar na IDE usando `Service Name`;
 5. validar ambiente com `SELECT` em `v$instance`, `v$database`, `v$pdbs` e `SYS_CONTEXT`;
 6. criar usuario;
 7. criar tabela;
 8. inserir e consultar dados;
-9. opcionalmente testar a API em `repositorio/go.oracle/v1/README.md`.
+9. opcionalmente testar a API em `repo/go.oracle/v1/README.md`.
 
 ## Referencias uteis
 
