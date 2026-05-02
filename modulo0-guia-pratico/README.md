@@ -29,7 +29,8 @@ Fluxo recomendado:
 
 1. ler este `README.md` para entender a navegacao inicial na IDE;
 2. abrir [oracle_create_database_guide-v2.md](oracle_create_database_guide-v2.md) para aprofundar `CDB`, `PDB`, `SID`, `Service Name` e `CREATE DATABASE`;
-3. voltar para este guia e seguir a sequencia pratica de usuario, schema, tabela e consultas.
+3. preparar o ambiente em [podman/README.md](../podman/README.md), porque este guia depende do Oracle ja estar rodando;
+4. voltar para este guia e seguir a sequencia pratica de usuario, schema, tabela e consultas.
 
 ## 1. Tela de Conexao na IDE
 
@@ -295,6 +296,8 @@ Isso significa:
 - a PDB principal do laboratorio e `FREEPDB1`;
 - a maior parte do trabalho acontece dentro dessa PDB;
 - em Free / XE, o fluxo normal nao e criar um banco do zero, e sim criar usuarios e objetos dentro da PDB existente.
+
+Antes de seguir na IDE, vale preparar o ambiente em [podman/README.md](../podman/README.md), porque sem Oracle rodando este guia perde boa parte do contexto pratico.
 
 Se surgir a duvida "quem criou o `FREEPDB1`?" ou "por que nao comecamos com `CREATE DATABASE`?", aprofunde aqui: [oracle_create_database_guide-v2.md](oracle_create_database_guide-v2.md).
 
