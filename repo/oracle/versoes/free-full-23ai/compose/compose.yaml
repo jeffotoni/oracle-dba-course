@@ -1,0 +1,54 @@
+# Oracle Free Full 23ai - Podman Compose
+#
+# Docker normalmente usa o nome Dockerfile.
+# Podman aceita Dockerfile e Containerfile; neste laboratório usamos Containerfile.
+#
+# Executar a partir deste diretório:
+#   cd repositorio/oracle/versoes/free-full-23ai/compose
+#
+# Build da imagem local:
+#   podman compose build
+#
+# Subir em background:
+#   podman compose up -d
+#
+# Ver status:
+#   podman compose ps
+#
+# Ver logs:
+#   podman compose logs -f oracle-free-full-23ai
+#
+# Derrubar sem apagar volume:
+#   podman compose down
+#
+# Derrubar apagando o volume de dados:
+#   podman compose down -v
+#
+# DBeaver:
+#   Host: localhost
+#   Host: host.containers.internal
+#   Port: 1522
+#   Service Name: FREEPDB1
+#   User: system
+#   Password: OraclePwd123
+
+services:
+  oracle-free-full-23ai:
+    container_name: oracle-free-full-23ai
+    image: oracle-free-full-23ai:23ai
+    build:
+      context: ..
+      dockerfile: containerfile/Containerfile
+    ports:
+      - "1522:1521"
+    cap_add:
+      - SYS_NICE
+    environment:
+      ORACLE_PWD: OraclePwd123
+      ORACLE_PDB: FREEPDB1
+    volumes:
+      - oracle-free-full-23ai-data:/opt/oracle/oradata:Z
+
+volumes:
+  oracle-free-full-23ai-data:
+    name: oracle-free-full-23ai-data

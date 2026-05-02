@@ -1,0 +1,10 @@
+services:
+  oracle-free:
+    image: gvenzl/oracle-free:latest
+    container_name: oracle-free
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: Senha123
+    volumes:
+      - ./labdata:/opt/oracle/labdata
