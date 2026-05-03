@@ -271,6 +271,30 @@ Fluxo minimo recomendado para a primeira pratica:
 8. inserir e consultar dados;
 9. opcionalmente testar a API em `repo/go.oracle/v1/README.md`.
 
+## Ferramentas Oracle e ecossistema SQL Developer
+
+Para o curso, a linha principal continua sendo `Podman + CloudBeaver`. Ainda assim, vale manter um mapa claro do ecossistema Oracle para IDE, modelagem, linha de comando, browser e REST.
+
+| Perfil | Ferramenta | Uso principal | Link |
+| :--- | :--- | :--- | :--- |
+| 🟦 IDE desktop | `Oracle SQL Developer` | worksheet SQL, PL/SQL, administração e navegação de objetos | [Site oficial](https://www.oracle.com/database/sqldeveloper/) · [Downloads](https://www.oracle.com/database/sqldeveloper/technologies/download/) |
+| 🟪 VS Code | `Oracle SQL Developer for VS Code` | Oracle dentro do VS Code, com SQL, PL/SQL e integração com SQLcl | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Oracle.sql-developer) · [Página oficial](https://www.oracle.com/database/sqldeveloper/vscode/) |
+| 🟨 Modelagem | `SQL Developer Data Modeler` | modelagem conceitual, lógica e física de bancos de dados | [Página oficial](https://docs.oracle.com/en/database/oracle/sql-developer-data-modeler/) |
+| 🟧 CLI | `SQLcl` | linha de comando moderna para Oracle, scripts e automação | [Página oficial](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/) |
+| 🟩 Browser | `Oracle Live SQL` | executar e compartilhar SQL no navegador, sem laboratório local | [Live SQL](https://livesql.oracle.com/) |
+| 🟥 REST e web | `ORDS` | expor o Oracle via REST e habilitar Database Actions / SQL Developer Web | [Página oficial](https://www.oracle.com/ords) |
+| 🟫 Browser admin | `Database Actions` | experiência web do ecossistema SQL Developer para desenvolvimento, administração e monitoramento | [Página oficial](https://www.oracle.com/database/sqldeveloper/technologies/db-actions/) |
+
+### Como esse ecossistema se encaixa no curso
+
+- `CloudBeaver` segue como cliente SQL principal do laboratório.
+- `Oracle SQL Developer` entra bem como alternativa desktop oficial.
+- `Oracle SQL Developer for VS Code` faz sentido para quem quer concentrar banco e código na mesma IDE.
+- `SQL Developer Data Modeler` entra quando a aula avançar para modelagem e desenho de schema.
+- `SQLcl` é útil para automação, scripts e operação mais próxima do ambiente Oracle.
+- `Oracle Live SQL` é bom para demonstração rápida, estudo e testes sem subir container.
+- `ORDS` e `Database Actions` entram quando a discussão avançar para REST, browser e administração web.
+
 ## Referencias uteis
 
 ### Oracle
@@ -283,13 +307,17 @@ Fluxo minimo recomendado para a primeira pratica:
 
 ### Ferramentas
 
-- [DBeaver Community](https://dbeaver.io/)
+- [CloudBeaver](https://cloudbeaver.io/)
 - [Oracle SQL Developer](https://www.oracle.com/database/sqldeveloper/)
+- [Oracle SQL Developer for VS Code](https://www.oracle.com/database/sqldeveloper/vscode/)
+- [Oracle SQLcl](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/)
+- [Oracle Live SQL](https://livesql.oracle.com/)
+- [Oracle REST Data Services (ORDS)](https://www.oracle.com/ords)
 - [Oracle Container Registry](https://container-registry.oracle.com/)
 
 ## Uso do repositorio
 
 - teoria: arquivos dos modulos;
-- pratica Oracle: `modulo0-guia-pratico`, `podman` e `repositorio/oracle`;
-- pratica de aplicacao: `repositorio/go.oracle/v1`;
+- pratica Oracle: `modulo0-guia-pratico`, `podman` e `repo/oracle`;
+- pratica de aplicacao: `repo/go.oracle/v1`;
 - aprofundamento administrativo: `modulo1` ao `modulo5`.
