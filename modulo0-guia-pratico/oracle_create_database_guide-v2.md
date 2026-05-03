@@ -94,6 +94,33 @@ Regra pratica:
 
 Por isso a pergunta "eu preciso criar o banco?" mudou bastante no Oracle moderno.
 
+### 4.1 Leitura mental de multitenant
+
+No Oracle moderno, vale guardar esta estrutura:
+
+```txt
+Oracle Instance
+ └── CDB
+      └── PDB
+           └── USER
+                └── SCHEMA
+                     └── TABLES
+```
+
+No laboratório:
+
+```txt
+FREE
+ └── FREEPDB1
+```
+
+Resumo direto:
+
+- `CDB` é o container principal;
+- `PDB` é o banco lógico utilizável;
+- `schema` não é a mesma coisa que `PDB`;
+- `Service Name` normalmente aponta para a `PDB`.
+
 ## 5. O que `CREATE DATABASE` realmente faz
 
 O comando tradicional:

@@ -131,6 +131,30 @@ Conectar como `SYS` com papel `SYSDBA` no CloudBeaver.
 
 ## 3. Bloco prático – identificar o ambiente multitenant
 
+Antes das queries, vale manter este mapa mental:
+
+```txt
+Oracle Instance
+ └── CDB
+      └── PDB
+           └── USER
+                └── SCHEMA
+                     └── TABLES
+```
+
+No laboratório do curso, isso normalmente significa:
+
+```txt
+FREE
+ └── FREEPDB1
+```
+
+Regra importante:
+
+- `SID` aponta para a instância;
+- `Service Name` aponta para a `PDB`;
+- em ambiente multitenant, a conexão de aplicação normalmente usa o `Service Name` da `PDB`.
+
 ## 3.1. Ver nome da instância
 
 ```sql
@@ -157,7 +181,10 @@ FROM dual;
 ## 3.4. Listar as PDBs
 
 ```sql
-SELECT con_id, name, open_mode, restricted
+SELECT con_id AS pdb_id,
+       name AS pdb_name,
+       open_mode AS status,
+       restricted
 FROM v$pdbs
 ORDER BY con_id;
 ```
@@ -197,6 +224,12 @@ Esse bloco deverá mostrar claramente:
 - a PDB seed;
 - a PDB de trabalho (`FREEPDB1`);
 - e, se configurada, uma PDB adicional como `LABPDB1`.
+
+Leitura prática:
+
+- `FREE` representa a instância e o container principal;
+- `FREEPDB1` representa o banco lógico de trabalho;
+- em vez de `USE database`, a conexão Oracle normalmente entra diretamente na `PDB` correta.
 
 ---
 
@@ -461,9 +494,11 @@ ORDER BY con_id, file_name;
 ## 8.4. Ver PDBs no dicionário
 
 ```sql
-SELECT pdb_id, pdb_name, status
-FROM cdb_pdbs
-ORDER BY pdb_id;
+SELECT con_id AS pdb_id,
+       name AS pdb_name,
+       open_mode AS status
+FROM v$pdbs
+ORDER BY con_id;
 ```
 
 ### Interpretação
