@@ -1,0 +1,345 @@
+ORACLE BACKUP E DUMP - VISÃO PRÁTICA INICIAL
+
+1. PRIMEIRA VERDADE IMPORTANTE
+
+No Oracle existem múltiplos níveis de backup:
+
+- Export lógico (Dump estilo PostgreSQL pg_dump / mysqldump)
+- Backup físico (RMAN)
+- Data Pump (expdp / impdp)
+- Backup por tablespace
+- Backup por PDB
+- Backup por CDB
+
+
+2. PARA SUA MENTE INICIAL (mais parecido com pg_dump)
+
+Use:
+expdp (Export Data Pump)
+
+Isso é o equivalente mais próximo de:
+
+PostgreSQL:
+pg_dump
+
+MySQL:
+mysqldump
+
+MongoDB:
+mongodump
+
+
+3. FERRAMENTA PRINCIPAL
+
+EXPDP = Export Dump
+IMPDP = Import Dump
+
+
+4. EXEMPLO MAIS SIMPLES (schema JEFF)
+
+expdp jeff/StrongPass123@localhost:1522/FREEPDB1 \
+schemas=JEFF \
+directory=DATA_PUMP_DIR \
+dumpfile=jeff_backup.dmp \
+logfile=jeff_backup.log
+
+
+5. O QUE ISSO GERA?
+
+- jeff_backup.dmp  → dump lógico
+- jeff_backup.log  → log
+
+
+6. IMPORTANTE
+
+O Oracle não escreve dump em qualquer pasta do SO diretamente.
+Ele usa DIRECTORY OBJECT interno.
+
+
+7. VER DIRECTORY PADRÃO
+
+SELECT directory_name, directory_path
+FROM dba_directories;
+
+
+8. NORMALMENTE:
+
+DATA_PUMP_DIR
+
+
+9. EXEMPLO:
+
+DATA_PUMP_DIR → /opt/oracle/admin/FREE/dpdump/
+
+
+10. VISÃO MENTAL
+
+JEFF schema
+ └── CHATGPT
+      └── expdp
+           └── jeff_backup.dmp
+
+
+11. TIPOS DE EXPORT
+
+A) SCHEMA
+schemas=JEFF
+
+B) TABLE
+tables=JEFF.CHATGPT
+
+C) FULL DATABASE
+full=y
+
+D) PDB
+
+
+12. EXPORTAR APENAS UMA TABELA
+
+expdp jeff/StrongPass123@localhost:1522/FREEPDB1 \
+tables=JEFF.CHATGPT \
+directory=DATA_PUMP_DIR \
+dumpfile=chatgpt_table.dmp \
+logfile=chatgpt_table.log
+
+
+13. EXPORTAR TUDO (FULL)
+
+expdp system/SuaSenha@localhost:1522/FREEPDB1 \
+full=y \
+directory=DATA_PUMP_DIR \
+dumpfile=full_backup.dmp \
+logfile=full_backup.log
+
+
+14. IMPORTAR
+
+impdp jeff/StrongPass123@localhost:1522/FREEPDB1 \
+schemas=JEFF \
+directory=DATA_PUMP_DIR \
+dumpfile=jeff_backup.dmp \
+logfile=jeff_import.log
+
+
+15. IMPORTAR TABELA
+
+impdp jeff/StrongPass123@localhost:1522/FREEPDB1 \
+tables=JEFF.CHATGPT \
+directory=DATA_PUMP_DIR \
+dumpfile=chatgpt_table.dmp \
+logfile=chatgpt_import.log
+
+
+16. DIFERENÇA FUNDAMENTAL
+
+EXPDP:
+Lógico
+- Estrutura
+- Dados
+- Metadados
+
+RMAN:
+Físico
+- Datafiles
+- Control files
+- Redo logs
+
+
+17. ANALOGIA
+
+expdp:
+“Exporta objetos”
+
+RMAN:
+“Clona/restaura infraestrutura”
+
+
+18. SEU PERFIL INICIAL
+
+Para aprender como pg_dump:
+COMECE COM EXPDP
+
+
+19. EXEMPLO DE QUERY PARA DESCOBRIR DIRETÓRIO
+
+SELECT directory_name, directory_path
+FROM dba_directories
+WHERE directory_name = 'DATA_PUMP_DIR';
+
+
+20. CRIAR DIRETÓRIO CUSTOMIZADO
+
+CREATE DIRECTORY backup_dir AS '/opt/oracle/backups';
+
+GRANT READ, WRITE ON DIRECTORY backup_dir TO jeff;
+
+
+21. EXPORTANDO PARA DIRETÓRIO CUSTOM
+
+expdp jeff/StrongPass123@localhost:1522/FREEPDB1 \
+schemas=JEFF \
+directory=BACKUP_DIR \
+dumpfile=jeff_custom.dmp \
+logfile=jeff_custom.log
+
+
+22. O QUE TEM NO .DMP?
+
+- CREATE TABLE
+- METADATA
+- DATA
+- INDEXES
+- CONSTRAINTS
+
+
+23. NÃO É TEXTO SQL SIMPLES
+
+.dmp = formato Oracle Data Pump
+
+Não é igual:
+mysqldump.sql
+
+É binário/estruturado Oracle.
+
+
+24. QUER SQL TEXTO?
+
+Use:
+SQL Developer export
+ou ferramentas externas
+
+Mas o padrão Oracle profissional:
+EXPDP
+
+
+25. BACKUP FÍSICO
+
+RMAN
+
+Exemplo:
+RMAN TARGET /
+
+BACKUP DATABASE;
+
+
+26. RMAN É MAIS PRÓXIMO DE:
+
+Snapshot / Disaster Recovery
+
+
+27. VISÃO DE NÍVEIS
+
+Oracle
+ ├── expdp (lógico)
+ └── RMAN (físico)
+
+
+28. PARA DEV / LAB
+
+Melhor:
+expdp schema
+
+
+29. PARA PRODUÇÃO
+
+Melhor:
+RMAN + Archive Logs + expdp estratégico
+
+
+30. ERROS COMUNS
+
+ORA-39087:
+Directory inválido
+
+ORA-39002:
+Parâmetro inválido
+
+ORA-31626:
+Job não existe / permissão
+
+
+31. QUERY PARA VALIDAR TABELAS ANTES
+
+SELECT table_name
+FROM user_tables;
+
+
+32. EXPORTAR APENAS CHATGPT
+
+expdp jeff/StrongPass123@localhost:1522/FREEPDB1 \
+tables=JEFF.CHATGPT \
+directory=DATA_PUMP_DIR \
+dumpfile=chatgpt_only.dmp \
+logfile=chatgpt_only.log
+
+
+33. FLUXO MENTAL
+
+JEFF
+ └── CHATGPT
+      └── expdp
+           └── chatgpt_only.dmp
+
+
+34. COMPACTAÇÃO
+
+compression=all
+
+
+35. EXEMPLO
+
+expdp jeff/StrongPass123@localhost:1522/FREEPDB1 \
+schemas=JEFF \
+directory=DATA_PUMP_DIR \
+dumpfile=jeff_backup.dmp \
+logfile=jeff_backup.log \
+compression=all
+
+
+36. FRASE DEFINITIVA
+
+PostgreSQL:
+pg_dump
+
+MySQL:
+mysqldump
+
+Oracle:
+expdp
+
+
+37. REGRA PROFISSIONAL
+
+Aprenda nesta ordem:
+
+1. expdp
+2. impdp
+3. DIRECTORY
+4. RMAN
+
+
+38. MAPA FINAL
+
+Oracle Instance
+ └── FREE
+      └── FREEPDB1
+           └── JEFF
+                └── CHATGPT
+                     └── expdp
+                          └── jeff_backup.dmp
+
+
+39. PRIMEIRO TESTE RECOMENDADO
+
+SELECT directory_name, directory_path
+FROM dba_directories;
+
+Depois:
+
+expdp jeff/... schemas=JEFF ...
+
+
+40. FRASE FINAL
+
+No Oracle, o “dump inicial” mais próximo do mundo PostgreSQL/MySQL é:
+EXPDP (Oracle Data Pump)

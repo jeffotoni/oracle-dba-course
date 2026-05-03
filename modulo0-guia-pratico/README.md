@@ -280,6 +280,208 @@ Oracle Instance
                      └── Other Objects
 ```
 
+### 2.1 Arquitetura mental para nao se perder
+
+Uma forma muito pratica de ler Oracle no inicio e esta:
+
+```txt
+Oracle Instance
+ └── CDB (Container Database)
+      └── PDB (Pluggable Database)
+           └── User
+                └── Schema
+                     └── Tables
+                          └── Data (Rows)
+```
+
+No ambiente de laboratorio do curso, isso costuma aparecer assim:
+
+```txt
+FREE
+ └── FREEPDB1
+      └── JEFF
+           └── JEFF
+                └── CHATGPT
+```
+
+Leitura correta:
+
+- `FREE` representa a camada principal da infraestrutura Oracle;
+- `FREEPDB1` representa o banco lógico de trabalho;
+- `JEFF` como usuário cria automaticamente o schema `JEFF`;
+- `CHATGPT` representa uma tabela criada dentro desse schema.
+
+### 2.2 Regra fundamental de usuario e schema
+
+Em Oracle, no fluxo comum de laboratório:
+
+```txt
+CREATE USER JEFF
+=
+USER JEFF + SCHEMA JEFF
+```
+
+Isso significa que, ao criar um usuário, também nasce um schema com o mesmo nome.
+
+Se a sessão estiver conectada como `JEFF` e for executado:
+
+```sql
+CREATE TABLE chatgpt (
+  id NUMBER PRIMARY KEY,
+  pergunta VARCHAR2(4000)
+);
+```
+
+o resultado lógico será:
+
+```txt
+JEFF.CHATGPT
+```
+
+### 2.3 FREE e FREEPDB1 em linguagem direta
+
+Use esta regra mental:
+
+```txt
+FREE = infraestrutura principal
+FREEPDB1 = banco lógico de desenvolvimento
+```
+
+Em outras palavras:
+
+- `FREE` é a camada principal do Oracle;
+- `FREEPDB1` é o banco lógico real onde a maior parte do laboratório acontece.
+
+Por isso, em ambiente de desenvolvimento, a regra prática é:
+
+- conectar na `FREEPDB1`;
+- criar usuário;
+- criar tabela;
+- consultar dados.
+
+### 2.4 Múltiplos projetos dentro da mesma PDB
+
+Também é útil visualizar que uma única PDB pode concentrar vários usuários, schemas e tabelas:
+
+```txt
+FREE
+ └── FREEPDB1
+      ├── JEFF
+      │    └── CHATGPT
+      ├── ERP
+      │    └── CLIENTES
+      └── CRM
+           └── LEADS
+```
+
+Isso ajuda a fixar a ideia de que:
+
+- `FREEPDB1` é o banco lógico compartilhado do ambiente;
+- cada usuário trabalha no próprio schema;
+- as tabelas ficam organizadas por schema, não todas misturadas no mesmo espaço lógico.
+
+### 2.5 Fisico vs logico
+
+Outra confusão comum no início é misturar a camada lógica com a camada física.
+
+Visão lógica:
+
+```txt
+FREEPDB1 -> JEFF -> CHATGPT
+```
+
+Visão física:
+
+```txt
+users01.dbf
+```
+
+Leitura prática:
+
+- `PDB`, `schema` e `table` pertencem à camada lógica;
+- `datafile` pertence à camada física do Oracle.
+
+### 2.6 Hierarquia interna de armazenamento
+
+Uma forma simples de explicar a camada física interna:
+
+```txt
+Datafile (.dbf)
+ └── Tablespace
+      └── Segment
+           └── Extent
+                └── Block
+                     └── Rows
+```
+
+Isso ajuda a entender que:
+
+- a tabela é um objeto lógico;
+- mas os dados acabam persistidos em estruturas físicas do banco.
+
+### 2.7 Exemplo completo
+
+```txt
+/opt/oracle/oradata/FREE/FREEPDB1/users01.dbf
+ └── USERS tablespace
+      └── JEFF schema
+           └── CHATGPT table
+                └── Registros
+```
+
+Esse tipo de leitura é importante porque conecta:
+
+- a IDE;
+- a query;
+- a arquitetura Oracle;
+- e a forma como o dado realmente fica armazenado.
+
+### 2.8 SID, Service Name e a regra de conexao
+
+No laboratório, vale manter esta leitura curta:
+
+```txt
+SID = FREE
+Service Name = FREEPDB1
+```
+
+Regra prática:
+
+- `SID` aponta para a instância;
+- `Service Name` aponta para o banco lógico utilizável;
+- para desenvolvimento, tabelas e queries de negócio, o caminho principal é `FREEPDB1`.
+
+### 2.9 Onde entra CREATE PLUGGABLE DATABASE
+
+Outro ponto importante: em Oracle, existem duas ideias diferentes que costumam ser confundidas no início.
+
+Fluxo comum de desenvolvimento:
+
+- criar usuário;
+- conceder privilégios;
+- criar tabela;
+- inserir e consultar dados.
+
+Fluxo avançado de arquitetura:
+
+```sql
+CREATE PLUGGABLE DATABASE vendas;
+```
+
+Esse comando cria outra `PDB`, por exemplo:
+
+```txt
+FREE
+ ├── FREEPDB1
+ └── VENDAS
+```
+
+Ou seja:
+
+- `CREATE USER` cria identidade de acesso e schema;
+- `CREATE PLUGGABLE DATABASE` cria outro banco lógico dentro do container;
+- para o início do curso, o fluxo certo continua sendo `FREEPDB1 -> user/schema -> table -> query`.
+
 ## 3. Seu Ambiente de Laboratorio
 
 Neste curso, o ambiente mais comum e:
