@@ -100,6 +100,29 @@ A arquitetura multitenant é um modelo no qual múltiplos bancos lógicos podem 
 
 No Oracle, isso significa que um **Container Database (CDB)** pode conter uma ou mais **Pluggable Databases (PDBs)**.
 
+Leitura prática curta:
+
+```txt
+Oracle Instance
+ └── CDB
+      ├── PDB1
+      ├── PDB2
+      └── PDB3
+```
+
+Tradução humana:
+
+- um Oracle principal pode conter vários bancos lógicos independentes;
+- `CDB` é a superestrutura;
+- `PDB` é o banco lógico de trabalho;
+- `schema` continua sendo isolamento lógico dentro da mesma `PDB`.
+
+Analogia simples:
+
+- `CDB` = prédio;
+- `PDBs` = apartamentos;
+- cada apartamento pode ter usuários, tabelas, tablespaces, aplicações e APIs próprios.
+
 ## 2.2. Objetivo da arquitetura
 
 O objetivo da arquitetura multitenant é combinar:
@@ -118,6 +141,13 @@ Esse modelo altera a forma de pensar administração. Em vez de tratar cada banc
 - múltiplos bancos plugáveis;
 - operações locais e globais;
 - administração compartilhada e segmentada ao mesmo tempo.
+
+Regra prática importante:
+
+```txt
+Antes: 1 instância Oracle -> 1 banco
+Agora: 1 instância Oracle -> vários bancos lógicos
+```
 
 ---
 
@@ -174,6 +204,30 @@ O uso de PDBs ajuda a:
 
 Na administração do dia a dia, deveríamos enxergar a PDB como o espaço lógico mais próximo da aplicação, enquanto o CDB representa a camada superior de controle e consolidação.
 
+Exemplo real do laboratório:
+
+```txt
+FREE
+ └── FREEPDB1
+```
+
+Exemplo de expansão futura:
+
+```txt
+FREE
+ ├── FREEPDB1
+ ├── VENDAS
+ └── RH
+```
+
+Cada `PDB` pode ter:
+
+- usuários próprios;
+- schemas próprios;
+- tablespaces próprios;
+- tabelas e views;
+- serviços, APIs e `ORDS`.
+
 ---
 
 # 5. Relação entre CDB e PDB
@@ -202,6 +256,32 @@ Essa distinção afeta:
 - parametrização;
 - gerenciamento de objetos;
 - escopo de determinadas operações.
+
+Outra distinção obrigatória:
+
+- `schema` é isolamento lógico dentro da mesma `PDB`;
+- `PDB` é outro banco lógico dentro do mesmo `CDB`.
+
+Exemplo:
+
+```txt
+CDB = FREE
+ └── FREEPDB1
+      ├── JEFF
+      └── APP2
+```
+
+Aqui, `JEFF` e `APP2` compartilham a mesma `PDB`.
+
+Já neste cenário:
+
+```txt
+CDB = FREE
+ ├── FREEPDB1
+ └── APP2DB
+```
+
+`APP2DB` representa outro banco lógico.
 
 ---
 
