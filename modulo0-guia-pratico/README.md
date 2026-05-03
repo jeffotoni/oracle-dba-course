@@ -45,6 +45,22 @@ Isso vale para:
 
 O objetivo desta parte e explicar cada campo da tela de conexao e o que ele significa no Oracle.
 
+### 1.0 Ferramentas sugeridas para acompanhar este guia
+
+Para este material, a linha principal continua sendo `CloudBeaver`, porque ele combina bem com o fluxo do curso.
+
+Ainda assim, estas opções são úteis:
+
+| Ferramenta | Papel no curso | Link |
+| :--- | :--- | :--- |
+| 🟦 `CloudBeaver` | cliente SQL principal do laboratório | [Site oficial](https://cloudbeaver.io/) |
+| 🟪 `Oracle SQL Developer` | alternativa desktop oficial da Oracle | [Site oficial](https://www.oracle.com/database/sqldeveloper/) |
+| 🟨 `Oracle SQL Developer for VS Code` | opção para trabalhar Oracle dentro do VS Code | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Oracle.sql-developer) |
+| 🟧 `SQLcl` | linha de comando Oracle para scripts e automação | [Página oficial](https://www.oracle.com/database/sqldeveloper/technologies/sqlcl/) |
+| 🟩 `Oracle Live SQL` | testes rápidos no navegador, sem ambiente local | [Live SQL](https://livesql.oracle.com/) |
+
+Se a ideia for aprofundar esse ecossistema, veja também a seção de ferramentas no [README principal](../README.md).
+
 ### 1.1 Exemplo do seu cenario
 
 Em laboratorio, um exemplo comum fica assim:
