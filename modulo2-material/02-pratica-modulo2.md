@@ -512,6 +512,15 @@ SELECT * FROM produtos_ext_import ORDER BY id_produto;
 
 ## 8. Bloco prático – Oracle Data Pump
 
+Neste módulo, o Data Pump aparece como ferramenta de exportação e importação lógica ligada a carga, cópia e movimentação de dados.
+
+No `modulo3-material`, esse mesmo tema é retomado no contexto correto de:
+
+- dump lógico;
+- restore seletivo;
+- comparação com `pg_dump`, `mysqldump` e `mongodump`;
+- distinção entre `expdp` / `impdp` e `RMAN`.
+
 ## 8.1. Criar diretório lógico para exportação/importação
 
 Conectar como usuário administrativo:

@@ -196,6 +196,54 @@ Exemplos de uso:
 - não substitui integralmente a estratégia de recuperação física do banco;
 - é muito valioso em cenários de migração e restauração seletiva.
 
+### 3.1.1. A comparação mental com outros bancos
+
+Para quem já trabalhou com outros bancos, a forma mais prática de entender o backup lógico em Oracle é esta:
+
+- PostgreSQL: `pg_dump`
+- MySQL / MariaDB: `mysqldump`
+- MongoDB: `mongodump`
+- Oracle: `expdp`
+
+Em Oracle, a ferramenta principal para esse tipo de operação é o **Oracle Data Pump**, com:
+
+- `expdp` para exportação lógica;
+- `impdp` para importação lógica.
+
+Essa comparação é útil porque aproxima o raciocínio inicial:
+
+- exportar schema;
+- exportar tabela;
+- mover objetos e dados entre ambientes;
+- reconstruir parte do banco sem restaurar toda a infraestrutura física.
+
+### 3.1.2. O que o Data Pump exporta
+
+O Data Pump trabalha com camada lógica do banco, incluindo:
+
+- metadados;
+- tabelas;
+- índices;
+- constraints;
+- dados;
+- objetos de schema, conforme o escopo do comando.
+
+Em termos práticos, isso significa que ele não exporta o banco como conjunto de datafiles prontos para restore físico. Ele exporta a representação lógica dos objetos Oracle.
+
+### 3.1.3. O que o Data Pump não substitui
+
+Mesmo sendo extremamente útil, o Data Pump não substitui:
+
+- backup físico com RMAN;
+- estratégia de archivelogs;
+- restore de datafiles;
+- recuperação estrutural do ambiente após perda de mídia.
+
+Regra prática:
+
+- para dev, laboratório, migração seletiva e cópia de schema, comece pensando em `expdp` e `impdp`;
+- para proteção operacional do banco, continuidade e disaster recovery, pense em `RMAN`.
+
 ## 3.2. Backup físico
 
 Backup físico é a cópia dos arquivos físicos do banco.
@@ -221,6 +269,18 @@ De forma resumida:
 - **backup físico** ajuda a restaurar o próprio banco como estrutura operacional.
 
 Deveríamos evitar tratar um como substituto completo do outro. Eles se complementam, mas atendem necessidades diferentes.
+
+### 3.3.1. Analogia útil
+
+Uma analogia simples ajuda a fixar:
+
+- `expdp` / `impdp`: exportam e reconstroem objetos;
+- `RMAN`: restaura a infraestrutura física do banco.
+
+Em linguagem direta:
+
+- o Data Pump é o caminho mais próximo de um "dump lógico";
+- o RMAN é o caminho central para restore e recovery físico em Oracle.
 
 ---
 

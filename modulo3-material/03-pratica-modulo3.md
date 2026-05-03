@@ -283,7 +283,125 @@ SELECT MIN(id_pedido), MAX(id_pedido) FROM pedidos_lab;
 
 ---
 
-## 5. Iniciando o RMAN
+## 5. Bloco prático – dump lógico com Oracle Data Pump
+
+Antes de entrar no `RMAN`, vale fixar a camada de dump lógico do Oracle.
+
+Comparação mental rápida:
+
+- PostgreSQL: `pg_dump`
+- MySQL / MariaDB: `mysqldump`
+- MongoDB: `mongodump`
+- Oracle: `expdp`
+
+Neste módulo, `expdp` e `impdp` entram como:
+
+- exportação lógica;
+- restore seletivo;
+- movimentação de schema e tabela;
+- apoio a laboratório, dev e clonagem controlada.
+
+Já o `RMAN` continua sendo a ferramenta principal para backup físico, restore e recovery estrutural.
+
+## 5.1. Validar o diretório padrão do Data Pump
+
+Conectar no CloudBeaver como `system` ou `sys` e validar:
+
+```sql
+SELECT directory_name,
+       directory_path
+FROM dba_directories
+WHERE directory_name = 'DATA_PUMP_DIR';
+```
+
+## 5.2. Validar as tabelas do schema de laboratório
+
+Conectar no CloudBeaver como `app_rman`:
+
+```sql
+SELECT table_name
+FROM user_tables
+ORDER BY table_name;
+```
+
+## 5.3. Exportar o schema de laboratório
+
+Neste curso, os utilitários nativos Oracle podem ser executados dentro do container com `podman exec`.
+
+Exemplo de exportação lógica do schema `APP_RMAN`:
+
+```bash
+podman exec -i oracle-free bash -lc "expdp app_rman/AppRman123@//localhost:1521/FREEPDB1 \
+schemas=APP_RMAN \
+directory=DATA_PUMP_DIR \
+dumpfile=app_rman_m3.dmp \
+logfile=app_rman_m3_exp.log"
+```
+
+Resultado esperado:
+
+- `app_rman_m3.dmp` com o dump lógico;
+- `app_rman_m3_exp.log` com o log da operação.
+
+## 5.4. Exportar apenas uma tabela
+
+```bash
+podman exec -i oracle-free bash -lc "expdp app_rman/AppRman123@//localhost:1521/FREEPDB1 \
+tables=APP_RMAN.PEDIDOS_LAB \
+directory=DATA_PUMP_DIR \
+dumpfile=pedidos_lab_m3.dmp \
+logfile=pedidos_lab_m3_exp.log"
+```
+
+## 5.5. Importar para um schema de clone
+
+Primeiro, criar um schema de destino:
+
+```sql
+CREATE USER app_rman_clone IDENTIFIED BY AppRmanClone123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO app_rman_clone;
+```
+
+Depois, importar com remapeamento:
+
+```bash
+podman exec -i oracle-free bash -lc "impdp system/Senha123@//localhost:1521/FREEPDB1 \
+schemas=APP_RMAN \
+directory=DATA_PUMP_DIR \
+dumpfile=app_rman_m3.dmp \
+logfile=app_rman_m3_imp.log \
+remap_schema=APP_RMAN:APP_RMAN_CLONE"
+```
+
+## 5.6. Validar o restore lógico
+
+Conectar no CloudBeaver como `app_rman_clone` e validar:
+
+```sql
+SELECT COUNT(*) AS total_rows
+FROM pedidos_lab;
+
+SELECT MIN(id_pedido) AS min_id,
+       MAX(id_pedido) AS max_id
+FROM pedidos_lab;
+```
+
+## 5.7. Regra prática do módulo
+
+Use esta leitura:
+
+- `expdp` e `impdp` para dump e restore lógico;
+- `RMAN` para backup físico, restore e recovery estrutural;
+- em laboratório e desenvolvimento, o primeiro passo mental de dump é `expdp`;
+- em produção, a proteção séria do banco exige `RMAN`, `ARCHIVELOG` e estratégia de retenção.
+
+---
+
+## 6. Iniciando o RMAN
 
 Encerrar a sessão administrativa atual, se necessário, antes de entrar no `RMAN`.
 
@@ -302,33 +420,33 @@ SHOW ALL;
 
 ---
 
-## 6. Configuração básica do RMAN
+## 7. Configuração básica do RMAN
 
-## 6.1. Ativar autobackup do control file
+## 7.1. Ativar autobackup do control file
 
 ```rman
 CONFIGURE CONTROLFILE AUTOBACKUP ON;
 ```
 
-## 6.2. Definir política de retenção
+## 7.2. Definir política de retenção
 
 ```rman
 CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
 ```
 
-## 6.3. Definir tipo de backup padrão
+## 7.3. Definir tipo de backup padrão
 
 ```rman
 CONFIGURE DEVICE TYPE DISK PARALLELISM 1 BACKUP TYPE TO BACKUPSET;
 ```
 
-## 6.4. Definir formato padrão de backup
+## 7.4. Definir formato padrão de backup
 
 ```rman
 CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT '/opt/oracle/labbackup/rman/%d_%T_%U.bkp';
 ```
 
-## 6.5. Mostrar configuração final
+## 7.5. Mostrar configuração final
 
 ```rman
 SHOW ALL;
@@ -336,27 +454,27 @@ SHOW ALL;
 
 ---
 
-## 7. Backup completo do banco
+## 8. Backup completo do banco
 
-## 7.1. Backup completo com archivelogs
+## 8.1. Backup completo com archivelogs
 
 ```rman
 BACKUP DATABASE PLUS ARCHIVELOG;
 ```
 
-## 7.2. Backup apenas do control file
+## 8.2. Backup apenas do control file
 
 ```rman
 BACKUP CURRENT CONTROLFILE;
 ```
 
-## 7.3. Backup do SPFILE
+## 8.3. Backup do SPFILE
 
 ```rman
 BACKUP SPFILE;
 ```
 
-## 7.4. Listar backups
+## 8.4. Listar backups
 
 ```rman
 LIST BACKUP SUMMARY;
@@ -368,15 +486,15 @@ LIST BACKUP OF SPFILE;
 
 ---
 
-## 8. Backup incremental
+## 9. Backup incremental
 
-## 8.1. Backup incremental level 0
+## 9.1. Backup incremental level 0
 
 ```rman
 BACKUP INCREMENTAL LEVEL 0 DATABASE TAG 'BKP_L0_MOD3';
 ```
 
-## 8.2. Gerar novas alterações no banco
+## 9.2. Gerar novas alterações no banco
 
 Abrir outro terminal ou sair do RMAN momentaneamente e conectar como `app_rman`:
 
@@ -399,13 +517,13 @@ Voltar ao RMAN:
 rman target /
 ```
 
-## 8.3. Backup incremental level 1
+## 9.3. Backup incremental level 1
 
 ```rman
 BACKUP INCREMENTAL LEVEL 1 DATABASE TAG 'BKP_L1_MOD3';
 ```
 
-## 8.4. Verificar backups incrementais
+## 9.4. Verificar backups incrementais
 
 ```rman
 LIST BACKUP SUMMARY;
@@ -413,9 +531,9 @@ LIST BACKUP SUMMARY;
 
 ---
 
-## 9. Backup de archivelogs
+## 10. Backup de archivelogs
 
-## 9.1. Forçar geração de archive log
+## 10.1. Forçar geração de archive log
 
 Conectar como `SYS` com papel `SYSDBA` no CloudBeaver.
 
@@ -433,13 +551,13 @@ Voltar ao RMAN:
 rman target /
 ```
 
-## 9.2. Executar backup de archivelogs
+## 10.2. Executar backup de archivelogs
 
 ```rman
 BACKUP ARCHIVELOG ALL TAG 'BKP_ARCH_MOD3';
 ```
 
-## 9.3. Listar archivelogs copiados
+## 10.3. Listar archivelogs copiados
 
 ```rman
 LIST BACKUP OF ARCHIVELOG ALL;
@@ -447,34 +565,34 @@ LIST BACKUP OF ARCHIVELOG ALL;
 
 ---
 
-## 10. Validação de backup e integridade
+## 11. Validação de backup e integridade
 
-## 10.1. Validar o banco
+## 11.1. Validar o banco
 
 ```rman
 VALIDATE DATABASE;
 ```
 
-## 10.2. Validar backups existentes
+## 11.2. Validar backups existentes
 
 ```rman
 RESTORE DATABASE VALIDATE;
 RESTORE ARCHIVELOG ALL VALIDATE;
 ```
 
-## 10.3. Validar schema
+## 11.3. Validar schema
 
 ```rman
 REPORT SCHEMA;
 ```
 
-## 10.4. Procurar arquivos obsoletos
+## 11.4. Procurar arquivos obsoletos
 
 ```rman
 REPORT OBSOLETE;
 ```
 
-## 10.5. Cruzar catálogo com arquivos físicos
+## 11.5. Cruzar catálogo com arquivos físicos
 
 ```rman
 CROSSCHECK BACKUP;
@@ -483,11 +601,11 @@ CROSSCHECK ARCHIVELOG ALL;
 
 ---
 
-## 11. Cenário prático 1 – recuperação de instância
+## 12. Cenário prático 1 – recuperação de instância
 
 Este é o cenário mais simples e ajuda a mostrar o conceito de recuperação automática de instância.
 
-## 11.1. Forçar parada abrupta
+## 12.1. Forçar parada abrupta
 
 Conectar como SYSDBA:
 
@@ -497,13 +615,13 @@ Conectar como `SYS` com papel `SYSDBA` no CloudBeaver.
 SHUTDOWN ABORT;
 ```
 
-## 11.2. Subir o banco novamente
+## 12.2. Subir o banco novamente
 
 ```sql
 STARTUP;
 ```
 
-## 11.3. Validar após o restart
+## 12.3. Validar após o restart
 
 ```sql
 SELECT instance_name, status FROM v$instance;
@@ -511,7 +629,7 @@ SELECT log_mode
 FROM v$database;
 ```
 
-## 11.4. Validar os dados da aplicação
+## 12.4. Validar os dados da aplicação
 
 Conectar no CloudBeaver como `app_rman`.
 
@@ -525,11 +643,11 @@ Nesse cenário, o Oracle executará recuperação de instância automaticamente,
 
 ---
 
-## 12. Cenário prático 2 – restore e recovery de um datafile/tablespace de laboratório
+## 13. Cenário prático 2 – restore e recovery de um datafile/tablespace de laboratório
 
 Este cenário deve ser executado em objeto próprio de laboratório, nunca em arquivo crítico do sistema.
 
-## 12.1. Descobrir o diretório dos datafiles da PDB
+## 13.1. Descobrir o diretório dos datafiles da PDB
 
 Conectar como SYSDBA:
 
@@ -543,7 +661,7 @@ SELECT file_name FROM dba_data_files ORDER BY file_id;
 Identificar o diretório usado pelos datafiles existentes.  
 Usaremos o mesmo diretório para o datafile do laboratório.
 
-## 12.2. Criar tablespace dedicada de laboratório
+## 13.2. Criar tablespace dedicada de laboratório
 
 Substituir o caminho abaixo conforme o diretório encontrado no passo anterior.
 
@@ -554,13 +672,13 @@ CREATE TABLESPACE ts_rman_lab
   AUTOEXTEND ON NEXT 10M MAXSIZE 500M;
 ```
 
-## 12.3. Atribuir cota ao usuário
+## 13.3. Atribuir cota ao usuário
 
 ```sql
 ALTER USER app_rman QUOTA UNLIMITED ON ts_rman_lab;
 ```
 
-## 12.4. Criar tabela na nova tablespace
+## 13.4. Criar tabela na nova tablespace
 
 Conectar como `app_rman`:
 
@@ -584,7 +702,7 @@ COMMIT;
 SELECT COUNT(*) FROM pedidos_ts_rman;
 ```
 
-## 12.5. Fazer backup da tablespace
+## 13.5. Fazer backup da tablespace
 
 Voltar ao RMAN:
 
@@ -596,7 +714,7 @@ rman target /
 BACKUP TABLESPACE ts_rman_lab TAG 'BKP_TS_RMAN_LAB';
 ```
 
-## 12.6. Identificar o datafile da tablespace
+## 13.6. Identificar o datafile da tablespace
 
 Conectar como SYSDBA:
 
@@ -611,7 +729,7 @@ WHERE tablespace_name = 'TS_RMAN_LAB';
 
 Anotar o `file_id` e o `file_name`.
 
-## 12.7. Simular falha de mídia
+## 13.7. Simular falha de mídia
 
 ### Passo 1 – colocar a tablespace offline
 
@@ -629,7 +747,7 @@ Dentro do container:
 mv /opt/oracle/oradata/FREE/FREEPDB1/ts_rman_lab01.dbf /opt/oracle/oradata/FREE/FREEPDB1/ts_rman_lab01.dbf.broken
 ```
 
-## 12.8. Restaurar e recuperar com RMAN
+## 13.8. Restaurar e recuperar com RMAN
 
 ```bash
 rman target /
@@ -649,7 +767,7 @@ RESTORE TABLESPACE ts_rman_lab;
 RECOVER TABLESPACE ts_rman_lab;
 ```
 
-## 12.9. Colocar a tablespace online novamente
+## 13.9. Colocar a tablespace online novamente
 
 Conectar como SYSDBA:
 
@@ -660,7 +778,7 @@ ALTER SESSION SET CONTAINER = FREEPDB1;
 ALTER TABLESPACE ts_rman_lab ONLINE;
 ```
 
-## 12.10. Validar a recuperação
+## 13.10. Validar a recuperação
 
 Conectar como `app_rman`:
 
@@ -673,7 +791,7 @@ SELECT * FROM pedidos_ts_rman FETCH FIRST 10 ROWS ONLY;
 
 ---
 
-## 13. Cenário prático 3 – recuperação de tablespace
+## 14. Cenário prático 3 – recuperação de tablespace
 
 Como o restore/recovery por tablespace já foi demonstrado no cenário anterior, podemos reforçar a ideia executando novamente os comandos em termos de tablespace, em vez de datafile específico.
 
@@ -690,7 +808,7 @@ Esse cenário é útil para mostrar que a recuperação pode ser orientada por u
 
 ---
 
-## 14. Blocos corrompidos – abordagem prática controlada
+## 15. Blocos corrompidos – abordagem prática controlada
 
 A recuperação de bloco corrompido existe no Oracle, mas a simulação intencional de corrupção em laboratório pode ser arriscada e desnecessariamente destrutiva.
 
@@ -700,7 +818,7 @@ Por isso, a abordagem recomendada neste módulo é:
 2. usar comandos de validação para detectar corrupção;
 3. mostrar a forma do comando de recuperação de bloco, sem necessariamente induzir corrupção real em aula.
 
-## 14.1. Validar buscando corrupção
+## 15.1. Validar buscando corrupção
 
 ```rman
 BACKUP VALIDATE DATABASE;
@@ -712,7 +830,7 @@ ou
 VALIDATE DATABASE;
 ```
 
-## 14.2. Consultar visões de corrupção
+## 15.2. Consultar visões de corrupção
 
 Conectar como SYSDBA:
 
@@ -722,7 +840,7 @@ Conectar como `SYS` com papel `SYSDBA` no CloudBeaver.
 SELECT * FROM v$database_block_corruption;
 ```
 
-## 14.3. Exemplo de comando de block recover
+## 15.3. Exemplo de comando de block recover
 
 ```rman
 BLOCKRECOVER DATAFILE <FILE_ID> BLOCK <BLOCK_NUMBER>;
@@ -734,28 +852,28 @@ Esse comando deverá ser apresentado como recurso avançado. Em laboratório sim
 
 ---
 
-## 15. Control file, SPFILE e metadados
+## 16. Control file, SPFILE e metadados
 
-## 15.1. Backup do control file
+## 16.1. Backup do control file
 
 ```rman
 BACKUP CURRENT CONTROLFILE;
 ```
 
-## 15.2. Backup do SPFILE
+## 16.2. Backup do SPFILE
 
 ```rman
 BACKUP SPFILE;
 ```
 
-## 15.3. Listar esses backups
+## 16.3. Listar esses backups
 
 ```rman
 LIST BACKUP OF CONTROLFILE;
 LIST BACKUP OF SPFILE;
 ```
 
-## 15.4. Restaurar apenas para validação conceitual
+## 16.4. Restaurar apenas para validação conceitual
 
 A restauração real de control file deverá ser tratada como tópico mais sensível. Em laboratório básico, faz mais sentido mostrar os comandos e discutir o papel desses arquivos.
 
@@ -775,21 +893,21 @@ Esses comandos não precisam ser executados em todas as turmas, mas devem consta
 
 ---
 
-## 16. Retenção e limpeza
+## 17. Retenção e limpeza
 
-## 16.1. Ver backups obsoletos
+## 17.1. Ver backups obsoletos
 
 ```rman
 REPORT OBSOLETE;
 ```
 
-## 16.2. Remover backups obsoletos
+## 17.2. Remover backups obsoletos
 
 ```rman
 DELETE NOPROMPT OBSOLETE;
 ```
 
-## 16.3. Listar backups após limpeza
+## 17.3. Listar backups após limpeza
 
 ```rman
 LIST BACKUP SUMMARY;
@@ -797,18 +915,18 @@ LIST BACKUP SUMMARY;
 
 ---
 
-## 17. Consultas úteis para observação do laboratório
+## 18. Consultas úteis para observação do laboratório
 
 Conectar como `SYS` com papel `SYSDBA` no CloudBeaver.
 
-## 17.1. Ver modo de arquivamento
+## 18.1. Ver modo de arquivamento
 
 ```sql
 SELECT log_mode
 FROM v$database;
 ```
 
-## 17.2. Ver parâmetros da FRA
+## 18.2. Ver parâmetros da FRA
 
 ```sql
 SELECT name, value
@@ -819,7 +937,7 @@ FROM v$parameter
 WHERE name = 'db_recovery_file_dest_size';
 ```
 
-## 17.3. Ver datafiles
+## 18.3. Ver datafiles
 
 ```sql
 SELECT file_id, file_name, tablespace_name, status
@@ -827,7 +945,7 @@ FROM dba_data_files
 ORDER BY file_id;
 ```
 
-## 17.4. Ver archived logs conhecidos
+## 18.4. Ver archived logs conhecidos
 
 ```sql
 SELECT sequence#, archived, status, first_time, next_time
@@ -835,7 +953,7 @@ FROM v$archived_log
 ORDER BY sequence#;
 ```
 
-## 17.5. Ver status das tablespaces
+## 18.5. Ver status das tablespaces
 
 ```sql
 SELECT tablespace_name, status
@@ -843,7 +961,7 @@ FROM dba_tablespaces
 ORDER BY tablespace_name;
 ```
 
-## 17.6. Ver sessões
+## 18.6. Ver sessões
 
 ```sql
 SELECT sid, serial#, username, status
@@ -852,7 +970,7 @@ WHERE username IS NOT NULL
 ORDER BY username;
 ```
 
-## 17.7. Diagnóstico enxuto da FRA
+## 18.7. Diagnóstico enxuto da FRA
 
 ```sql
 SELECT name,
@@ -868,7 +986,7 @@ FROM v$flash_recovery_area_usage
 ORDER BY file_type;
 ```
 
-## 17.8. Diagnóstico enxuto de archived logs e RMAN
+## 18.8. Diagnóstico enxuto de archived logs e RMAN
 
 ```sql
 SELECT sequence#,
@@ -889,7 +1007,7 @@ ORDER BY start_time DESC
 FETCH FIRST 10 ROWS ONLY;
 ```
 
-## 17.9. Validação final do módulo
+## 18.9. Validação final do módulo
 
 ```sql
 SELECT name,
@@ -906,7 +1024,7 @@ ORDER BY name;
 
 ---
 
-## 17.7. Exemplos adicionais de backup e recuperação
+## 18.10. Exemplos adicionais de backup e recuperação
 
 ### Backup com formato de arquivo definido
 
@@ -940,11 +1058,11 @@ RUN {
 
 Após PITR, validar a necessidade de abertura com `RESETLOGS` conforme o cenário e o estado do banco.
 
-## 18. Limpeza do laboratório
+## 19. Limpeza do laboratório
 
 Se quisermos repetir a prática do zero, poderemos remover os objetos criados.
 
-## 18.1. Remover tabela e tablespace de laboratório
+## 19.1. Remover tabela e tablespace de laboratório
 
 Conectar como SYSDBA:
 
@@ -964,7 +1082,7 @@ Conectar no CloudBeaver como `app_rman`.
 DROP TABLE pedidos_lab PURGE;
 ```
 
-## 18.2. Remover usuário
+## 19.2. Remover usuário
 
 Conectar como SYSDBA ou SYSTEM:
 
@@ -972,7 +1090,7 @@ Conectar como SYSDBA ou SYSTEM:
 DROP USER app_rman CASCADE;
 ```
 
-## 18.3. Opcional – voltar o banco para NOARCHIVELOG
+## 19.3. Opcional – voltar o banco para NOARCHIVELOG
 
 ### Atenção
 Esse passo não é obrigatório e só deverá ser executado se houver real necessidade de reverter o laboratório.
@@ -990,7 +1108,7 @@ FROM v$database;
 
 ---
 
-## 19. Resultado esperado da prática
+## 20. Resultado esperado da prática
 
 Ao final deste módulo, deveremos ter exercitado:
 
@@ -1008,7 +1126,7 @@ Ao final deste módulo, deveremos ter exercitado:
 
 ---
 
-## 20. Referências oficiais úteis
+## 21. Referências oficiais úteis
 
 ### Oracle Database Free em container
 - https://github.com/gvenzl/oci-oracle-free
