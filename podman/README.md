@@ -20,6 +20,7 @@ O objetivo aqui nao e apenas mostrar comandos soltos. A ideia e documentar como 
 | Exemplos Oracle com Podman | Subir Oracle por `podman run`, `Containerfile` e `podman compose` | `podman/oracle-exemplos.md` |
 | CRUD Go + Oracle | API HTTP em Go conectando no Oracle | `repo/go.oracle/v1` |
 | Catalogo Oracle | Varias versoes Oracle para laboratorio | `repo/oracle/versoes` |
+| ORDS com Podman | Expor Oracle via REST em `localhost:8181` | `repo/oracle/ords` |
 
 ## Visao Geral
 
@@ -206,6 +207,7 @@ Conteudo principal:
 - usar `Containerfile` na versao mais completa;
 - usar `podman compose` no `free-full-23ai`;
 - incluir o Oracle Enterprise 12c como exemplo adicional de imagem oficial;
+- subir `ORDS` em modo standalone para expor REST sobre o Oracle local;
 - entender portas, volumes, services e credenciais.
 
 ## Estrategia Didatica Usada Aqui

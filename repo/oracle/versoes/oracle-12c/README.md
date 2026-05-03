@@ -44,7 +44,7 @@ oracle-12c/
 - O motivo e simples: `1528` ja esta ocupada pela versao `oracle-xe-11g`.
 - A imagem 12c pode expor service ou SID de forma diferente conforme o bootstrap da imagem. Em laboratorio, valide no primeiro acesso qual nome a instancia registrou.
 
-## Credenciais Para DBeaver
+## Credenciais Para Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente
 
 - **Host:** `localhost`
 - **Port:** `1529`

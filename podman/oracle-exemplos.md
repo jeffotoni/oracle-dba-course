@@ -19,7 +19,7 @@ repo/oracle/versoes/README.md
 Para o curso, a sequência mais útil e:
 
 1. `podman run`
-2. conexão no CloudBeaver
+2. conexão em Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente
 3. queries de validação
 4. depois `Containerfile`
 5. por fim `podman compose`
@@ -163,7 +163,7 @@ Se o volume ja existir e o compose reclamar que ele nao foi criado por compose, 
 
 ## 5. Credenciais de Conexao
 
-### CloudBeaver local ou remoto
+### Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente no host
 
 ```txt
 Host: localhost
@@ -174,7 +174,7 @@ User: system
 Password: OraclePwd123
 ```
 
-### CloudBeaver em container
+### Cliente SQL em container
 
 ```txt
 Host: host.containers.internal

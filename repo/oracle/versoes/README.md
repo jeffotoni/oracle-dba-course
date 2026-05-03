@@ -122,7 +122,7 @@ Para o curso, a ordem mais útil costuma ser:
 
 1. começar por `free-full-23ai`;
 2. usar primeiro o comando manual com `podman run`;
-3. validar conexão no CloudBeaver;
+3. validar conexão em `Oracle SQL Developer`, `CloudBeaver`, `DBeaver` ou equivalente;
 4. só depois comparar outras versões;
 5. por fim explorar `Containerfile` e `podman compose`.
 
@@ -181,9 +181,9 @@ Comando manual direto:
 repo/oracle/versoes/free-full-23ai/manual/comandos.md
 ```
 
-## CloudBeaver E Clientes SQL
+## Oracle SQL Developer, CloudBeaver, DBeaver e clientes SQL
 
-Para CloudBeaver local, normalmente use:
+Para cliente SQL local, normalmente use:
 
 ```txt
 Host: localhost
@@ -195,7 +195,7 @@ User: system
 Password: senha da versão
 ```
 
-Para CloudBeaver em container, normalmente use:
+Para cliente SQL em container, normalmente use:
 
 ```txt
 Host: host.containers.internal

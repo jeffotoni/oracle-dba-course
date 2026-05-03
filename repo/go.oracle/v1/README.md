@@ -70,7 +70,7 @@ podman logs -f oracle-free-full-23ai
 
 ### 2. Criar Tabela
 
-Conecte no DBeaver ou SQL*Plus usando:
+Conecte em Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente usando:
 
 ```txt
 Host: localhost

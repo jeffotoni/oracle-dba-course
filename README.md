@@ -20,7 +20,7 @@ Também possui forte atuação em **bancos de dados** e **administração de dad
 
 ## ✦ Sobre este curso
 
-Este repositorio concentra o material do curso de Oracle Database Administration, do `Modulo 0` ao `Modulo 5`, com apoio pratico em Oracle Free / XE, Podman, CloudBeaver e exemplos de aplicacao em Go.
+Este repositorio concentra o material do curso de Oracle Database Administration, do `Modulo 0` ao `Modulo 5`, com apoio pratico em Oracle Free / XE, Podman, Oracle SQL Developer, CloudBeaver, DBeaver, ORDS e exemplos de aplicacao em Go.
 
 O objetivo nao e apenas apresentar teoria de Oracle. O curso foi organizado para que seja possivel:
 
@@ -28,6 +28,7 @@ O objetivo nao e apenas apresentar teoria de Oracle. O curso foi organizado para
 - subir o ambiente local;
 - conectar corretamente na instancia e na PDB;
 - criar usuario, schema, tabela e consultas;
+- expor objetos Oracle por HTTP e JSON com `ORDS`;
 - evoluir depois para administracao, seguranca, backup, tuning e multitenant.
 
 ## ✦ Público-alvo
@@ -53,7 +54,7 @@ A abordagem do curso e direta e progressiva:
 Para apoiar estudo, revisão e introdução aos temas do curso, também foram publicados materiais complementares no NotebookLM:
 
 - Curso Oracle Database Administration - INTRODUÇÃO - 1  
-  https://notebooklm.google.com/notebook/d690f188-b0c1-4a9d-b71f-1d19f8ead61e
+  https://notebooklm.google.com/notebook/b0d9512b-e112-43a1-b33f-15813ea5fca3
 
 - Curso Oracle Database Administration - modulo 0 - 2  
   https://notebooklm.google.com/notebook/d068ae4e-0845-475e-a502-bbfc167c1966
@@ -146,6 +147,11 @@ A trilha inicial recomendada e esta:
   - versao mais completa e didatica do laboratorio Oracle;
   - referencia principal para demonstracao.
 
+- `repo/oracle/ords/README.md`
+  - laboratorio de `ORDS` com `Podman`;
+  - exposicao REST do Oracle em `localhost:8181`;
+  - ponte entre banco, browser, JSON e ecossistema web Oracle.
+
 - `repo/go.oracle/v1/README.md`
   - exemplo simples de API em Go conectando ao Oracle;
   - CRUD HTTP para mostrar Oracle em uso real;
@@ -211,15 +217,16 @@ Instancia vs banco de dados, estruturas de memoria, processos de background, arq
 
 ### Modulo 2: Seguranca, Controle de Acesso e Carga de Dados
 
-Autenticacao, autorizacao, usuarios, perfis, privilegios, roles e ferramentas de carga.
+Autenticacao, autorizacao, usuarios, perfis, privilegios, roles, ferramentas de carga e `Data Pump`, com laboratorio complementar de `ORDS` em `repo/oracle/ords`.
 
 - [Modulo 2 - Conteudo teorico](./modulo2-material/02-teoria-modulo2.md)
 - [Modulo 2 - Guia pratico](./modulo2-material/02-pratica-modulo2.md)
 - [Modulo 2 - Laboratorio de carga](./modulo2-material/modulo2-seguranca-carga/)
+- [Laboratorio ORDS com Podman](./repo/oracle/ords/README.md)
 
 ### Modulo 3: Rotinas de Backup e Recuperacao
 
-Fundamentos de RMAN, backup fisico e logico, completo e incremental, e cenarios de recuperacao.
+Fundamentos de `expdp`, `impdp`, RMAN, backup fisico e logico, completo e incremental, e cenarios de restore e recovery.
 
 - [Modulo 3 - Conteudo teorico](./modulo3-material/03-teoria-modulo3.md)
 - [Modulo 3 - Guia pratico](./modulo3-material/03-pratica-modulo3.md)
@@ -233,7 +240,7 @@ Visoes dinamicas, identificacao de gargalos, locks, waits, Explain Plan e otimiz
 
 ### Modulo 5: Multitenant e Nuvem
 
-Arquitetura `CDB/PDB`, administracao de PDBs e visao geral de Oracle Cloud.
+Arquitetura Multitenant com `CDB/PDB`, administracao de PDBs e fundamentos de Oracle Cloud.
 
 - [Modulo 5 - Conteudo teorico](./modulo5-material/05-teoria-modulo5.md)
 - [Modulo 5 - Guia pratico](./modulo5-material/05-pratica-modulo5.md)
@@ -245,7 +252,7 @@ Para acompanhar as praticas, e recomendavel ter pelo menos:
 ### Software essencial
 
 - `Podman`
-- `CloudBeaver` ou outra IDE SQL equivalente
+- `Oracle SQL Developer`, `CloudBeaver`, `DBeaver` ou equivalente
 - `Git`
 - `Visual Studio Code`
 - `Go`, quando a aula entrar no exemplo de aplicacao
@@ -273,7 +280,7 @@ Fluxo minimo recomendado para a primeira pratica:
 
 ## Ferramentas Oracle e ecossistema SQL Developer
 
-Para o curso, a linha principal continua sendo `Podman + CloudBeaver`. Ainda assim, vale manter um mapa claro do ecossistema Oracle para IDE, modelagem, linha de comando, browser e REST.
+Para o curso, a linha principal continua sendo `Podman` com uma IDE SQL disponível. Ainda assim, vale manter um mapa claro do ecossistema Oracle para IDE, modelagem, linha de comando, browser e REST.
 
 | Perfil | Ferramenta | Uso principal | Link |
 | :--- | :--- | :--- | :--- |
@@ -285,9 +292,9 @@ Para o curso, a linha principal continua sendo `Podman + CloudBeaver`. Ainda ass
 | 🟥 REST e web | `ORDS` | expor o Oracle via REST e habilitar Database Actions / SQL Developer Web | [Página oficial](https://www.oracle.com/ords) |
 | 🟫 Browser admin | `Database Actions` | experiência web do ecossistema SQL Developer para desenvolvimento, administração e monitoramento | [Página oficial](https://www.oracle.com/database/sqldeveloper/technologies/db-actions/) |
 
-### Como esse ecossistema se encaixa no curso
+### Nosso ecossistema no curso
 
-- `CloudBeaver` segue como cliente SQL principal do laboratório.
+- `Oracle SQL Developer`, `CloudBeaver`, `DBeaver` ou equivalente podem ser usados como cliente SQL do laboratório.
 - `Oracle SQL Developer` entra bem como alternativa desktop oficial.
 - `Oracle SQL Developer for VS Code` faz sentido para quem quer concentrar banco e código na mesma IDE.
 - `SQL Developer Data Modeler` entra quando a aula avançar para modelagem e desenho de schema.
