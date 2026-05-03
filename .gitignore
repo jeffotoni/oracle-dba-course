@@ -1,6 +1,7 @@
 # Diretórios locais que não devem ir para o repositório
 professor/
 nao-precisa/
+complemento.txt
 
 # macOS
 .DS_Store
