@@ -124,6 +124,55 @@ No dia a dia de DBA e desenvolvedor, SQL costuma ser dividido assim:
 | **Join** | Operação que combina linhas entre tabelas relacionadas | Fundamental para relatórios e consultas de negócio |
 | **Transação** | Unidade lógica de trabalho com garantia ACID | Protege consistência em operações críticas |
 
+### 8.5 Ponte para a arquitetura Oracle
+
+Antes de entrar no laboratório, vale fixar uma leitura mental simples da arquitetura Oracle:
+
+```txt
+Oracle Instance
+ └── CDB
+      └── PDB
+           └── User
+                └── Schema
+                     └── Tables
+                          └── Rows
+```
+
+Essa leitura ajuda a ligar a teoria relacional ao ambiente real do curso:
+
+- a **instância** é o motor Oracle em execução;
+- o **CDB** é o container principal;
+- a **PDB** é o banco lógico de trabalho;
+- o **user** é a identidade de acesso;
+- o **schema** é o espaço lógico associado ao usuário;
+- as **tables** guardam os dados consultados e manipulados por SQL.
+
+Uma analogia simples ajuda bastante no início:
+
+- **CDB** = prédio;
+- **PDB** = empresa;
+- **user/schema** = sala;
+- **table** = armário;
+- **rows** = documentos.
+
+No laboratório do curso, essa hierarquia normalmente aparece assim:
+
+```txt
+FREE
+ └── FREEPDB1
+      └── USER / SCHEMA
+           └── TABLE
+```
+
+Em linguagem prática:
+
+- `FREE` representa a instância e o container principal;
+- `FREEPDB1` representa o banco lógico de trabalho;
+- em vez de pensar primeiro em `CREATE DATABASE`, o fluxo inicial é pensar em `CREATE USER`, `CREATE TABLE` e queries dentro da `FREEPDB1`;
+- `CREATE PLUGGABLE DATABASE` existe, mas entra como tema avançado, não como primeiro passo do laboratório.
+
+Essa ponte é importante porque prepara a entrada no `modulo0-guia-pratico`, onde essa estrutura passa a ser observada na IDE e nas queries do ambiente.
+
 ## 9. Edições Oracle e Decisão Inicial
 
 Antes de instalar Oracle, subir um container ou estimar custo, a primeira decisão é entender **qual edição ou serviço combina com o objetivo do projeto**.
