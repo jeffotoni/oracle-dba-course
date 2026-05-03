@@ -130,7 +130,7 @@ go run .
 
 ### Criar a tabela no Oracle
 
-Use o CloudBeaver e execute:
+Use Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente e execute:
 
 ```sql
 CREATE TABLE modelos_llms (
@@ -212,7 +212,7 @@ go test ./...
 ## 5. Sequência recomendada
 
 1. subir o Oracle pelo guia `podman/oracle-exemplos.md`;
-2. validar a conexão no CloudBeaver;
+2. validar a conexão em Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente;
 3. criar a tabela `modelos_llms`;
 4. rodar `repo/go.oracle/v1`;
 5. testar o CRUD com `curl`.
