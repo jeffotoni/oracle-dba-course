@@ -173,6 +173,53 @@ Por isso, no Oracle:
 - o campo depende do tipo de conexao selecionado;
 - a IDE simplifica a interface, mas o conceito correto continua sendo `SID` ou `Service Name`.
 
+### 1.6.1 Como saber o Nome SID a ser usado?
+
+FREE é o nome da instância do nosso exemplo / CDB dessa imagem Oracle Free.
+
+  - FREE = nome base da instância Oracle
+  - FREEPDB1 = nome da PDB criada dentro dela
+
+  A lógica costuma ser assim:
+
+  - nome da instância / CDB = base
+  - nome da PDB = base + sufixo de PDB
+
+  Exemplo neste laboratório:
+
+  - FREE → instância / CDB
+  - FREEPDB1 → primeira PDB desse ambiente
+
+  Em outras imagens isso muda. Exemplo clássico:
+
+  - XE → instância
+  - XEPDB1 → PDB
+
+```sql
+-- visualizar instancias
+SELECT instance_name,
+         host_name,
+         status
+  FROM v$instance;
+```
+
+```sql
+-- visualizar services
+SELECT name AS service_name
+  FROM v$services
+  ORDER BY name;
+```
+
+```sql
+-- Onde ver as PDBs
+SELECT con_id AS pdb_id,
+         name AS pdb_name,
+         open_mode AS status
+  FROM v$pdbs
+  ORDER BY con_id;
+  ```
+
+
 ### 1.7 Exemplos visuais
 
 Conexao por Service Name:
