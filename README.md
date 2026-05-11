@@ -59,6 +59,9 @@ Para apoiar estudo, revisão e introdução aos temas do curso, também foram pu
 - Curso Oracle Database Administration - modulo 0 - 2  
   https://notebooklm.google.com/notebook/d068ae4e-0845-475e-a502-bbfc167c1966
 
+- Curso Oracle Database Administration - aula 2 - modulo 1 e revisao do modulo 0  
+  https://notebooklm.google.com/notebook/7e0bb07d-c5b0-413d-9ed8-0df128e2ef32
+
 Esses materiais funcionam como apoio complementar ao conteúdo escrito, especialmente para revisão conceitual, preparação de aula e reforço dos tópicos do `modulo0-material` e `modulo0-guia-pratico`.
 
 ## Regra central do curso
