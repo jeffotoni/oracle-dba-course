@@ -99,10 +99,28 @@ ORDER BY name;
 ### Criar usuário
 
 ```sql
-CREATE USER jeff IDENTIFIED BY StrongPass123
+CREATE USER jeff 
+IDENTIFIED BY StrongPass123
 DEFAULT TABLESPACE USERS
 TEMPORARY TABLESPACE TEMP
 QUOTA UNLIMITED ON USERS;
+```
+
+### Conceder privilégios
+
+```sql
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO jeff;
+```
+
+### Conceder mais privilégios
+```sql
+GRANT CREATE SEQUENCE, CREATE PROCEDURE TO jeff;
+```
+
+### Remover usuário
+
+```sql
+DROP USER jeff CASCADE;
 ```
 
 ### Conceder privilégios
