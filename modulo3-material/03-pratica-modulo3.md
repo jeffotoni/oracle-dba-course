@@ -1,4 +1,4 @@
-# Módulo 3 – Prática  
+# Módulo 3 - Prática  
 ## Rotinas de Backup e Recuperação
 
 ## Visão geral
@@ -182,40 +182,40 @@ WHERE name = 'db_recovery_file_dest_size';
 
 ## 3.3. Habilitar ARCHIVELOG
 
-### Passo 1 – verificar o modo atual
+### Passo 1 - verificar o modo atual
 
 ```sql
 SELECT log_mode
 FROM v$database;
 ```
 
-### Passo 2 – reiniciar em MOUNT
+### Passo 2 - reiniciar em MOUNT
 
 ```sql
 SHUTDOWN IMMEDIATE;
 STARTUP MOUNT;
 ```
 
-### Passo 3 – habilitar o modo ARCHIVELOG
+### Passo 3 - habilitar o modo ARCHIVELOG
 
 ```sql
 ALTER DATABASE ARCHIVELOG;
 ```
 
-### Passo 4 – abrir o banco
+### Passo 4 - abrir o banco
 
 ```sql
 ALTER DATABASE OPEN;
 ```
 
-### Passo 5 – validar
+### Passo 5 - validar
 
 ```sql
 SELECT log_mode
 FROM v$database;
 ```
 
-### Passo 6 – validar na PDB
+### Passo 6 - validar na PDB
 
 ```sql
 ALTER SESSION SET CONTAINER = FREEPDB1;
@@ -283,7 +283,7 @@ SELECT MIN(id_pedido), MAX(id_pedido) FROM pedidos_lab;
 
 ---
 
-## 5. Bloco prático – dump lógico com Oracle Data Pump
+## 5. Bloco prático - dump lógico com Oracle Data Pump
 
 Antes de entrar no `RMAN`, vale fixar a camada de dump lógico do Oracle.
 
@@ -601,7 +601,7 @@ CROSSCHECK ARCHIVELOG ALL;
 
 ---
 
-## 12. Cenário prático 1 – recuperação de instância
+## 12. Cenário prático 1 - recuperação de instância
 
 Este é o cenário mais simples e ajuda a mostrar o conceito de recuperação automática de instância.
 
@@ -643,7 +643,7 @@ Nesse cenário, o Oracle executará recuperação de instância automaticamente,
 
 ---
 
-## 13. Cenário prático 2 – restore e recovery de um datafile/tablespace de laboratório
+## 13. Cenário prático 2 - restore e recovery de um datafile/tablespace de laboratório
 
 Este cenário deve ser executado em objeto próprio de laboratório, nunca em arquivo crítico do sistema.
 
@@ -731,15 +731,15 @@ Anotar o `file_id` e o `file_name`.
 
 ## 13.7. Simular falha de mídia
 
-### Passo 1 – colocar a tablespace offline
+### Passo 1 - colocar a tablespace offline
 
 ```sql
 ALTER TABLESPACE ts_rman_lab OFFLINE IMMEDIATE;
 ```
 
-### Passo 2 – encerrar a sessão administrativa atual
+### Passo 2 - encerrar a sessão administrativa atual
 
-### Passo 3 – renomear o datafile no sistema operacional
+### Passo 3 - renomear o datafile no sistema operacional
 
 Dentro do container:
 
@@ -791,7 +791,7 @@ SELECT * FROM pedidos_ts_rman FETCH FIRST 10 ROWS ONLY;
 
 ---
 
-## 14. Cenário prático 3 – recuperação de tablespace
+## 14. Cenário prático 3 - recuperação de tablespace
 
 Como o restore/recovery por tablespace já foi demonstrado no cenário anterior, podemos reforçar a ideia executando novamente os comandos em termos de tablespace, em vez de datafile específico.
 
@@ -808,7 +808,7 @@ Esse cenário é útil para mostrar que a recuperação pode ser orientada por u
 
 ---
 
-## 15. Blocos corrompidos – abordagem prática controlada
+## 15. Blocos corrompidos - abordagem prática controlada
 
 A recuperação de bloco corrompido existe no Oracle, mas a simulação intencional de corrupção em laboratório pode ser arriscada e desnecessariamente destrutiva.
 
@@ -1090,7 +1090,7 @@ Conectar como SYSDBA ou SYSTEM:
 DROP USER app_rman CASCADE;
 ```
 
-## 19.3. Opcional – voltar o banco para NOARCHIVELOG
+## 19.3. Opcional - voltar o banco para NOARCHIVELOG
 
 ### Atenção
 Esse passo não é obrigatório e só deverá ser executado se houver real necessidade de reverter o laboratório.
@@ -1131,7 +1131,7 @@ Ao final deste módulo, deveremos ter exercitado:
 ### Oracle Database Free em container
 - https://github.com/gvenzl/oci-oracle-free
 
-### RMAN – Getting Started
+### RMAN - Getting Started
 - https://docs.oracle.com/en/database/oracle/oracle-database/19/bradv/getting-started-rman.html
 
 ### RMAN Backup Concepts

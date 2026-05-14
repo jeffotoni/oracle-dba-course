@@ -1,4 +1,4 @@
-# Módulo 4 – Prática  
+# Módulo 4 - Prática  
 ## Monitoramento, Tuning e Otimização de Desempenho
 
 ## Visão geral
@@ -485,7 +485,7 @@ FROM TABLE(DBMS_XPLAN.DISPLAY_CURSOR('<SQL_ID>', NULL, 'ALLSTATS LAST'));
 
 ## 10. Comparação entre SQL ruim e SQL melhorado
 
-## 10.1. Exemplo de SQL ruim – função sobre a coluna filtrada
+## 10.1. Exemplo de SQL ruim - função sobre a coluna filtrada
 
 ```sql
 EXPLAIN PLAN FOR
@@ -621,7 +621,7 @@ INSERT INTO lock_lab VALUES (1, 'registro inicial');
 COMMIT;
 ```
 
-## 13.2. Sessão 1 – iniciar atualização sem commit
+## 13.2. Sessão 1 - iniciar atualização sem commit
 
 Abrir **Terminal 1**:
 
@@ -635,7 +635,7 @@ WHERE id = 1;
 
 **Não executar COMMIT ainda.**
 
-## 13.3. Sessão 2 – tentar atualizar o mesmo registro
+## 13.3. Sessão 2 - tentar atualizar o mesmo registro
 
 Abrir **Terminal 2**:
 
@@ -649,7 +649,7 @@ WHERE id = 1;
 
 Essa segunda sessão deverá ficar aguardando.
 
-## 13.4. Sessão administrativa – observar o lock
+## 13.4. Sessão administrativa - observar o lock
 
 Abrir **Terminal 3**:
 
@@ -784,7 +784,7 @@ Esse passo ajuda a mostrar como o alert log complementa o diagnóstico de desemp
 
 ---
 
-## 17. Bloco opcional – AWR, ADDM e SQL Tuning Advisor
+## 17. Bloco opcional - AWR, ADDM e SQL Tuning Advisor
 
 Este bloco deverá ser tratado como **opcional** no laboratório com Oracle Free em Podman.
 

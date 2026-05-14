@@ -1,4 +1,4 @@
-# Grupo 2 — Cache Simples Key-Value com Oracle
+# Grupo 2 - Cache Simples Key-Value com Oracle
 
 ## Tema
 
@@ -139,7 +139,7 @@ ORDER BY created_at DESC;
 
 O grupo pode escolher uma destas opções:
 
-### Opção A — API simples
+### Opção A - API simples
 
 Foco em:
 
@@ -153,7 +153,7 @@ Com teste via:
 - Postman
 - Insomnia
 
-### Opção B — Tela web pequena
+### Opção B - Tela web pequena
 
 Uma tela com:
 
@@ -162,7 +162,7 @@ Uma tela com:
 - tempo de expiração opcional;
 - botões de salvar, buscar e remover.
 
-### Opção C — Script + explicação
+### Opção C - Script + explicação
 
 Se o grupo quiser manter tudo mais enxuto:
 

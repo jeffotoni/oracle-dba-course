@@ -1,4 +1,4 @@
-# Módulo 5 – Oracle 12c Multitenant e Ambiente de Nuvem
+# Módulo 5 - Oracle 12c Multitenant e Ambiente de Nuvem
 
 ## Visão geral
 
@@ -85,8 +85,8 @@ Com o crescimento do número de sistemas corporativos, tornou-se importante enco
 
 O Oracle Database 12c, lançado originalmente em 2013, destacou-se justamente por introduzir de forma mais estruturada a arquitetura **Multitenant**, baseada em:
 
-- **CDB** – Container Database;
-- **PDB** – Pluggable Database.
+- **CDB** - Container Database;
+- **PDB** - Pluggable Database.
 
 Essa mudança foi estratégica porque aproximou o Oracle de modelos mais adequados à consolidação e à nuvem.
 
@@ -151,7 +151,7 @@ Agora: 1 instância Oracle -> vários bancos lógicos
 
 ---
 
-# 3. CDB – Container Database
+# 3. CDB - Container Database
 
 ## 3.1. O que é
 
@@ -179,7 +179,7 @@ Ao administrar o CDB, deveríamos pensar em:
 
 ---
 
-# 4. PDB – Pluggable Database
+# 4. PDB - Pluggable Database
 
 ## 4.1. O que é
 

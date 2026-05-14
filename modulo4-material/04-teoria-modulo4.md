@@ -1,4 +1,4 @@
-# Módulo 4 – Monitoramento, Tuning e Otimização de Desempenho
+# Módulo 4 - Monitoramento, Tuning e Otimização de Desempenho
 
 ## Visão geral
 

@@ -1,4 +1,4 @@
-# Grupo 1 — Dashboard Simples de Estatísticas Oracle
+# Grupo 1 - Dashboard Simples de Estatísticas Oracle
 
 ## Tema
 
@@ -156,7 +156,7 @@ FETCH FIRST 10 ROWS ONLY;
 
 O grupo pode escolher uma destas opções:
 
-### Opção A — Dashboard web simples
+### Opção A - Dashboard web simples
 
 Uma tela com:
 
@@ -164,12 +164,12 @@ Uma tela com:
 - tabelas simples;
 - refresh automático.
 
-### Opção B — API + cliente
+### Opção B - API + cliente
 
 - backend expondo JSON;
 - frontend simples consumindo a API.
 
-### Opção C — Script + visualização simples
+### Opção C - Script + visualização simples
 
 - script de coleta;
 - exibição em terminal ou página simples;
