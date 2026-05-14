@@ -1,0 +1,352 @@
+{
+  "info": {
+    "_postman_id": "e32b5c6f-ords-aula5-especial-collection",
+    "name": "Aula 5 Especial - Oracle ORDS",
+    "description": "Coleção Postman nativa para testar os endpoints ORDS da aula 5 especial.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8181/ords/jeff"
+    },
+    {
+      "key": "model_id",
+      "value": "1"
+    },
+    {
+      "key": "client_id",
+      "value": "1"
+    },
+    {
+      "key": "request_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "LLM Models",
+      "item": [
+        {
+          "name": "GET /llm_models/",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/llm_models/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "llm_models",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /llm_models/1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/llm_models/{{model_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "llm_models",
+                "{{model_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /llm_models/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"llama-3.1-70b\",\n  \"provider\": \"meta\",\n  \"input_token_limit\": 128000,\n  \"output_token_limit\": 8192,\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/llm_models/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "llm_models",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /llm_models/1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"gpt-4.1-updated\",\n  \"provider\": \"openai\",\n  \"input_token_limit\": 128000,\n  \"output_token_limit\": 32768,\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/llm_models/{{model_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "llm_models",
+                "{{model_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /llm_models/1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/llm_models/{{model_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "llm_models",
+                "{{model_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API Clients",
+      "item": [
+        {
+          "name": "GET /api_clients/",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api_clients/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_clients",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api_clients/1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api_clients/{{client_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_clients",
+                "{{client_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api_clients/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Time Analytics\",\n  \"app_name\": \"analytics-dashboard\",\n  \"email_responsavel\": \"analytics@empresa.com\",\n  \"api_key\": \"KEY-ANALYTICS-004\",\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api_clients/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_clients",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api_clients/1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Time Produto Atualizado\",\n  \"app_name\": \"portal-web\",\n  \"email_responsavel\": \"produto-api@empresa.com\",\n  \"api_key\": \"KEY-PORTAL-001-NEW\",\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api_clients/{{client_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_clients",
+                "{{client_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api_clients/1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api_clients/{{client_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_clients",
+                "{{client_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API Requests",
+      "item": [
+        {
+          "name": "GET /api_requests/",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api_requests/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_requests",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api_requests/1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api_requests/{{request_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_requests",
+                "{{request_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api_requests/",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_id\": 1,\n  \"model_id\": 2,\n  \"prompt_chars\": 700,\n  \"response_chars\": 1800,\n  \"status_code\": 200,\n  \"latency_ms\": 640\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api_requests/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_requests",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api_requests/1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_id\": 2,\n  \"model_id\": 3,\n  \"prompt_chars\": 910,\n  \"response_chars\": 2510,\n  \"status_code\": 200,\n  \"latency_ms\": 780\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api_requests/{{request_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_requests",
+                "{{request_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api_requests/1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api_requests/{{request_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api_requests",
+                "{{request_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

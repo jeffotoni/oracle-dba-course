@@ -1,6 +1,6 @@
-# Revisão do Módulo 2
+# Revisão do Módulo 2 - aula 3
 
-> Resumo organizado do módulo 2: segurança, controle de acesso, auditoria e carga de dados em volume no Oracle.
+> Revisão do módulo 2: segurança, controle de acesso, auditoria e carga de dados em volume no Oracle.
 
 ## Ideia central do módulo
 
@@ -241,6 +241,56 @@ Ler arquivo com SQL = tabela externa
 Mover objetos e dados Oracle = Data Pump
 ```
 
+## 9.5. Ponto operacional importante
+
+No módulo 2, parte da prática deixa de ser apenas SQL em cliente gráfico.
+
+Isso acontece porque algumas atividades dependem de **binários nativos do próprio Oracle**, como:
+
+- `sqlldr`
+- `expdp`
+- `impdp`
+- `sqlplus`
+
+Esses binários normalmente são executados **dentro do container Oracle**, porque:
+
+- já fazem parte do ambiente Oracle;
+- dependem da instalação interna do banco;
+- trabalham melhor no mesmo filesystem onde estão os arquivos de carga e dump;
+- reduzem atrito com configuração no host.
+
+### Regra prática
+
+```txt
+SQL administrativo e consultas = Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente
+Binários nativos do Oracle = terminal dentro do container
+```
+
+## 9.6. Entrar no container Oracle
+
+Quando a prática exigir ferramentas nativas, o fluxo normal é entrar no container:
+
+```bash
+podman exec -it oracle-free bash
+```
+
+### O que isso faz
+
+- abre um shell dentro do container Oracle;
+- permite usar utilitários do próprio banco;
+- dá acesso aos diretórios internos usados no laboratório.
+
+### Validação rápida
+
+```bash
+which sqlplus
+which sqlldr
+which expdp
+which impdp
+```
+
+Se esses comandos responderem com caminho válido, o ambiente está pronto para a prática operacional.
+
 ## 10. Segurança e carga andam juntas
 
 Carga de dados não é assunto separado de segurança.
@@ -326,7 +376,33 @@ FROM dba_directories
 ORDER BY directory_name;
 ```
 
+### Ver schema atual
+
+```sql
+SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') AS current_schema
+FROM dual;
+```
+
+### Ver container atual
+
+```sql
+SELECT SYS_CONTEXT('USERENV', 'CON_NAME') AS current_container
+FROM dual;
+```
+
 ## 12. Comandos que valem aparecer na revisão
+
+## 12.1. Fluxo prático mínimo do módulo
+
+```txt
+1. Entrar com usuário administrativo
+2. Criar perfil, usuários e roles
+3. Criar tabela de aplicação
+4. Conceder privilégios corretos
+5. Validar acesso com usuários diferentes
+6. Auditar ações relevantes
+7. Usar binários nativos do Oracle para carga e dump
+```
 
 ### Criar perfil
 
@@ -365,11 +441,80 @@ CREATE AUDIT POLICY pol_logon_m2 ACTIONS LOGON;
 AUDIT POLICY pol_logon_m2;
 ```
 
+### Entrar no container
+
+```bash
+podman exec -it oracle-free bash
+```
+
+### Conectar com SQL*Plus dentro do container
+
+```bash
+sqlplus system/Senha123@//localhost:1521/FREEPDB1
+```
+
+### O que isso resolve
+
+- valida conexão pelo cliente nativo Oracle;
+- ajuda a confirmar usuário, serviço e acessibilidade;
+- prepara o ambiente para `sqlldr`, `expdp` e `impdp`.
+
 ### SQL*Loader
 
 ```bash
 sqlldr app_owner/AppOwner123@//localhost:1521/FREEPDB1 \
   control=/opt/oracle/labdata/produtos.ctl
+```
+
+### O que o SQL*Loader faz
+
+- lê arquivo externo;
+- interpreta o arquivo de controle `.ctl`;
+- carrega dados em tabela Oracle;
+- gera log técnico da operação.
+
+### Validação da carga
+
+```sql
+SELECT *
+FROM produtos_carga
+ORDER BY id_produto;
+```
+
+### Tabela externa
+
+```sql
+CREATE OR REPLACE DIRECTORY lab_dir AS '/opt/oracle/labdata';
+```
+
+```sql
+CREATE TABLE ext_produtos (
+  id_produto      NUMBER,
+  nome_produto    VARCHAR2(100),
+  categoria       VARCHAR2(50),
+  preco           NUMBER(10,2)
+)
+ORGANIZATION EXTERNAL
+(
+  TYPE ORACLE_LOADER
+  DEFAULT DIRECTORY lab_dir
+  LOCATION ('produtos.csv')
+)
+REJECT LIMIT UNLIMITED;
+```
+
+### O que a tabela externa faz
+
+- não carrega imediatamente para tabela interna;
+- permite validar arquivo com SQL;
+- ajuda a separar leitura, validação e carga definitiva.
+
+### Validação da leitura externa
+
+```sql
+SELECT *
+FROM ext_produtos
+ORDER BY id_produto;
 ```
 
 ### Data Pump
@@ -381,6 +526,46 @@ expdp system/Senha123@//localhost:1521/FREEPDB1 \
   SCHEMAS=APP_OWNER
 ```
 
+### O que o Data Pump faz
+
+- exporta dados e metadados Oracle;
+- gera dump lógico;
+- ajuda em migração, cópia e refresh de ambientes.
+
+### Validar arquivo gerado no container
+
+```bash
+ls -lah /opt/oracle/labdata
+```
+
+### Copiar dump para o host
+
+```bash
+podman cp oracle-free:/opt/oracle/labdata/app_owner_m2.dmp .
+```
+
+### Importar com remapeamento
+
+```bash
+impdp system/Senha123@//localhost:1521/FREEPDB1 \
+  DIRECTORY=dpump_dir \
+  DUMPFILE=app_owner_m2.dmp \
+  REMAP_SCHEMA=APP_OWNER:APP_CLONE
+```
+
+### Validação do import
+
+```sql
+SELECT table_name
+FROM user_tables
+ORDER BY table_name;
+```
+
+```sql
+SELECT COUNT(*)
+FROM produtos;
+```
+
 ## 13. Resultado esperado
 
 Ao final da revisão, o que precisa ficar claro é:
@@ -389,6 +574,7 @@ Ao final da revisão, o que precisa ficar claro é:
 - usuário, schema, privilégio, role e perfil se conectam;
 - auditoria existe para registrar e provar ações;
 - carga em volume precisa de critério e ferramenta correta;
+- parte da prática usa binários nativos do Oracle executados dentro do container;
 - SQL*Loader, tabela externa e Data Pump atendem cenários diferentes.
 
 ## Scripts originais do módulo

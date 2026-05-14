@@ -1,4 +1,4 @@
-# Revisão do Módulo 0
+# Revisão do Módulo 0 - aula 1
 
 > Resumo curto da primeira aula: conexão Oracle, `SID`, `Service Name`, `CDB`, `PDB` e scripts SQL essenciais para começar.
 

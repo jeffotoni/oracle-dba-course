@@ -1,6 +1,6 @@
-# Revisão do Módulo 1
+# Revisão do Módulo 1 - aula 2
 
-> Resumo organizado do módulo 1: arquitetura Oracle, instância, banco, memória, processos, arquivos, parâmetros e dicionário de dados.
+> Revisão do módulo 1: Arquitetura Oracle, instância, banco, memória, processos, arquivos, parâmetros e dicionário de dados.
 
 **Organização:**
   
