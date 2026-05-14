@@ -6,7 +6,7 @@
 
 Nesta aula, o foco é mostrar uma API real conectando aplicação e banco de dados.
 
-O objetivo é:
+O objetivo é:v
 
 - subir uma versão Oracle com `Podman`;
 - criar a tabela do laboratório;
@@ -298,7 +298,6 @@ Use:
 
 - `curl`
 - `HTTPie`
-- `wget`
 
 ### Cliente de API
 
@@ -306,7 +305,6 @@ Use:
 
 - `Insomnia`
 - `Postman`
-- `Bruno`
 
 ### Cliente SQL
 
