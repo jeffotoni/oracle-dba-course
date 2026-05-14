@@ -1,4 +1,4 @@
-# Módulo 2 – Prática  
+# Módulo 2 - Prática  
 ## Segurança, Controle de Acesso e Carga de Dados em Volume
 
 ## Visão geral
@@ -129,7 +129,7 @@ ORDER BY con_id;
 
 ---
 
-## 2. Bloco prático – criação de perfis, usuários, privilégios e roles
+## 2. Bloco prático - criação de perfis, usuários, privilégios e roles
 
 ## 2.1. Entrar como administrador
 
@@ -211,7 +211,7 @@ GRANT role_carga_m2 TO operador_carga;
 
 ---
 
-## 3. Bloco prático – criação de objetos no schema da aplicação
+## 3. Bloco prático - criação de objetos no schema da aplicação
 
 ## 3.1. Conectar como APP_OWNER
 
@@ -251,7 +251,7 @@ GRANT SELECT, INSERT ON app_owner.produtos TO role_carga_m2;
 
 ---
 
-## 4. Bloco prático – consultas de segurança e controle de acesso
+## 4. Bloco prático - consultas de segurança e controle de acesso
 
 ## 4.1. Ver usuários existentes
 
@@ -324,7 +324,7 @@ COMMIT;
 
 ---
 
-## 5. Bloco prático – auditoria e rastreabilidade
+## 5. Bloco prático - auditoria e rastreabilidade
 
 ## 5.1. Criar uma política simples de auditoria de logon
 
@@ -383,7 +383,7 @@ NOAUDIT POLICY pol_logon_m2;
 
 ---
 
-## 6. Bloco prático – carga de dados com SQL*Loader
+## 6. Bloco prático - carga de dados com SQL*Loader
 
 ## 6.1. Criar arquivo CSV em `labdata/produtos.csv`
 
@@ -441,7 +441,7 @@ SELECT * FROM produtos_carga ORDER BY id_produto;
 
 ---
 
-## 7. Bloco prático – leitura com tabelas externas
+## 7. Bloco prático - leitura com tabelas externas
 
 ## 7.1. Criar diretório lógico no banco
 
@@ -510,7 +510,7 @@ SELECT * FROM produtos_ext_import ORDER BY id_produto;
 
 ---
 
-## 8. Bloco prático – Oracle Data Pump
+## 8. Bloco prático - Oracle Data Pump
 
 Neste módulo, o Data Pump aparece como ferramenta de exportação e importação lógica ligada a carga, cópia e movimentação de dados.
 

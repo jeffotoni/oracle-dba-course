@@ -99,10 +99,10 @@ PGA = privada por processo
 
 Para revisão, estes nomes já resolvem bem:
 
-- `DBWn` — grava blocos alterados em datafiles
-- `LGWR` — grava redo logs
-- `SMON` — recuperação e manutenção
-- `PMON` — limpeza e suporte operacional
+- `DBWn` - grava blocos alterados em datafiles
+- `LGWR` - grava redo logs
+- `SMON` - recuperação e manutenção
+- `PMON` - limpeza e suporte operacional
 
 ## Arquivos físicos essenciais
 

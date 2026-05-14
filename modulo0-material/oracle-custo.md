@@ -123,10 +123,10 @@ A matriz abaixo é apenas educacional. Os valores são faixas amplas para racioc
 
 | Cenário Oracle | Carga estimada | Usuários simultâneos aprox. | Edição Oracle | Estratégia de escala | Infra típica Linux | Armazenamento | Custo mensal estimado USD | Perfil |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Médio porte** | 50k–150k TPM | 2k–8k | SE2 / EE | Vertical | 8–16 vCPU, 64–128 GB RAM | 1 TB SSD/NVMe | US$ 2k–8k | ERP, SaaS regional |
-| **Grande porte** | 150k–500k TPM | 8k–40k | EE | Vertical + read replicas / Data Guard | 32–64 vCPU, 256–512 GB RAM | 1–4 TB NVMe + backup | US$ 8k–30k | E-commerce nacional, APIs pesadas |
-| **Enterprise nacional** | 500k–2M TPM | 40k–150k | EE + RAC | Horizontal com RAC + vertical | 3–6 nós, cada nó 64–128 vCPU, 512 GB–1 TB RAM | SAN/NVMe distribuído | US$ 30k–120k+ | Bancos, telecom, missão crítica |
-| **Missão crítica global** | 2M–10M+ TPM | 150k–1M+ | EE + RAC + Exadata | Horizontal massivo | Exadata / múltiplos clusters | Storage especializado + backup avançado | Muito variável / contrato enterprise | Grandes plataformas globais |
+| **Médio porte** | 50k-150k TPM | 2k-8k | SE2 / EE | Vertical | 8-16 vCPU, 64-128 GB RAM | 1 TB SSD/NVMe | US$ 2k-8k | ERP, SaaS regional |
+| **Grande porte** | 150k-500k TPM | 8k-40k | EE | Vertical + read replicas / Data Guard | 32-64 vCPU, 256-512 GB RAM | 1-4 TB NVMe + backup | US$ 8k-30k | E-commerce nacional, APIs pesadas |
+| **Enterprise nacional** | 500k-2M TPM | 40k-150k | EE + RAC | Horizontal com RAC + vertical | 3-6 nós, cada nó 64-128 vCPU, 512 GB-1 TB RAM | SAN/NVMe distribuído | US$ 30k-120k+ | Bancos, telecom, missão crítica |
+| **Missão crítica global** | 2M-10M+ TPM | 150k-1M+ | EE + RAC + Exadata | Horizontal massivo | Exadata / múltiplos clusters | Storage especializado + backup avançado | Muito variável / contrato enterprise | Grandes plataformas globais |
 
 Notas:
 - `TPM` significa `Transactions Per Minute`, ou transações por minuto.
@@ -139,12 +139,12 @@ Em Oracle, a decisão de escala normalmente começa com **scale-up vertical** e 
 
 | Modelo de escala | Estrutura | Exemplo de hardware Linux | Escalabilidade | Vantagens | Desvantagens | Faixa típica de carga | Complexidade |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Vertical básico** | 1 servidor Oracle único | 16–32 vCPU, 64–128 GB RAM, SSD/NVMe | Aumenta CPU/RAM no mesmo host | Simples, menor custo inicial, fácil administrar | SPOF sem HA nativo, limite físico do servidor | Pequenas e médias cargas | Baixa |
-| **Vertical robusto** | 1 servidor high-end + storage premium | 64–128 vCPU, 256–1024 GB RAM, NVMe/ASM | Scale-up agressivo | Excelente desempenho local, baixa latência | Muito dependente de uma máquina, upgrades caros | Alta carga transacional | Média |
+| **Vertical básico** | 1 servidor Oracle único | 16-32 vCPU, 64-128 GB RAM, SSD/NVMe | Aumenta CPU/RAM no mesmo host | Simples, menor custo inicial, fácil administrar | SPOF sem HA nativo, limite físico do servidor | Pequenas e médias cargas | Baixa |
+| **Vertical robusto** | 1 servidor high-end + storage premium | 64-128 vCPU, 256-1024 GB RAM, NVMe/ASM | Scale-up agressivo | Excelente desempenho local, baixa latência | Muito dependente de uma máquina, upgrades caros | Alta carga transacional | Média |
 | **Vertical + Standby** | Primário + standby com Data Guard | 2 servidores equivalentes | Escala principal vertical, HA por réplica | Disaster recovery, failover, segurança | Standby não escala escrita primária | Alta produção corporativa | Média/Alta |
 | **Vertical + Active Data Guard** | Primário + réplicas de leitura | Primário robusto + nós de leitura | Escrita vertical, leitura parcialmente horizontal | Escala leitura, relatórios e DR | Escritas continuam centralizadas | Apps com leitura intensa | Alta |
-| **RAC 2 nós** | 2 servidores compartilhando storage | 2x 32–64 vCPU, 256–512 GB RAM | Horizontal real | Alta disponibilidade, balanceamento | Licença alta, interconnect crítico | Grande porte | Alta |
-| **RAC 4–8 nós** | Cluster RAC enterprise | 4–8 nós + SAN/ASM | Horizontal avançado | Alta resiliência, escala enterprise | Custo e administração muito altos | Bancos, telecom | Muito alta |
+| **RAC 2 nós** | 2 servidores compartilhando storage | 2x 32-64 vCPU, 256-512 GB RAM | Horizontal real | Alta disponibilidade, balanceamento | Licença alta, interconnect crítico | Grande porte | Alta |
+| **RAC 4-8 nós** | Cluster RAC enterprise | 4-8 nós + SAN/ASM | Horizontal avançado | Alta resiliência, escala enterprise | Custo e administração muito altos | Bancos, telecom | Muito alta |
 | **RAC + Exadata** | Oracle engineered systems | Exadata racks | Horizontal massivo + otimizações Oracle | Performance extrema, compressão, tuning integrado | Custo extremo | Missão crítica global | Extremamente alta |
 | **Oracle Sharding** | Particionamento distribuído por região/domínio | Múltiplos clusters dedicados | Horizontal distribuído | Escala geográfica, segmentação por domínio | Arquitetura complexa | SaaS global / multi-região | Muito alta |
 

@@ -1,4 +1,4 @@
-# Módulo 5 – Prática  
+# Módulo 5 - Prática  
 ## Oracle 12c Multitenant e Ambiente de Nuvem
 
 ## Visão geral
@@ -76,7 +76,7 @@ modulo5-multitenant-nuvem/
 
 ## 2. Subida do ambiente com Podman
 
-## 2.1. Opção simples – usar apenas a PDB padrão FREEPDB1
+## 2.1. Opção simples - usar apenas a PDB padrão FREEPDB1
 
 ```yaml
 services:
@@ -129,7 +129,7 @@ Conectar como `SYS` com papel `SYSDBA` no CloudBeaver.
 
 ---
 
-## 3. Bloco prático – identificar o ambiente multitenant
+## 3. Bloco prático - identificar o ambiente multitenant
 
 Antes das queries, vale manter este mapa mental:
 
@@ -233,7 +233,7 @@ Leitura prática:
 
 ---
 
-## 4. Bloco prático – alternar entre CDB e PDB
+## 4. Bloco prático - alternar entre CDB e PDB
 
 ## 4.1. Ver container atual
 
@@ -275,7 +275,7 @@ Deveríamos reforçar que várias operações administrativas dependem do escopo
 
 ---
 
-## 5. Bloco prático – abertura, fechamento e SAVE STATE de PDB
+## 5. Bloco prático - abertura, fechamento e SAVE STATE de PDB
 
 ## 5.1. Ver estado atual das PDBs
 
@@ -341,7 +341,7 @@ Esse bloco é importante para mostrar que a administração de PDB inclui:
 
 ---
 
-## 6. Bloco prático – criação de usuários em contexto multitenant
+## 6. Bloco prático - criação de usuários em contexto multitenant
 
 Este bloco deverá mostrar a diferença entre usuário comum e usuário local, em nível introdutório.
 
@@ -408,7 +408,7 @@ Este bloco é importante para mostrar:
 
 ---
 
-## 7. Bloco prático – objetos em PDB
+## 7. Bloco prático - objetos em PDB
 
 ## 7.1. Conectar como usuário local
 
@@ -457,7 +457,7 @@ Este bloco reforça que a PDB funciona como ambiente lógico próprio, com seus 
 
 ---
 
-## 8. Bloco prático – visões CDB e DBA
+## 8. Bloco prático - visões CDB e DBA
 
 Um dos objetivos do laboratório é mostrar como a administração em multitenant amplia a necessidade de leitura correta do escopo.
 
@@ -512,7 +512,7 @@ Esse bloco é útil para mostrar que o administrador em multitenant precisa ente
 
 ---
 
-## 9. Bloco prático – criação opcional de PDB por SQL
+## 9. Bloco prático - criação opcional de PDB por SQL
 
 > Este bloco deve ser tratado como opcional. Em laboratório simples, a prática principal poderá ser feita apenas com `FREEPDB1` e, se configurada, com `LABPDB1` criada pela variável de ambiente.
 
@@ -543,7 +543,7 @@ Esse comando deverá ser ajustado ao layout real dos arquivos do ambiente. Em la
 
 ---
 
-## 10. Bloco prático – clone de PDB (visão introdutória)
+## 10. Bloco prático - clone de PDB (visão introdutória)
 
 O clone é um dos recursos mais interessantes da arquitetura multitenant.
 
@@ -572,7 +572,7 @@ O clone é especialmente útil para:
 
 ---
 
-## 11. Bloco prático – plug e unplug (visão conceitual)
+## 11. Bloco prático - plug e unplug (visão conceitual)
 
 Plug e unplug são operações avançadas de ciclo de vida.
 
@@ -603,7 +603,7 @@ Mas não é obrigatório executar unplug/plug em toda turma, porque é uma opera
 
 ---
 
-## 12. Bloco prático – conexão direta em PDB via cliente
+## 12. Bloco prático - conexão direta em PDB via cliente
 
 ## 12.1. Conectar no CloudBeaver
 
@@ -625,7 +625,7 @@ Esse passo ajuda a mostrar que, para a aplicação e para o cliente SQL, a PDB p
 
 ---
 
-## 13. Bloco prático – observação do ambiente e reinício
+## 13. Bloco prático - observação do ambiente e reinício
 
 ## 13.1. Ver o estado salvo da PDB
 
@@ -663,7 +663,7 @@ Esse passo ajuda a mostrar o valor administrativo do `SAVE STATE`.
 
 ---
 
-## 14. Bloco final – OCI, DBaaS e Autonomous na prática do curso
+## 14. Bloco final - OCI, DBaaS e Autonomous na prática do curso
 
 Como o laboratório principal está em Podman local, a parte de nuvem deverá ser tratada de forma contextual e opcional, a menos que exista uma conta OCI disponível.
 
@@ -839,7 +839,7 @@ Ao final deste módulo, deveremos ter exercitado:
 ### Creating PDBs and Application Containers
 - https://docs.oracle.com/en/database/oracle/oracle-database/23/multi/creating-pdbs.html
 
-### OCI – Create a Pluggable Database
+### OCI - Create a Pluggable Database
 - https://docs.oracle.com/en/cloud/paas/base-database/create-pdb/index.html
 
 ### Oracle Database and Cloud

@@ -1,4 +1,4 @@
-# Módulo 3 – Rotinas de Backup e Recuperação
+# Módulo 3 - Rotinas de Backup e Recuperação
 
 ## Visão geral
 

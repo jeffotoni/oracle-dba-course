@@ -1,4 +1,4 @@
-# Módulo 2 – Segurança, Controle de Acesso e Carga de Dados em Volume
+# Módulo 2 - Segurança, Controle de Acesso e Carga de Dados em Volume
 
 ## Visão geral
 
