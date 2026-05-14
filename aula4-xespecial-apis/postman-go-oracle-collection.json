@@ -1,0 +1,199 @@
+{
+  "info": {
+    "_postman_id": "8b3d4f29-dfa4-4bde-8db4-aula4-go-oracle",
+    "name": "Aula 4 Especial - Go + Oracle API",
+    "description": "Coleção Postman nativa para testar a API do projeto repo/go.oracle/v1.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "llm_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "LLM",
+      "item": [
+        {
+          "name": "GET /api/v1/llm",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/llm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "llm"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/llm?id=1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/llm?id={{llm_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "llm"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{llm_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/llm - OpenAI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"gpt-5.4\",\n  \"input_token_limit\": 200000,\n  \"output_token_limit\": 128000,\n  \"provider\": \"openai\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/llm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "llm"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /api/v1/llm - Anthropic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"claude-3.7-sonnet\",\n  \"input_token_limit\": 200000,\n  \"output_token_limit\": 64000,\n  \"provider\": \"anthropic\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/llm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "llm"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/v1/llm?id=1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"gpt-5.4-mini\",\n  \"input_token_limit\": 128000,\n  \"output_token_limit\": 64000,\n  \"provider\": \"openai\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/llm?id={{llm_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "llm"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{llm_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/v1/llm?id=1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/llm?id={{llm_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "llm"
+              ],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "{{llm_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,312 @@
+openapi: 3.0.3
+info:
+  title: Oracle ORDS Aula 5 Especial
+  description: >
+    Especificação OpenAPI para importar no Postman os endpoints REST expostos
+    pelo ORDS na aula 5 especial. Baseada nos exemplos de CRUD sobre
+    LLM_MODELS, API_CLIENTS e API_REQUESTS.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8181/ords/jeff
+    description: ORDS local em modo standalone
+
+tags:
+  - name: LLM Models
+  - name: API Clients
+  - name: API Requests
+
+paths:
+  /llm_models/:
+    get:
+      tags: [LLM Models]
+      summary: Listar modelos
+      operationId: listLLMModels
+      responses:
+        '200':
+          description: Lista de modelos
+    post:
+      tags: [LLM Models]
+      summary: Criar modelo
+      operationId: createLLMModel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMModelInput'
+            example:
+              nome: llama-3.1-70b
+              provider: meta
+              input_token_limit: 128000
+              output_token_limit: 8192
+              ativo: S
+      responses:
+        '201':
+          description: Modelo criado
+        '200':
+          description: Modelo criado
+
+  /llm_models/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    get:
+      tags: [LLM Models]
+      summary: Buscar modelo por ID
+      operationId: getLLMModelById
+      responses:
+        '200':
+          description: Modelo encontrado
+        '404':
+          description: Modelo não encontrado
+    put:
+      tags: [LLM Models]
+      summary: Atualizar modelo
+      operationId: updateLLMModel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMModelInput'
+            example:
+              nome: gpt-4.1-updated
+              provider: openai
+              input_token_limit: 128000
+              output_token_limit: 32768
+              ativo: S
+      responses:
+        '200':
+          description: Modelo atualizado
+    delete:
+      tags: [LLM Models]
+      summary: Remover modelo
+      operationId: deleteLLMModel
+      responses:
+        '200':
+          description: Modelo removido
+        '204':
+          description: Modelo removido
+
+  /api_clients/:
+    get:
+      tags: [API Clients]
+      summary: Listar clientes
+      operationId: listAPIClients
+      responses:
+        '200':
+          description: Lista de clientes
+    post:
+      tags: [API Clients]
+      summary: Criar cliente
+      operationId: createAPIClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIClientInput'
+            example:
+              nome: Time Analytics
+              app_name: analytics-dashboard
+              email_responsavel: analytics@empresa.com
+              api_key: KEY-ANALYTICS-004
+              ativo: S
+      responses:
+        '201':
+          description: Cliente criado
+        '200':
+          description: Cliente criado
+
+  /api_clients/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    get:
+      tags: [API Clients]
+      summary: Buscar cliente por ID
+      operationId: getAPIClientById
+      responses:
+        '200':
+          description: Cliente encontrado
+        '404':
+          description: Cliente não encontrado
+    put:
+      tags: [API Clients]
+      summary: Atualizar cliente
+      operationId: updateAPIClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIClientInput'
+            example:
+              nome: Time Produto Atualizado
+              app_name: portal-web
+              email_responsavel: produto-api@empresa.com
+              api_key: KEY-PORTAL-001-NEW
+              ativo: S
+      responses:
+        '200':
+          description: Cliente atualizado
+    delete:
+      tags: [API Clients]
+      summary: Remover cliente
+      operationId: deleteAPIClient
+      responses:
+        '200':
+          description: Cliente removido
+        '204':
+          description: Cliente removido
+
+  /api_requests/:
+    get:
+      tags: [API Requests]
+      summary: Listar requisições
+      operationId: listAPIRequests
+      responses:
+        '200':
+          description: Lista de requisições
+    post:
+      tags: [API Requests]
+      summary: Criar requisição
+      operationId: createAPIRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIRequestInput'
+            example:
+              client_id: 1
+              model_id: 2
+              prompt_chars: 700
+              response_chars: 1800
+              status_code: 200
+              latency_ms: 640
+      responses:
+        '201':
+          description: Requisição criada
+        '200':
+          description: Requisição criada
+
+  /api_requests/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdParam'
+    get:
+      tags: [API Requests]
+      summary: Buscar requisição por ID
+      operationId: getAPIRequestById
+      responses:
+        '200':
+          description: Requisição encontrada
+        '404':
+          description: Requisição não encontrada
+    put:
+      tags: [API Requests]
+      summary: Atualizar requisição
+      operationId: updateAPIRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIRequestInput'
+            example:
+              client_id: 2
+              model_id: 3
+              prompt_chars: 910
+              response_chars: 2510
+              status_code: 200
+              latency_ms: 780
+      responses:
+        '200':
+          description: Requisição atualizada
+    delete:
+      tags: [API Requests]
+      summary: Remover requisição
+      operationId: deleteAPIRequest
+      responses:
+        '200':
+          description: Requisição removida
+        '204':
+          description: Requisição removida
+
+components:
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      description: Identificador do recurso
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    LLMModelInput:
+      type: object
+      required:
+        - nome
+        - provider
+        - input_token_limit
+        - output_token_limit
+        - ativo
+      properties:
+        nome:
+          type: string
+        provider:
+          type: string
+        input_token_limit:
+          type: integer
+        output_token_limit:
+          type: integer
+        ativo:
+          type: string
+          minLength: 1
+          maxLength: 1
+
+    APIClientInput:
+      type: object
+      required:
+        - nome
+        - app_name
+        - email_responsavel
+        - api_key
+        - ativo
+      properties:
+        nome:
+          type: string
+        app_name:
+          type: string
+        email_responsavel:
+          type: string
+        api_key:
+          type: string
+        ativo:
+          type: string
+          minLength: 1
+          maxLength: 1
+
+    APIRequestInput:
+      type: object
+      required:
+        - client_id
+        - model_id
+        - prompt_chars
+        - response_chars
+        - status_code
+        - latency_ms
+      properties:
+        client_id:
+          type: integer
+        model_id:
+          type: integer
+        prompt_chars:
+          type: integer
+        response_chars:
+          type: integer
+        status_code:
+          type: integer
+        latency_ms:
+          type: integer

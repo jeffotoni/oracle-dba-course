@@ -1,0 +1,135 @@
+openapi: 3.0.3
+info:
+  title: Aula 4 Especial - Go + Oracle API
+  description: >
+    Especificação OpenAPI para importar no Postman os endpoints da API
+    `repo/go.oracle/v1`, usada na aula 4 especial.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: API Go local
+
+tags:
+  - name: Health
+  - name: LLM
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Healthcheck da API
+      operationId: getHealth
+      responses:
+        '200':
+          description: API disponível
+
+  /api/v1/llm:
+    get:
+      tags: [LLM]
+      summary: Listar modelos LLM
+      operationId: listLLMs
+      responses:
+        '200':
+          description: Lista de modelos
+    post:
+      tags: [LLM]
+      summary: Criar modelo LLM
+      operationId: createLLM
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMInput'
+            examples:
+              openai:
+                value:
+                  nome: gpt-5.4
+                  input_token_limit: 200000
+                  output_token_limit: 128000
+                  provider: openai
+              anthropic:
+                value:
+                  nome: claude-3.7-sonnet
+                  input_token_limit: 200000
+                  output_token_limit: 64000
+                  provider: anthropic
+      responses:
+        '201':
+          description: Modelo criado
+        '200':
+          description: Modelo criado
+
+  /api/v1/llm{idQuery}:
+    parameters:
+      - $ref: '#/components/parameters/IdQuery'
+    get:
+      tags: [LLM]
+      summary: Buscar modelo por ID
+      operationId: getLLMById
+      responses:
+        '200':
+          description: Modelo encontrado
+        '404':
+          description: Modelo não encontrado
+    put:
+      tags: [LLM]
+      summary: Atualizar modelo por ID
+      operationId: updateLLMById
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LLMInput'
+            example:
+              nome: gpt-5.4-mini
+              input_token_limit: 128000
+              output_token_limit: 64000
+              provider: openai
+      responses:
+        '200':
+          description: Modelo atualizado
+        '404':
+          description: Modelo não encontrado
+    delete:
+      tags: [LLM]
+      summary: Remover modelo por ID
+      operationId: deleteLLMById
+      responses:
+        '200':
+          description: Modelo removido
+        '404':
+          description: Modelo não encontrado
+
+components:
+  parameters:
+    IdQuery:
+      name: id
+      in: query
+      required: true
+      description: Identificador do modelo
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    LLMInput:
+      type: object
+      required:
+        - nome
+        - input_token_limit
+        - output_token_limit
+        - provider
+      properties:
+        nome:
+          type: string
+        input_token_limit:
+          type: integer
+          format: int64
+        output_token_limit:
+          type: integer
+          format: int64
+        provider:
+          type: string
