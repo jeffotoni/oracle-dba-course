@@ -152,37 +152,18 @@ FETCH FIRST 10 ROWS ONLY;
 4. atualizar os dados periodicamente;
 5. apresentar o painel em sala.
 
-## Interface
+## Sugestão de implementação
 
-O grupo pode escolher uma destas opções:
-
-### Opção A - Dashboard web simples
-
-Uma tela com:
+O caminho mais direto para este grupo é:
 
 - cards de status;
 - tabelas simples;
-- refresh automático.
-
-### Opção B - API + cliente
-
-- backend expondo JSON;
-- frontend simples consumindo a API.
-
-### Opção C - Script + visualização simples
-
-- script de coleta;
-- exibição em terminal ou página simples;
-- foco mais forte na explicação.
-
-## O que eu sugiro como recorte ideal
-
-Para apresentação em sala, o melhor equilíbrio costuma ser:
-
 - backend pequeno;
 - 3 ou 4 endpoints;
 - frontend HTML simples;
 - atualização automática.
+
+Esse caminho já é suficiente para uma boa apresentação.
 
 ## Estrutura mínima sugerida
 

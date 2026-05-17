@@ -20,14 +20,16 @@ O foco é mostrar:
 
 - modelagem mínima;
 - operações simples de gravação, leitura e remoção;
-- uso do Oracle em um cenário leve de aplicação.
+- uso do Oracle em um cenário leve de aplicação;
+- como tratar validade lógica sem depender de TTL nativo.
 
 ## O que o trabalho deve demonstrar
 
 - como modelar um cache relacional simples;
 - como gravar e consultar por chave;
 - como remover registros;
-- opcionalmente como tratar expiração.
+- como tratar expiração lógica;
+- opcionalmente como automatizar a limpeza.
 
 ## Escopo mínimo
 
@@ -60,9 +62,10 @@ O trabalho deve ter pelo menos:
 
 Opcionalmente:
 
-- verificar expiração;
+- verificar expiração na leitura;
 - atualizar valor existente;
-- limpar itens expirados.
+- limpar itens expirados;
+- automatizar a limpeza com recursos do Oracle.
 
 ## 3. API sugerida
 
@@ -126,6 +129,52 @@ WHERE expires_at IS NULL
 ORDER BY created_at DESC;
 ```
 
+### Ler uma chave respeitando validade lógica
+
+```sql
+SELECT cache_key,
+       cache_value,
+       expires_at
+FROM cache_store
+WHERE cache_key = :cache_key
+  AND (expires_at IS NULL OR expires_at > SYSTIMESTAMP);
+```
+
+### Remover itens expirados
+
+```sql
+DELETE FROM cache_store
+WHERE expires_at IS NOT NULL
+  AND expires_at <= SYSTIMESTAMP;
+```
+
+## TTL no Oracle - leitura correta
+
+No Oracle, esse projeto não deve assumir a existência de um TTL nativo como em bancos especializados em cache.
+
+A ideia aqui é diferente:
+
+- o item pode ter uma validade lógica em `expires_at`;
+- a leitura da aplicação pode ignorar itens vencidos;
+- a remoção física pode acontecer depois;
+- a automatização dessa limpeza pode ser estudada pelo grupo.
+
+Ou seja, o trabalho pode tratar expiração em dois níveis:
+
+- **expiração lógica** - a aplicação deixa de considerar o item como válido;
+- **limpeza física** - uma rotina remove o item vencido da tabela.
+
+## Pistas para implementação
+
+O grupo pode escolher um destes caminhos:
+
+- tratar a validade só no `SELECT`;
+- limpar expirados em momentos específicos da aplicação;
+- criar uma rotina periódica no Oracle;
+- estudar o uso de `DBMS_SCHEDULER` para automatizar a limpeza.
+
+O objetivo não é entregar um mecanismo completo de cache enterprise. O objetivo é demonstrar que a solução entendeu o problema e implementou uma estratégia coerente.
+
 ## Fluxo sugerido do sistema
 
 1. criar a tabela;
@@ -135,49 +184,18 @@ ORDER BY created_at DESC;
 5. remover ou expirar;
 6. demonstrar em sala.
 
-## Interface
+## Sugestão de implementação
 
-O grupo pode escolher uma destas opções:
-
-### Opção A - API simples
-
-Foco em:
+O caminho mais direto para este grupo é:
 
 - `POST`
 - `GET`
 - `DELETE`
+- uma tabela `cache_store` com `cache_key`, `cache_value` e `expires_at`;
+- leitura respeitando validade lógica;
+- limpeza posterior dos itens expirados.
 
-Com teste via:
-
-- `curl`
-- Postman
-- Insomnia
-
-### Opção B - Tela web pequena
-
-Uma tela com:
-
-- campo para chave;
-- campo para valor;
-- tempo de expiração opcional;
-- botões de salvar, buscar e remover.
-
-### Opção C - Script + explicação
-
-Se o grupo quiser manter tudo mais enxuto:
-
-- script simples;
-- comandos SQL;
-- demonstração clara.
-
-## O que eu sugiro como recorte ideal
-
-Para apresentação em sala, o melhor equilíbrio costuma ser:
-
-- tabela simples;
-- API pequena;
-- payload JSON no valor;
-- expiração opcional.
+Os testes podem ser feitos com `curl`, Postman ou Insomnia.
 
 ## Estrutura mínima sugerida
 

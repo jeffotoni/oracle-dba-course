@@ -156,8 +156,6 @@ Leitura prática:
 
 ## Fluxo sugerido do sistema
 
-### Fluxo 1 - Simples
-
 1. cadastrar documentos;
 2. gerar embedding local;
 3. gravar no Oracle;
@@ -166,52 +164,21 @@ Leitura prática:
 6. consultar os documentos mais próximos;
 7. mostrar os resultados.
 
-### Fluxo 2 - Um pouco mais rico
+## Sugestão de implementação
 
-1. cadastrar documentos;
-2. gerar embedding local;
-3. armazenar no Oracle;
-4. buscar por similaridade;
-5. devolver top 5;
-6. opcionalmente enviar os resultados para um LLM resumir.
-
-## Interface
-
-O grupo pode escolher uma destas opções:
-
-### Opção A - Interface simples web
-
-Uma tela com:
+O caminho mais direto para este grupo é:
 
 - campo de texto para pergunta;
-- botão `Buscar`;
+- botão `Buscar` ou endpoint `POST /search`;
 - lista dos 3 ou 5 resultados;
 - título, trecho e distância.
-
-### Opção B - API simples
-
-Endpoints mínimos:
-
-- `POST /documents`
-- `POST /search`
-
-### Opção C - Explicação + script
-
-Se o grupo quiser algo ainda menor:
-
-- script para inserir;
-- script para buscar;
-- demonstração no terminal;
-- explicação clara do fluxo.
-
-## O que eu sugiro como recorte ideal
-
-Para apresentação em sala, o melhor equilíbrio costuma ser:
 
 - banco Oracle;
 - script Python ou Ollama para embedding;
 - API pequena;
 - tela HTML muito simples.
+
+Esse caminho já é suficiente para demonstrar a ideia com clareza.
 
 ## Estrutura mínima sugerida
 
