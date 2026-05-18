@@ -244,6 +244,28 @@ Ler arquivo com SQL = tabela externa
 Mover objetos e dados Oracle = Data Pump
 ```
 
+### Escolha rápida
+
+| Cenário | Melhor ferramenta |
+| - | - |
+| CSV pequeno e script simples | `sqlplus` ou tabela externa |
+| CSV médio ou grande | `sqlldr` |
+| CSV muito grande com foco em performance | `sqlldr` com carga direta |
+| Validar arquivo antes da carga | tabela externa |
+| Oracle para Oracle | `expdp` / `impdp` |
+| Backup lógico de schema ou tabela | `expdp` |
+| Restore lógico Oracle | `impdp` |
+| Script administrativo | `sqlplus` |
+
+### Regra de ouro
+
+```txt
+sqlldr = arquivo grande que precisa entrar rápido
+tabela externa = arquivo que precisa ser lido e validado com SQL
+expdp / impdp = origem e destino Oracle
+sqlplus = administração e scripts
+```
+
 ## 9.5. Ponto operacional importante
 
 No módulo 2, parte da prática deixa de ser apenas SQL em cliente gráfico.
@@ -750,6 +772,13 @@ sqlldr app_owner/AppOwner123@//localhost:1521/FREEPDB1 \
 - carrega dados em tabela Oracle;
 - gera log técnico da operação.
 
+### Quando este exemplo faz mais sentido
+
+- carga inicial;
+- arquivo externo grande;
+- rotina batch;
+- cenário em que não é necessário consultar o arquivo antes.
+
 ### Validação da carga
 
 ```sql
@@ -765,6 +794,51 @@ cat /opt/oracle/labdata/produtos_sqlldr.log
 ```
 
 ## 13.5. Tabela externa na prática
+
+### Ideia do recurso
+
+Tabela externa permite ler um arquivo como se ele fosse uma tabela Oracle, sem fazer a carga definitiva logo no primeiro passo.
+
+### Exemplo didático da ideia
+
+```sql
+CREATE TABLE clientes_ext (
+  id NUMBER,
+  nome VARCHAR2(100),
+  estado VARCHAR2(2)
+)
+ORGANIZATION EXTERNAL (
+  TYPE ORACLE_LOADER
+  DEFAULT DIRECTORY ext_dir
+  ACCESS PARAMETERS (
+    RECORDS DELIMITED BY NEWLINE
+    FIELDS TERMINATED BY ','
+  )
+  LOCATION ('arquivo.csv')
+);
+```
+
+```sql
+SELECT *
+FROM clientes_ext;
+```
+
+```sql
+INSERT INTO clientes
+SELECT *
+FROM clientes_ext;
+```
+
+### Vantagens
+
+- SQL direto no arquivo;
+- sem carga inicial obrigatória;
+- ótimo para validação.
+
+### Limitações
+
+- mais lento que SQL*Loader para carga definitiva;
+- depende do arquivo permanecer no disco.
 
 ```sql
 CREATE OR REPLACE DIRECTORY lab_dir AS '/opt/oracle/labdata';
@@ -792,6 +866,13 @@ REJECT LIMIT UNLIMITED;
 - permite validar arquivo com SQL;
 - ajuda a separar leitura, validação e carga definitiva.
 
+### Quando este exemplo faz mais sentido
+
+- validar arquivo antes da carga;
+- fazer filtros ou contagens antes do `INSERT`;
+- usar SQL diretamente sobre o arquivo;
+- preparar uma etapa de ETL.
+
 ### Validação da leitura externa
 
 ```sql
@@ -799,6 +880,8 @@ SELECT *
 FROM ext_produtos
 ORDER BY id_produto;
 ```
+
+### Inserir em tabela interna depois da validação
 
 ```sql
 CREATE TABLE produtos_ext_import AS
@@ -838,6 +921,13 @@ expdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
 - exporta dados e metadados Oracle;
 - gera dump lógico;
 - ajuda em migração, cópia e refresh de ambientes.
+
+### Quando este exemplo faz mais sentido
+
+- copiar schema Oracle para Oracle;
+- clonar ambiente;
+- exportar estrutura e dados juntos;
+- fazer restore lógico seletivo.
 
 ### Validar arquivo gerado no container
 
@@ -907,10 +997,8 @@ DROP DIRECTORY lab_dir;
 DROP DIRECTORY dpump_dir;
 
 DROP ROLE role_leitura_m2;
-DROP ROLE role_carga_m2;
 
 DROP USER analista CASCADE;
-DROP USER operador_carga CASCADE;
 DROP USER app_clone CASCADE;
 DROP USER app_owner CASCADE;
 
