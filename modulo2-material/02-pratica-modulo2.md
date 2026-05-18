@@ -50,9 +50,9 @@ Opcionalmente poderemos utilizar:
 
 Neste roteiro, consideraremos o seguinte padrão:
 
-- **nome do container**: `oracle-free`
-- **porta do listener**: `1521`
-- **senha administrativa**: `Senha123`
+- **nome do container**: `oracle-free-full-23ai`
+- **porta do listener**: `1522`
+- **senha administrativa**: `OraclePwd123`
 - **service name**: `FREEPDB1`
 - **diretório de laboratório dentro do container**: `/opt/oracle/labdata`
 
@@ -76,13 +76,14 @@ modulo2-seguranca-carga/
 
 ```yaml
 services:
-  oracle-free:
-    image: gvenzl/oracle-free:latest
-    container_name: oracle-free
+  oracle-free-full-23ai:
+    image: container-registry.oracle.com/database/free:latest
+    container_name: oracle-free-full-23ai
     ports:
-      - "1521:1521"
+      - "1522:1521"
     environment:
-      ORACLE_PASSWORD: Senha123
+      ORACLE_PWD: OraclePwd123
+      ORACLE_PDB: FREEPDB1
     volumes:
       - ./labdata:/opt/oracle/labdata
 ```
@@ -92,7 +93,7 @@ services:
 ```bash
 podman compose up -d
 podman ps
-podman logs -f oracle-free
+podman logs -f oracle-free-full-23ai
 ```
 
 ## 1.4. Validação inicial
@@ -427,7 +428,7 @@ FIELDS TERMINATED BY ','
 ## 6.4. Executar SQL*Loader dentro do container
 
 ```bash
-podman exec -it oracle-free bash
+podman exec -it oracle-free-full-23ai bash
 sqlldr app_owner/AppOwner123@//localhost:1521/FREEPDB1 control=/opt/oracle/labdata/produtos.ctl log=/opt/oracle/labdata/produtos_sqlldr.log
 ```
 
@@ -539,8 +540,8 @@ GRANT READ, WRITE ON DIRECTORY dpump_dir TO app_clone;
 Dentro do container:
 
 ```bash
-podman exec -it oracle-free bash
-expdp system/Senha123@//localhost:1521/FREEPDB1   DIRECTORY=dpump_dir   DUMPFILE=app_owner_m2.dmp   LOGFILE=exp_app_owner_m2.log   SCHEMAS=APP_OWNER
+podman exec -it oracle-free-full-23ai bash
+expdp system/OraclePwd123@//localhost:1521/FREEPDB1   DIRECTORY=dpump_dir   DUMPFILE=app_owner_m2.dmp   LOGFILE=exp_app_owner_m2.log   SCHEMAS=APP_OWNER
 ```
 
 ## 8.3. Preparar o schema APP_CLONE
@@ -558,8 +559,8 @@ GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDU
 Dentro do container:
 
 ```bash
-podman exec -it oracle-free bash
-impdp system/Senha123@//localhost:1521/FREEPDB1   DIRECTORY=dpump_dir   DUMPFILE=app_owner_m2.dmp   LOGFILE=imp_app_clone_m2.log   REMAP_SCHEMA=APP_OWNER:APP_CLONE
+podman exec -it oracle-free-full-23ai bash
+impdp system/OraclePwd123@//localhost:1521/FREEPDB1   DIRECTORY=dpump_dir   DUMPFILE=app_owner_m2.dmp   LOGFILE=imp_app_clone_m2.log   REMAP_SCHEMA=APP_OWNER:APP_CLONE
 ```
 
 ## 8.5. Validar importação
@@ -772,20 +773,20 @@ Ao final deste módulo, deveremos ter exercitado:
 
 ## 13. Compatibilidade com Podman
 
-Este roteiro foi pensado para execução em `gvenzl/oracle-free` em container.
+Este roteiro foi pensado para execução em `container-registry.oracle.com/database/free:latest` em container.
 
 ### 13.1. Checklist rápido antes de iniciar
 
 No host:
 
 ```bash
-podman ps --format '{{.Names}}\t{{.Status}}' | grep oracle-free
+podman ps --format '{{.Names}}\t{{.Status}}' | grep oracle-free-full-23ai
 ```
 
 No container:
 
 ```bash
-podman exec -it oracle-free bash
+podman exec -it oracle-free-full-23ai bash
 ```
 
 ```bash
@@ -824,7 +825,7 @@ A pasta mapeada no compose deve existir no host e no container:
 Validação:
 
 ```bash
-podman exec -it oracle-free bash -lc 'ls -la /opt/oracle/labdata'
+podman exec -it oracle-free-full-23ai bash -lc 'ls -la /opt/oracle/labdata'
 ```
 
 ### 13.5. Resultado esperado de compatibilidade

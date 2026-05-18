@@ -124,6 +124,9 @@ Controlam ações sobre objetos específicos, como:
 - `DELETE`
 - `EXECUTE`
 
+Acima temos DML (Data Manipulation Language) , DQL (Data Query Language e DCL / TCL / Procedural.
+Só não temos acima DDL (Data Definition Language).
+
 ### Roles
 
 Roles agrupam privilégios. Isso simplifica:
@@ -252,6 +255,17 @@ Isso acontece porque algumas atividades dependem de **binários nativos do próp
 - `impdp`
 - `sqlplus`
 
+### O que é cada binário
+
+- `sqlldr`
+  - carrega arquivos externos estruturados, como CSV ou TXT, para tabelas Oracle.
+- `expdp`
+  - exporta dados e metadados Oracle em formato de dump lógico.
+- `impdp`
+  - importa dumps lógicos gerados pelo `expdp`.
+- `sqlplus`
+  - cliente nativo de linha de comando do Oracle para executar SQL e validações operacionais.
+
 Esses binários normalmente são executados **dentro do container Oracle**, porque:
 
 - já fazem parte do ambiente Oracle;
@@ -271,7 +285,7 @@ Binários nativos do Oracle = terminal dentro do container
 Quando a prática exigir ferramentas nativas, o fluxo normal é entrar no container:
 
 ```bash
-podman exec -it oracle-free bash
+podman exec -it oracle-free-full-23ai bash
 ```
 
 ### O que isso faz
@@ -283,13 +297,29 @@ podman exec -it oracle-free bash
 ### Validação rápida
 
 ```bash
-which sqlplus
-which sqlldr
-which expdp
-which impdp
+command -v sqlplus
+command -v sqlldr
+command -v expdp
+command -v impdp
+```
+
+```bash
+type sqlplus
+type sqlldr
+type expdp
+type impdp
 ```
 
 Se esses comandos responderem com caminho válido, o ambiente está pronto para a prática operacional.
+
+### Validação curta dos binários
+
+```bash
+sqlplus -v
+sqlldr -help | head
+expdp help=y | head
+impdp help=y | head
+```
 
 ## 10. Segurança e carga andam juntas
 
@@ -305,6 +335,35 @@ Toda carga relevante deveria levantar perguntas como:
 - como reduzir impacto operacional.
 
 ## 11. Queries essenciais de revisão
+
+### Validação inicial do laboratório
+
+```sql
+SELECT USER AS current_user
+FROM dual;
+
+SELECT SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') AS current_schema
+FROM dual;
+
+SELECT SYS_CONTEXT('USERENV', 'CON_NAME') AS current_container
+FROM dual;
+
+SELECT con_id,
+       name,
+       open_mode
+FROM v$pdbs
+ORDER BY con_id;
+```
+
+### Leitura prática
+
+```txt
+Antes de falar de segurança ou carga, vale validar:
+- quem está conectado;
+- em qual schema a sessão está;
+- em qual container a sessão está;
+- se a PDB está aberta.
+```
 
 ### Ver usuários
 
@@ -390,9 +449,162 @@ SELECT SYS_CONTEXT('USERENV', 'CON_NAME') AS current_container
 FROM dual;
 ```
 
-## 12. Comandos que valem aparecer na revisão
+## 12. Laboratório prático aplicado
 
-## 12.1. Fluxo prático mínimo do módulo
+Para a revisão ficar próxima da prática real do módulo, vale manter um laboratório aplicável com os mesmos nomes usados na aula:
+
+- `APP_OWNER`
+- `ANALISTA`
+- `OPERADOR_CARGA`
+- `APP_CLONE`
+
+### Subir o Oracle com Podman
+
+No repositório, já existem versões prontas em:
+
+- `repo/oracle/versoes/free-full-23ai/script/up.sh`
+
+### Versão adotada - `free-full-23ai`
+
+Usando o script do repositório:
+
+```bash
+cd repo/oracle/versoes/free-full-23ai/script
+./up.sh
+```
+
+Comando explícito equivalente:
+
+```bash
+podman run -d \
+  --name oracle-free-full-23ai \
+  -p 1522:1521 \
+  --cap-add SYS_NICE \
+  -e ORACLE_PWD=OraclePwd123 \
+  -e ORACLE_PDB=FREEPDB1 \
+  -v oracle-free-full-23ai-data:/opt/oracle/oradata:Z \
+  container-registry.oracle.com/database/free:latest
+```
+
+### Validar a subida
+
+```bash
+podman ps
+podman logs -f oracle-free-full-23ai
+```
+
+### Perfil
+
+```sql
+CREATE PROFILE prof_lab_m2 LIMIT
+  SESSIONS_PER_USER 3
+  FAILED_LOGIN_ATTEMPTS 5
+  PASSWORD_LIFE_TIME 90
+  IDLE_TIME 30;
+```
+
+### Usuários
+
+```sql
+CREATE USER app_owner IDENTIFIED BY AppOwner123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA 100M ON USERS
+  PROFILE prof_lab_m2;
+
+CREATE USER analista IDENTIFIED BY Analista123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA 50M ON USERS
+  PROFILE prof_lab_m2;
+
+CREATE USER operador_carga IDENTIFIED BY Carga123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA 50M ON USERS
+  PROFILE prof_lab_m2;
+
+CREATE USER app_clone IDENTIFIED BY Clone123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA 100M ON USERS
+  PROFILE prof_lab_m2;
+```
+
+### Roles e grants
+
+```sql
+CREATE ROLE role_leitura_m2;
+CREATE ROLE role_carga_m2;
+
+GRANT CREATE SESSION TO role_leitura_m2;
+GRANT CREATE SESSION TO role_carga_m2;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE TO app_owner;
+GRANT CREATE SESSION TO analista;
+GRANT CREATE SESSION TO operador_carga;
+GRANT CREATE SESSION TO app_clone;
+
+GRANT role_leitura_m2 TO analista;
+GRANT role_carga_m2 TO operador_carga;
+```
+
+### Tabela base do laboratório
+
+Conectar como `APP_OWNER`:
+
+```sql
+CREATE TABLE produtos (
+  id_produto    NUMBER PRIMARY KEY,
+  nome_produto  VARCHAR2(100),
+  categoria     VARCHAR2(50),
+  preco         NUMBER(10,2),
+  data_cadastro DATE DEFAULT SYSDATE
+);
+
+INSERT INTO produtos (id_produto, nome_produto, categoria, preco)
+VALUES (1, 'Notebook', 'Informatica', 4500.00);
+
+INSERT INTO produtos (id_produto, nome_produto, categoria, preco)
+VALUES (2, 'Mouse', 'Perifericos', 120.00);
+
+INSERT INTO produtos (id_produto, nome_produto, categoria, preco)
+VALUES (3, 'Teclado', 'Perifericos', 250.00);
+
+COMMIT;
+```
+
+### Grants sobre a tabela
+
+Conectar como usuário administrativo:
+
+```sql
+GRANT SELECT ON app_owner.produtos TO role_leitura_m2;
+GRANT SELECT, INSERT ON app_owner.produtos TO role_carga_m2;
+```
+
+### Teste por usuário
+
+Conectar como `ANALISTA`:
+
+```sql
+SELECT *
+FROM app_owner.produtos
+ORDER BY id_produto;
+```
+
+Conectar como `OPERADOR_CARGA`:
+
+```sql
+INSERT INTO app_owner.produtos (id_produto, nome_produto, categoria, preco)
+VALUES (4, 'Monitor', 'Perifericos', 980.00);
+
+COMMIT;
+```
+
+## 13. Comandos e exemplos que valem aparecer na revisão
+
+## 13.1. Fluxo prático do módulo
 
 ```txt
 1. Entrar com usuário administrativo
@@ -404,53 +616,51 @@ FROM dual;
 7. Usar binários nativos do Oracle para carga e dump
 ```
 
-### Criar perfil
-
-```sql
-CREATE PROFILE prof_lab_m2 LIMIT
-  SESSIONS_PER_USER 3
-  FAILED_LOGIN_ATTEMPTS 5;
-```
-
-### Criar usuário
-
-```sql
-CREATE USER app_owner IDENTIFIED BY AppOwner123
-  DEFAULT TABLESPACE USERS
-  TEMPORARY TABLESPACE TEMP;
-```
-
-### Criar role
-
-```sql
-CREATE ROLE role_leitura_m2;
-```
-
-### Conceder privilégios
-
-```sql
-GRANT CREATE SESSION TO role_leitura_m2;
-GRANT role_leitura_m2 TO analista;
-GRANT SELECT ON app_owner.produtos TO role_leitura_m2;
-```
-
 ### Criar política de auditoria
 
 ```sql
 CREATE AUDIT POLICY pol_logon_m2 ACTIONS LOGON;
 AUDIT POLICY pol_logon_m2;
+
+CREATE AUDIT POLICY pol_select_produtos_m2
+  ACTIONS SELECT ON app_owner.produtos;
+
+AUDIT POLICY pol_select_produtos_m2;
+```
+
+### Gerar evidência
+
+Conectar como `ANALISTA`:
+
+```sql
+SELECT *
+FROM app_owner.produtos;
+```
+
+### Ler trilha de auditoria
+
+```sql
+SELECT event_timestamp,
+       dbusername,
+       action_name,
+       object_schema,
+       object_name,
+       return_code
+FROM unified_audit_trail
+ORDER BY event_timestamp DESC
+FETCH FIRST 30 ROWS ONLY;
 ```
 
 ### Entrar no container
 
 ```bash
-podman exec -it oracle-free bash
+podman exec -it oracle-free-full-23ai bash
 ```
 
-### Conectar com SQL*Plus dentro do container
+### Conectar com SQL*Plus dentro do container - somente se necessário
 
 ```bash
-sqlplus system/Senha123@//localhost:1521/FREEPDB1
+sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
 ```
 
 ### O que isso resolve
@@ -459,11 +669,99 @@ sqlplus system/Senha123@//localhost:1521/FREEPDB1
 - ajuda a confirmar usuário, serviço e acessibilidade;
 - prepara o ambiente para `sqlldr`, `expdp` e `impdp`.
 
+> Regra prática: para consulta e administração diária, usar Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente. `sqlplus` entra aqui só quando fizer sentido validar o cliente nativo Oracle dentro do container.
+
+### Validação real dos binários no container
+
+```bash
+command -v sqlplus
+command -v sqlldr
+command -v expdp
+command -v impdp
+```
+
+```bash
+type sqlplus
+type sqlldr
+type expdp
+type impdp
+```
+
+```bash
+sqlplus -v
+sqlldr -help | head
+expdp help=y | head
+impdp help=y | head
+```
+
+## 13.2. Exemplo de arquivo CSV para SQL*Loader e tabela externa
+
+Arquivo no host:
+
+- `./produtos.csv`
+
+Arquivo no container:
+
+- `/opt/oracle/labdata/produtos.csv`
+
+```csv
+10,Headset,Audio,350.00
+11,Webcam,Video,280.00
+12,SSD 1TB,Armazenamento,620.00
+13,Cadeira Gamer,Mobiliario,1400.00
+```
+
+## 13.3. Exemplo de arquivo de controle para SQL*Loader
+
+Arquivo no host:
+
+- `./produtos.ctl`
+
+Arquivo no container:
+
+- `/opt/oracle/labdata/produtos.ctl`
+
+```text
+LOAD DATA
+INFILE '/opt/oracle/labdata/produtos.csv'
+INTO TABLE app_owner.produtos_carga
+FIELDS TERMINATED BY ','
+(
+  id_produto,
+  nome_produto,
+  categoria,
+  preco
+)
+```
+
+## 13.4. SQL*Loader na prática
+
+### Criar tabela de destino
+
+Conectar como `APP_OWNER`:
+
+```sql
+CREATE TABLE produtos_carga (
+  id_produto    NUMBER,
+  nome_produto  VARCHAR2(100),
+  categoria     VARCHAR2(50),
+  preco         NUMBER(10,2)
+);
+```
+
 ### SQL*Loader
+
+Copiar arquivos do host para o container:
+
+```bash
+podman cp ./produtos.csv oracle-free-full-23ai:/opt/oracle/labdata/produtos.csv
+podman cp ./produtos.ctl oracle-free-full-23ai:/opt/oracle/labdata/produtos.ctl
+```
 
 ```bash
 sqlldr app_owner/AppOwner123@//localhost:1521/FREEPDB1 \
-  control=/opt/oracle/labdata/produtos.ctl
+  control=/opt/oracle/labdata/produtos.ctl \
+  log=/opt/oracle/labdata/produtos_sqlldr.log
 ```
 
 ### O que o SQL*Loader faz
@@ -481,7 +779,13 @@ FROM produtos_carga
 ORDER BY id_produto;
 ```
 
-### Tabela externa
+### Ver log gerado
+
+```bash
+cat /opt/oracle/labdata/produtos_sqlldr.log
+```
+
+## 13.5. Tabela externa na prática
 
 ```sql
 CREATE OR REPLACE DIRECTORY lab_dir AS '/opt/oracle/labdata';
@@ -517,12 +821,36 @@ FROM ext_produtos
 ORDER BY id_produto;
 ```
 
-### Data Pump
+```sql
+CREATE TABLE produtos_ext_import AS
+SELECT *
+FROM ext_produtos;
+```
+
+```sql
+SELECT *
+FROM produtos_ext_import
+ORDER BY id_produto;
+```
+
+## 13.6. Data Pump na prática
+
+### Criar diretório lógico
+
+```sql
+CREATE OR REPLACE DIRECTORY dpump_dir AS '/opt/oracle/labdata';
+GRANT READ, WRITE ON DIRECTORY dpump_dir TO system;
+GRANT READ, WRITE ON DIRECTORY dpump_dir TO app_owner;
+GRANT READ, WRITE ON DIRECTORY dpump_dir TO app_clone;
+```
+
+### Exportar schema com `expdp`
 
 ```bash
-expdp system/Senha123@//localhost:1521/FREEPDB1 \
+expdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
   DIRECTORY=dpump_dir \
   DUMPFILE=app_owner_m2.dmp \
+  LOGFILE=exp_app_owner_m2.log \
   SCHEMAS=APP_OWNER
 ```
 
@@ -538,22 +866,37 @@ expdp system/Senha123@//localhost:1521/FREEPDB1 \
 ls -lah /opt/oracle/labdata
 ```
 
+```bash
+cat /opt/oracle/labdata/exp_app_owner_m2.log
+```
+
 ### Copiar dump para o host
 
 ```bash
-podman cp oracle-free:/opt/oracle/labdata/app_owner_m2.dmp .
+podman cp oracle-free-full-23ai:/opt/oracle/labdata/app_owner_m2.dmp .
 ```
 
-### Importar com remapeamento
+### Preparar o usuário clone
+
+Conectar como usuário administrativo:
+
+```sql
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE TO app_clone;
+```
+
+### Importar com remapeamento usando `impdp`
 
 ```bash
-impdp system/Senha123@//localhost:1521/FREEPDB1 \
+impdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
   DIRECTORY=dpump_dir \
   DUMPFILE=app_owner_m2.dmp \
+  LOGFILE=imp_app_clone_m2.log \
   REMAP_SCHEMA=APP_OWNER:APP_CLONE
 ```
 
 ### Validação do import
+
+Conectar como `APP_CLONE`:
 
 ```sql
 SELECT table_name
@@ -566,7 +909,36 @@ SELECT COUNT(*)
 FROM produtos;
 ```
 
-## 13. Resultado esperado
+```bash
+cat /opt/oracle/labdata/imp_app_clone_m2.log
+```
+
+## 14. Limpeza rápida do laboratório
+
+```sql
+NOAUDIT POLICY pol_select_produtos_m2;
+NOAUDIT POLICY pol_logon_m2;
+
+DROP AUDIT POLICY pol_select_produtos_m2;
+DROP AUDIT POLICY pol_logon_m2;
+```
+
+```sql
+DROP DIRECTORY lab_dir;
+DROP DIRECTORY dpump_dir;
+
+DROP ROLE role_leitura_m2;
+DROP ROLE role_carga_m2;
+
+DROP USER analista CASCADE;
+DROP USER operador_carga CASCADE;
+DROP USER app_clone CASCADE;
+DROP USER app_owner CASCADE;
+
+DROP PROFILE prof_lab_m2;
+```
+
+## 15. Resultado esperado
 
 Ao final da revisão, o que precisa ficar claro é:
 
