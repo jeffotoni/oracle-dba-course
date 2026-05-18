@@ -455,7 +455,6 @@ Para a revisão ficar próxima da prática real do módulo, vale manter um labor
 
 - `APP_OWNER`
 - `ANALISTA`
-- `OPERADOR_CARGA`
 - `APP_CLONE`
 
 ### Subir o Oracle com Podman
@@ -518,12 +517,6 @@ CREATE USER analista IDENTIFIED BY Analista123
   QUOTA 50M ON USERS
   PROFILE prof_lab_m2;
 
-CREATE USER operador_carga IDENTIFIED BY Carga123
-  DEFAULT TABLESPACE USERS
-  TEMPORARY TABLESPACE TEMP
-  QUOTA 50M ON USERS
-  PROFILE prof_lab_m2;
-
 CREATE USER app_clone IDENTIFIED BY Clone123
   DEFAULT TABLESPACE USERS
   TEMPORARY TABLESPACE TEMP
@@ -535,18 +528,14 @@ CREATE USER app_clone IDENTIFIED BY Clone123
 
 ```sql
 CREATE ROLE role_leitura_m2;
-CREATE ROLE role_carga_m2;
 
 GRANT CREATE SESSION TO role_leitura_m2;
-GRANT CREATE SESSION TO role_carga_m2;
 
 GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE TO app_owner;
 GRANT CREATE SESSION TO analista;
-GRANT CREATE SESSION TO operador_carga;
 GRANT CREATE SESSION TO app_clone;
 
 GRANT role_leitura_m2 TO analista;
-GRANT role_carga_m2 TO operador_carga;
 ```
 
 ### Tabela base do laboratório
@@ -580,7 +569,6 @@ Conectar como usuário administrativo:
 
 ```sql
 GRANT SELECT ON app_owner.produtos TO role_leitura_m2;
-GRANT SELECT, INSERT ON app_owner.produtos TO role_carga_m2;
 ```
 
 ### Teste por usuário
@@ -591,15 +579,6 @@ Conectar como `ANALISTA`:
 SELECT *
 FROM app_owner.produtos
 ORDER BY id_produto;
-```
-
-Conectar como `OPERADOR_CARGA`:
-
-```sql
-INSERT INTO app_owner.produtos (id_produto, nome_produto, categoria, preco)
-VALUES (4, 'Monitor', 'Perifericos', 980.00);
-
-COMMIT;
 ```
 
 ## 13. Comandos e exemplos que valem aparecer na revisão
