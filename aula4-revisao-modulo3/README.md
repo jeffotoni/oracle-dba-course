@@ -1,289 +1,204 @@
-# Revisão do Módulo 3 - aula 4
+# Revisao do Modulo 3 - aula 4
 
-> Revisão do módulo 3: backup, recuperação, `ARCHIVELOG`, `Data Pump`, `RMAN`, restore e recovery em Oracle.
+> Revisao pratica do modulo 3: backup, recuperacao, `ARCHIVELOG`, `FRA`, `Data Pump` e `RMAN` em Oracle.
 
-## Ideia central do módulo
+## Ideia central
 
-O módulo 3 trata de um dos pontos mais críticos da administração Oracle:
-
-```txt
-Proteger dados
-Restaurar operação
-Reduzir perda e indisponibilidade
-```
-
-Em termos práticos:
-
-- backup é preparação;
-- recuperação é resposta à falha;
-- `Data Pump` atende dump e restore lógico;
-- `RMAN` atende backup físico, restore e recovery estrutural.
-
-## O que precisa ficar claro
-
-- backup não é a mesma coisa que recuperação;
-- backup lógico e backup físico atendem problemas diferentes;
-- `ARCHIVELOG` é central para recuperação consistente;
-- `RMAN` é a ferramenta principal de proteção física do Oracle;
-- `control file`, `SPFILE` e archivelogs fazem parte da estratégia;
-- restore de datafile e tablespace exige leitura operacional cuidadosa;
-- parte prática do módulo usa binários nativos Oracle dentro do container.
-
-## 1. Fundamentos
-
-### O que é backup
-
-Backup é a cópia controlada dos dados e metadados necessários para restaurar o ambiente ou parte dele.
-
-### O que é recuperação
-
-Recuperação é o processo de devolver o banco a um estado consistente depois de falha, perda, erro ou corrupção.
-
-### Regra curta
+O modulo 3 responde a uma pergunta operacional:
 
 ```txt
-Backup = preparar
-Recuperação = responder
+Se algo der errado, como eu restauro o ambiente com seguranca?
 ```
 
-## 2. Por que isso é crítico
+Para isso, vamos separar quatro conceitos:
 
-O módulo 3 existe porque falhas reais acontecem por:
+- `Data Pump` - dump logico de schemas, tabelas, dados e metadados.
+- `ARCHIVELOG` - preserva redo logs arquivados para recuperacao.
+- `FRA` - area gerenciada pelo Oracle para arquivos de recuperacao.
+- `RMAN` - ferramenta principal para backup fisico, restore e recovery.
 
-- erro humano;
-- falha de instância;
-- perda de disco;
-- corrupção;
-- falha lógica;
-- problema de sistema operacional;
-- problema de armazenamento.
+## 1. Backup logico x backup fisico
 
-Sem estratégia de backup e recuperação, a administração fica incompleta.
+### Backup logico
 
-## 3. Tipos de falha
+Trabalha com objetos Oracle:
 
-### Falha de instância
+- schemas;
+- tabelas;
+- indices;
+- constraints;
+- grants;
+- dados.
 
-A instância para, mas os arquivos físicos continuam existindo.
-
-### Falha de mídia
-
-Há perda ou dano em arquivo físico, como:
-
-- datafile;
-- control file;
-- redo log.
-
-### Erro humano
-
-Inclui:
-
-- exclusão indevida;
-- update errado em massa;
-- comando administrativo incorreto.
-
-### Corrupção
-
-Pode atingir:
-
-- bloco;
-- estrutura;
-- dados;
-- arquivo.
-
-## 4. Backup lógico x backup físico
-
-### Backup lógico
-
-Trabalha com objetos e dados em camada lógica.
-
-Exemplo mental:
-
-- PostgreSQL: `pg_dump`
-- MySQL / MariaDB: `mysqldump`
-- MongoDB: `mongodump`
-- Oracle: `expdp`
-
-### Backup físico
-
-Trabalha com os arquivos reais do banco, incluindo:
-
-- datafiles;
-- control files;
-- archived redo logs;
-- `SPFILE`;
-- backups gerados pelo `RMAN`.
-
-### Regra prática
-
-```txt
-Dump lógico = objetos e dados
-Backup físico = estrutura operacional do banco
-```
-
-### Leitura correta
-
-- `expdp` e `impdp` ajudam em dump lógico, cópia de schema e restore seletivo;
-- `RMAN` ajuda a restaurar a infraestrutura física do banco.
-
-## 5. Backup frio x backup quente
-
-### Backup frio
-
-É feito com o banco parado.
-
-### Backup quente
-
-É feito com o banco em operação, normalmente com apoio de logs e estratégia adequada.
-
-### Regra curta
-
-```txt
-Frio = banco parado
-Quente = banco em operação
-```
-
-No Oracle moderno, a conversa prática de recuperação séria normalmente leva a:
-
-- `ARCHIVELOG`
-- `RMAN`
-- retenção
-- restore e recovery testados
-
-## 6. ARCHIVELOG
-
-Esse ponto é central no módulo.
-
-### O que é
-
-No modo `ARCHIVELOG`, o Oracle mantém cópia dos redo logs arquivados, permitindo recuperação mais completa.
-
-### Por que importa
-
-Sem `ARCHIVELOG`, a capacidade de recuperação fica mais limitada.
-
-### Regra prática
-
-```txt
-ARCHIVELOG melhora a capacidade de recuperação
-```
-
-## 7. FRA
-
-`FRA` (`Fast Recovery Area`) é a área controlada pelo Oracle para armazenar arquivos de recuperação.
-
-Ela se relaciona com:
-
-- archived redo logs;
-- backups;
-- control file autobackup;
-- arquivos de recovery.
-
-### O que precisa ficar claro
-
-- não é só “uma pasta”;
-- ela participa da estratégia de proteção do banco;
-- seu tamanho e uso precisam ser observados.
-
-## 8. RMAN
-
-`RMAN` (`Recovery Manager`) é a ferramenta principal de backup físico, restore e recovery do Oracle.
-
-### O que ele faz
-
-- backup do banco;
-- backup incremental;
-- backup de archivelogs;
-- backup de control file;
-- backup de `SPFILE`;
-- validação de backups;
-- restore;
-- recovery;
-- retenção;
-- cruzamento de catálogo com arquivos reais.
-
-### Regra curta
-
-```txt
-RMAN = ferramenta central de proteção física Oracle
-```
-
-## 9. Control file e SPFILE
-
-### Control file
-
-Guarda metadados estruturais essenciais do banco.
-
-### SPFILE
-
-Guarda parâmetros persistentes da instância.
-
-### Leitura prática
-
-- ambos são críticos;
-- ambos entram na estratégia de backup;
-- perder esses arquivos pode complicar seriamente a recuperação.
-
-## 10. Binários nativos Oracle no módulo 3
-
-Assim como no módulo 2, parte importante da prática não acontece só na IDE.
-
-O módulo 3 depende de binários nativos Oracle, principalmente:
+Ferramentas:
 
 - `expdp`
 - `impdp`
-- `rman`
-- `sqlplus`
 
-### Regra prática
+### Backup fisico
+
+Trabalha com a estrutura fisica do banco:
+
+- datafiles;
+- control files;
+- archived logs;
+- `SPFILE`;
+- backups gerados pelo `RMAN`.
+
+Ferramenta:
+
+- `RMAN`
+
+### Regra pratica
 
 ```txt
-Consultas e validações SQL = Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente
-Data Pump e RMAN = terminal dentro do container Oracle
+Data Pump = copiar objetos e dados
+RMAN = proteger e recuperar o banco fisico
 ```
 
-### Entrar no container
+## 2. Ambiente padrao da aula
+
+Usaremos a mesma versao padronizada no curso:
+
+- container: `oracle-free-full-23ai`
+- imagem: `container-registry.oracle.com/database/free:latest`
+- porta host: `1522`
+- porta interna: `1521`
+- service name: `FREEPDB1`
+- senha: `OraclePwd123`
+
+Subir pelo script:
 
 ```bash
-podman exec -it oracle-free bash
+cd repo/oracle/versoes/free-full-23ai/script
+./up.sh
 ```
 
-### Validar binários
+Comando explicito equivalente:
 
 ```bash
-which sqlplus
-which expdp
-which impdp
-which rman
+podman run -d \
+  --name oracle-free-full-23ai \
+  -p 1522:1521 \
+  --cap-add SYS_NICE \
+  -e ORACLE_PWD=OraclePwd123 \
+  -e ORACLE_PDB=FREEPDB1 \
+  -v oracle-free-full-23ai-data:/opt/oracle/oradata:Z \
+  container-registry.oracle.com/database/free:latest
 ```
 
-## 11. Queries essenciais de revisão
+Validar:
 
-### Ver instância
+```bash
+podman ps
+podman logs -f oracle-free-full-23ai
+```
+
+## 3. Binarios usados na pratica
+
+Algumas atividades rodam melhor dentro do container Oracle.
+
+Entrar no container:
+
+```bash
+podman exec -it oracle-free-full-23ai bash
+```
+
+Validar binarios:
+
+```bash
+command -v sqlplus
+command -v expdp
+command -v impdp
+command -v rman
+```
+
+Testar rapidamente:
+
+```bash
+sqlplus -v
+expdp help=y | head
+impdp help=y | head
+rman -h | head
+```
+
+### O que e cada binario
+
+- `sqlplus` - cliente nativo para SQL e comandos administrativos.
+- `expdp` - exporta dump logico Oracle.
+- `impdp` - importa dump logico Oracle.
+- `rman` - faz backup fisico, restore, recovery, validacao e catalogo.
+
+## 4. Checklist SQL inicial
+
+Executar no cliente SQL ou via `SQL*Plus`.
+
+Conexao recomendada para consultas:
+
+```txt
+Host: localhost
+Port: 1522
+Service Name: FREEPDB1
+User: system
+Password: OraclePwd123
+```
+
+Queries:
 
 ```sql
 SELECT instance_name,
        status
 FROM v$instance;
-```
 
-### Ver banco e modo de log
-
-```sql
 SELECT name,
        open_mode,
        log_mode
 FROM v$database;
-```
 
-### Ver container atual
-
-```sql
 SELECT SYS_CONTEXT('USERENV', 'CON_NAME') AS current_container
 FROM dual;
+
+SELECT con_id,
+       name,
+       open_mode
+FROM v$pdbs
+ORDER BY con_id;
 ```
 
-### Ver parâmetros da FRA
+## 5. Preparar diretorios no container
+
+Criar diretorios fisicos para o laboratorio:
+
+```bash
+podman exec -it oracle-free-full-23ai mkdir -p /opt/oracle/labbackup/fra
+podman exec -it oracle-free-full-23ai mkdir -p /opt/oracle/labbackup/rman
+podman exec -it oracle-free-full-23ai mkdir -p /opt/oracle/labbackup/dpump
+```
+
+Validar:
+
+```bash
+podman exec -it oracle-free-full-23ai ls -lah /opt/oracle/labbackup
+```
+
+## 6. Configurar FRA
+
+A `FRA` e configurada no `CDB$ROOT`, como `SYSDBA`.
+
+Conectar pelo terminal do host:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+Configurar:
+
+```sql
+ALTER SYSTEM SET db_recovery_file_dest_size = 10G SCOPE=BOTH;
+ALTER SYSTEM SET db_recovery_file_dest = '/opt/oracle/labbackup/fra' SCOPE=BOTH;
+```
+
+Validar:
 
 ```sql
 SELECT name,
@@ -293,29 +208,240 @@ WHERE name IN ('db_recovery_file_dest', 'db_recovery_file_dest_size')
 ORDER BY name;
 ```
 
-### Ver datafiles
+## 7. Habilitar ARCHIVELOG
+
+Este bloco reinicia o banco. Use em laboratorio.
+
+Ainda como `SYSDBA`, primeiro verificar:
 
 ```sql
-SELECT file_id,
-       file_name,
-       tablespace_name,
-       status
-FROM dba_data_files
-ORDER BY file_id;
+SELECT log_mode
+FROM v$database;
 ```
 
-### Ver archived logs
+Se o resultado ja for `ARCHIVELOG`, pular os comandos de reinicio.
+
+Se o resultado for `NOARCHIVELOG`, executar:
 
 ```sql
-SELECT sequence#,
-       archived,
-       status,
-       first_time
-FROM v$archived_log
-ORDER BY sequence# DESC;
+SHUTDOWN IMMEDIATE;
+STARTUP MOUNT;
+
+ALTER DATABASE ARCHIVELOG;
+ALTER DATABASE OPEN;
+ALTER PLUGGABLE DATABASE ALL OPEN;
+
+SELECT log_mode
+FROM v$database;
 ```
 
-### Ver uso da FRA
+Validar PDB:
+
+```sql
+SELECT con_id,
+       name,
+       open_mode
+FROM v$pdbs
+ORDER BY con_id;
+```
+
+Sair:
+
+```sql
+EXIT;
+```
+
+## 8. Criar schema de laboratorio
+
+Conectar na PDB como `SYSTEM` pelo terminal do host:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
+```
+
+Criar usuarios:
+
+```sql
+CREATE USER app_rman IDENTIFIED BY AppRman123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA UNLIMITED ON USERS;
+
+CREATE USER app_rman_clone IDENTIFIED BY AppRmanClone123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO app_rman;
+GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO app_rman_clone;
+```
+
+Criar diretório logico para Data Pump:
+
+```sql
+CREATE OR REPLACE DIRECTORY dpump_mod3_dir AS '/opt/oracle/labbackup/dpump';
+
+GRANT READ, WRITE ON DIRECTORY dpump_mod3_dir TO system;
+GRANT READ, WRITE ON DIRECTORY dpump_mod3_dir TO app_rman;
+GRANT READ, WRITE ON DIRECTORY dpump_mod3_dir TO app_rman_clone;
+```
+
+Sair:
+
+```sql
+EXIT;
+```
+
+## 9. Criar tabela e dados
+
+Conectar como `APP_RMAN`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus app_rman/AppRman123@//localhost:1521/FREEPDB1
+```
+
+Criar tabela:
+
+```sql
+CREATE TABLE pedidos_lab (
+  id_pedido   NUMBER PRIMARY KEY,
+  cliente     VARCHAR2(100),
+  valor_total NUMBER(10,2),
+  criado_em   DATE DEFAULT SYSDATE
+);
+
+INSERT INTO pedidos_lab (id_pedido, cliente, valor_total)
+VALUES (1, 'Cliente A', 150.00);
+
+INSERT INTO pedidos_lab (id_pedido, cliente, valor_total)
+VALUES (2, 'Cliente B', 280.00);
+
+INSERT INTO pedidos_lab (id_pedido, cliente, valor_total)
+VALUES (3, 'Cliente C', 490.00);
+
+COMMIT;
+```
+
+Validar:
+
+```sql
+SELECT *
+FROM pedidos_lab
+ORDER BY id_pedido;
+```
+
+Sair:
+
+```sql
+EXIT;
+```
+
+## 10. Data Pump na pratica
+
+### Exportar schema com `expdp`
+
+No terminal do host:
+
+```bash
+podman exec -it oracle-free-full-23ai expdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
+  DIRECTORY=dpump_mod3_dir \
+  DUMPFILE=app_rman_m3.dmp \
+  LOGFILE=app_rman_m3_exp.log \
+  SCHEMAS=APP_RMAN
+```
+
+Validar arquivos:
+
+```bash
+podman exec -it oracle-free-full-23ai ls -lah /opt/oracle/labbackup/dpump
+podman exec -it oracle-free-full-23ai cat /opt/oracle/labbackup/dpump/app_rman_m3_exp.log
+```
+
+### Importar com `impdp`
+
+No terminal do host:
+
+```bash
+podman exec -it oracle-free-full-23ai impdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
+  DIRECTORY=dpump_mod3_dir \
+  DUMPFILE=app_rman_m3.dmp \
+  LOGFILE=app_rman_m3_imp.log \
+  REMAP_SCHEMA=APP_RMAN:APP_RMAN_CLONE
+```
+
+Validar import:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus app_rman_clone/AppRmanClone123@//localhost:1521/FREEPDB1
+```
+
+```sql
+SELECT table_name
+FROM user_tables
+ORDER BY table_name;
+
+SELECT *
+FROM pedidos_lab
+ORDER BY id_pedido;
+
+EXIT;
+```
+
+## 11. RMAN na pratica
+
+Entrar no RMAN pelo terminal do host:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "rman target /"
+```
+
+Configurar:
+
+```rman
+CONFIGURE CONTROLFILE AUTOBACKUP ON;
+CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
+SHOW ALL;
+```
+
+Backup fisico do banco:
+
+```rman
+BACKUP AS BACKUPSET DATABASE
+  FORMAT '/opt/oracle/labbackup/rman/db_%U.bkp';
+```
+
+Backup dos archived logs:
+
+```rman
+BACKUP AS BACKUPSET ARCHIVELOG ALL
+  FORMAT '/opt/oracle/labbackup/rman/arch_%U.bkp';
+```
+
+Validar:
+
+```rman
+LIST BACKUP SUMMARY;
+VALIDATE DATABASE;
+RESTORE DATABASE VALIDATE;
+CROSSCHECK BACKUP;
+CROSSCHECK ARCHIVELOG ALL;
+```
+
+Sair:
+
+```rman
+EXIT;
+```
+
+Validar arquivos no host:
+
+```bash
+podman exec -it oracle-free-full-23ai ls -lah /opt/oracle/labbackup/rman
+```
+
+## 12. Consultas de observacao
+
+### FRA
 
 ```sql
 SELECT name,
@@ -325,7 +451,19 @@ SELECT name,
 FROM v$recovery_file_dest;
 ```
 
-### Ver jobs de backup do RMAN
+### Archived logs
+
+```sql
+SELECT sequence#,
+       archived,
+       status,
+       first_time
+FROM v$archived_log
+ORDER BY sequence# DESC
+FETCH FIRST 20 ROWS ONLY;
+```
+
+### Jobs RMAN
 
 ```sql
 SELECT session_key,
@@ -338,181 +476,58 @@ ORDER BY start_time DESC
 FETCH FIRST 10 ROWS ONLY;
 ```
 
-## 12. Fluxo prático mínimo do módulo
+## 13. Restore e recovery
 
-```txt
-1. Validar instância, banco, PDB e log_mode
-2. Configurar FRA
-3. Habilitar ARCHIVELOG
-4. Criar objetos de laboratório
-5. Fazer dump lógico com expdp
-6. Importar com impdp
-7. Entrar no RMAN
-8. Configurar retenção e control file autobackup
-9. Fazer backup completo e incremental
-10. Validar, listar e cruzar backups
-11. Simular recovery de instância e tablespace
-```
+Para esta revisao, o foco pratico fica em:
 
-## 13. Comandos que valem aparecer na revisão
+- criar backup;
+- listar backup;
+- validar backup;
+- validar restore com `RESTORE DATABASE VALIDATE`.
 
-### Entrar no container
+Restore real de datafile, tablespace ou banco inteiro deve ser feito em uma simulacao controlada, porque envolve indisponibilidade, arquivos fisicos e risco de quebrar o laboratorio durante a aula.
 
-```bash
-podman exec -it oracle-free bash
-```
-
-### Exportar schema com Data Pump
-
-```bash
-podman exec -i oracle-free bash -lc "expdp app_rman/AppRman123@//localhost:1521/FREEPDB1 \
-schemas=APP_RMAN \
-directory=DATA_PUMP_DIR \
-dumpfile=app_rman_m3.dmp \
-logfile=app_rman_m3_exp.log"
-```
-
-### Importar schema com remapeamento
-
-```bash
-podman exec -i oracle-free bash -lc "impdp system/Senha123@//localhost:1521/FREEPDB1 \
-schemas=APP_RMAN \
-directory=DATA_PUMP_DIR \
-dumpfile=app_rman_m3.dmp \
-logfile=app_rman_m3_imp.log \
-remap_schema=APP_RMAN:APP_RMAN_CLONE"
-```
-
-### Entrar no RMAN
-
-```bash
-rman target /
-```
-
-### Configuração inicial do RMAN
+Exemplos para explicar, sem executar como passo principal:
 
 ```rman
-CONFIGURE CONTROLFILE AUTOBACKUP ON;
-CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
-SHOW ALL;
+RESTORE TABLESPACE users;
+RECOVER TABLESPACE users;
 ```
-
-### Backup completo
 
 ```rman
-BACKUP DATABASE PLUS ARCHIVELOG;
+RESTORE DATABASE;
+RECOVER DATABASE;
 ```
 
-### Backup incremental
+## 14. Limpeza opcional
 
-```rman
-BACKUP INCREMENTAL LEVEL 0 DATABASE TAG 'BKP_L0_MOD3';
-BACKUP INCREMENTAL LEVEL 1 DATABASE TAG 'BKP_L1_MOD3';
-```
-
-### Validar backups
-
-```rman
-VALIDATE DATABASE;
-RESTORE DATABASE VALIDATE;
-REPORT OBSOLETE;
-```
-
-### Cruzar catálogo
-
-```rman
-CROSSCHECK BACKUP;
-CROSSCHECK ARCHIVELOG ALL;
-```
-
-### Restore e recover de tablespace
-
-```rman
-RESTORE TABLESPACE ts_rman_lab;
-RECOVER TABLESPACE ts_rman_lab;
-```
-
-### Exemplo de PITR
-
-```rman
-RUN {
-  SET UNTIL TIME "TO_DATE('2026-04-14 10:00:00','YYYY-MM-DD HH24:MI:SS')";
-  RESTORE DATABASE;
-  RECOVER DATABASE;
-}
-```
-
-## 14. Exemplos práticos que valem reforçar
-
-## 14.1. Dump lógico antes de RMAN
-
-No módulo 3, vale reforçar que o primeiro raciocínio de dump em laboratório costuma ser:
-
-```txt
-expdp / impdp
-```
-
-Isso ajuda em:
-
-- laboratório;
-- desenvolvimento;
-- cópia de schema;
-- restore seletivo;
-- comparação com `pg_dump`, `mysqldump` e `mongodump`.
-
-## 14.2. RMAN como proteção séria
-
-Quando a conversa sai de dump lógico e entra em proteção operacional do banco, o pensamento muda para:
-
-```txt
-ARCHIVELOG + FRA + RMAN + retenção + teste de recovery
-```
-
-## 14.3. Recovery de instância
-
-É o cenário mais simples para demonstrar que o Oracle se recupera automaticamente após parada abrupta.
-
-Exemplo:
+Conectar como `SYSTEM` em `FREEPDB1`:
 
 ```sql
-SHUTDOWN ABORT;
-STARTUP;
+DROP USER app_rman_clone CASCADE;
+DROP USER app_rman CASCADE;
+DROP DIRECTORY dpump_mod3_dir;
 ```
 
-## 14.4. Recovery de datafile ou tablespace
+Arquivos do laboratorio:
 
-É o cenário que ajuda a turma a visualizar:
-
-- perda de arquivo físico;
-- restore;
-- recovery;
-- retorno ao estado consistente.
-
-## 14.5. Block recover
-
-Vale apresentar como recurso avançado, sem necessidade de induzir corrupção real em toda turma.
-
-Exemplo:
-
-```rman
-BLOCKRECOVER DATAFILE <FILE_ID> BLOCK <BLOCK_NUMBER>;
+```bash
+podman exec -it oracle-free-full-23ai rm -rf /opt/oracle/labbackup/dpump/*
+podman exec -it oracle-free-full-23ai rm -rf /opt/oracle/labbackup/rman/*
 ```
 
 ## 15. Resultado esperado
 
-Ao final da revisão, o que precisa ficar claro é:
+Ao final da revisao, precisa ficar claro:
 
-- backup não é recuperação;
-- `expdp` e `impdp` atendem dump e restore lógico;
-- `RMAN` atende proteção física, restore e recovery;
-- `ARCHIVELOG` é central para recuperação;
-- `FRA`, `control file` e `SPFILE` fazem parte da estratégia;
-- binários nativos Oracle precisam aparecer no fluxo prático do módulo;
-- recuperação precisa ser pensada como disciplina operacional, não só como comando.
+- `expdp` e `impdp` resolvem dump logico;
+- `ARCHIVELOG` amplia a capacidade de recuperacao;
+- `FRA` organiza arquivos de recovery;
+- `RMAN` protege a estrutura fisica do banco;
+- backup precisa ser validado;
+- restore real deve ser testado em ambiente controlado.
 
-## Scripts originais do módulo
+## Referencias internas
 
 - `modulo3-material/03-teoria-modulo3.md`
-  - base conceitual de backup e recuperação.
 - `modulo3-material/03-pratica-modulo3.md`
-  - roteiro prático completo com `Data Pump`, `ARCHIVELOG`, `RMAN`, restore e recovery.
