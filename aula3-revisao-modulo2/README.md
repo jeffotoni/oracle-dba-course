@@ -326,22 +326,13 @@ command -v impdp
 ```
 
 ```bash
-type sqlplus
-type sqlldr
-type expdp
-type impdp
-```
-
-Se esses comandos responderem com caminho válido, o ambiente está pronto para a prática operacional.
-
-### Validação curta dos binários
-
-```bash
 sqlplus -v
 sqlldr -help | head
 expdp help=y | head
 impdp help=y | head
 ```
+
+Se esses comandos responderem corretamente, o ambiente está pronto para a prática operacional.
 
 ## 10. Segurança e carga andam juntas
 
@@ -652,6 +643,35 @@ ORDER BY event_timestamp DESC
 FETCH FIRST 30 ROWS ONLY;
 ```
 
+### Acompanhar auditoria em outro terminal
+
+O `SQL*Plus` não tem um comando `watch` nativo como o Linux. Para acompanhar a trilha durante a demonstração, a opção simples é deixar outro terminal rodando uma consulta em loop.
+
+No terminal do host:
+
+```bash
+while true; do
+  clear
+  podman exec oracle-free-full-23ai sqlplus -s system/OraclePwd123@//localhost:1521/FREEPDB1 <<'SQL'
+SET PAGESIZE 50
+SET LINESIZE 180
+SELECT event_timestamp,
+       dbusername,
+       action_name,
+       object_schema,
+       object_name,
+       return_code
+FROM unified_audit_trail
+ORDER BY event_timestamp DESC
+FETCH FIRST 10 ROWS ONLY;
+EXIT;
+SQL
+  sleep 5
+done
+```
+
+Esse terminal serve apenas para observação. Em outro terminal ou cliente SQL, executar as ações que geram evidência.
+
 ### Entrar no container
 
 ```bash
@@ -671,29 +691,6 @@ sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
 - prepara o ambiente para `sqlldr`, `expdp` e `impdp`.
 
 > Regra prática: para consulta e administração diária, usar Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente. `sqlplus` entra aqui só quando fizer sentido validar o cliente nativo Oracle dentro do container.
-
-### Validação real dos binários no container
-
-```bash
-command -v sqlplus
-command -v sqlldr
-command -v expdp
-command -v impdp
-```
-
-```bash
-type sqlplus
-type sqlldr
-type expdp
-type impdp
-```
-
-```bash
-sqlplus -v
-sqlldr -help | head
-expdp help=y | head
-impdp help=y | head
-```
 
 ## 13.2. Exemplo de arquivo CSV para SQL*Loader e tabela externa
 
@@ -737,9 +734,38 @@ FIELDS TERMINATED BY ','
 
 ## 13.4. SQL*Loader na prática
 
-### Criar tabela de destino
+### Ordem prática
+
+```txt
+1. Criar o diretório físico no container
+2. Criar os arquivos produtos.csv e produtos.ctl no host
+3. Copiar os arquivos para o container
+4. Criar a tabela de destino no Oracle
+5. Executar o sqlldr dentro do container
+6. Validar a carga por SQL
+```
+
+### Criar diretório físico no container
+
+```bash
+podman exec -it oracle-free-full-23ai mkdir -p /opt/oracle/labdata
+```
+
+### Criar tabela de destino com SQL*Plus
+
+Entrar no container:
+
+```bash
+podman exec -it oracle-free-full-23ai bash
+```
 
 Conectar como `APP_OWNER`:
+
+```bash
+sqlplus app_owner/AppOwner123@//localhost:1521/FREEPDB1
+```
+
+Criar a tabela:
 
 ```sql
 CREATE TABLE produtos_carga (
@@ -750,14 +776,38 @@ CREATE TABLE produtos_carga (
 );
 ```
 
-### SQL*Loader
+Sair do SQL*Plus:
 
-Copiar arquivos do host para o container:
+```sql
+EXIT;
+```
+
+> Alternativa: a mesma tabela pode ser criada por Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente, conectado como `APP_OWNER`.
+
+### Copiar arquivos para o container
+
+Se ainda estiver dentro do container, sair para o terminal do host:
+
+```bash
+exit
+```
+
+No terminal do host, copiar os arquivos para o container:
 
 ```bash
 podman cp ./produtos.csv oracle-free-full-23ai:/opt/oracle/labdata/produtos.csv
 podman cp ./produtos.ctl oracle-free-full-23ai:/opt/oracle/labdata/produtos.ctl
 ```
+
+### Executar SQL*Loader dentro do container
+
+Entrar no container:
+
+```bash
+podman exec -it oracle-free-full-23ai bash
+```
+
+Executar a carga:
 
 ```bash
 sqlldr app_owner/AppOwner123@//localhost:1521/FREEPDB1 \
@@ -781,6 +831,8 @@ sqlldr app_owner/AppOwner123@//localhost:1521/FREEPDB1 \
 
 ### Validação da carga
 
+Validar pelo cliente SQL ou pelo `SQL*Plus`:
+
 ```sql
 SELECT *
 FROM produtos_carga
@@ -790,7 +842,7 @@ ORDER BY id_produto;
 ### Ver log gerado
 
 ```bash
-cat /opt/oracle/labdata/produtos_sqlldr.log
+podman exec -it oracle-free-full-23ai cat /opt/oracle/labdata/produtos_sqlldr.log
 ```
 
 ## 13.5. Tabela externa na prática
@@ -799,34 +851,16 @@ cat /opt/oracle/labdata/produtos_sqlldr.log
 
 Tabela externa permite ler um arquivo como se ele fosse uma tabela Oracle, sem fazer a carga definitiva logo no primeiro passo.
 
-### Exemplo didático da ideia
+### Ordem prática
 
-```sql
-CREATE TABLE clientes_ext (
-  id NUMBER,
-  nome VARCHAR2(100),
-  estado VARCHAR2(2)
-)
-ORGANIZATION EXTERNAL (
-  TYPE ORACLE_LOADER
-  DEFAULT DIRECTORY ext_dir
-  ACCESS PARAMETERS (
-    RECORDS DELIMITED BY NEWLINE
-    FIELDS TERMINATED BY ','
-  )
-  LOCATION ('arquivo.csv')
-);
-```
-
-```sql
-SELECT *
-FROM clientes_ext;
-```
-
-```sql
-INSERT INTO clientes
-SELECT *
-FROM clientes_ext;
+```txt
+1. Garantir que produtos.csv já está no container
+2. Criar DIRECTORY no Oracle apontando para /opt/oracle/labdata
+3. Conceder READ e WRITE no DIRECTORY para APP_OWNER
+4. Conectar como APP_OWNER
+5. Criar a tabela externa
+6. Consultar o arquivo usando SQL
+7. Opcionalmente materializar os dados em uma tabela interna
 ```
 
 ### Vantagens
@@ -840,9 +874,14 @@ FROM clientes_ext;
 - mais lento que SQL*Loader para carga definitiva;
 - depende do arquivo permanecer no disco.
 
+Conectar como usuário administrativo:
+
 ```sql
 CREATE OR REPLACE DIRECTORY lab_dir AS '/opt/oracle/labdata';
+GRANT READ, WRITE ON DIRECTORY lab_dir TO app_owner;
 ```
+
+Conectar como `APP_OWNER`:
 
 ```sql
 CREATE TABLE ext_produtos (
@@ -855,6 +894,18 @@ ORGANIZATION EXTERNAL
 (
   TYPE ORACLE_LOADER
   DEFAULT DIRECTORY lab_dir
+  ACCESS PARAMETERS
+  (
+    RECORDS DELIMITED BY NEWLINE
+    FIELDS TERMINATED BY ','
+    MISSING FIELD VALUES ARE NULL
+    (
+      id_produto,
+      nome_produto,
+      categoria,
+      preco
+    )
+  )
   LOCATION ('produtos.csv')
 )
 REJECT LIMIT UNLIMITED;
@@ -897,7 +948,39 @@ ORDER BY id_produto;
 
 ## 13.6. Data Pump na prática
 
+### Ordem prática
+
+```txt
+1. Garantir que APP_OWNER tem objetos e dados
+2. Garantir que APP_CLONE existe
+3. Criar DIRECTORY do Data Pump
+4. Conceder READ e WRITE no DIRECTORY
+5. Executar expdp dentro do container
+6. Executar impdp com REMAP_SCHEMA
+7. Validar os objetos importados em APP_CLONE
+```
+
+### Confirmar usuário clone
+
+O usuário `APP_CLONE` já foi criado no laboratório. Antes do `impdp`, vale confirmar ou reaplicar os privilégios necessários.
+
+Conectar como usuário administrativo:
+
+```sql
+SELECT username,
+       account_status,
+       default_tablespace
+FROM dba_users
+WHERE username = 'APP_CLONE';
+```
+
+```sql
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE TO app_clone;
+```
+
 ### Criar diretório lógico
+
+Conectar como usuário administrativo:
 
 ```sql
 CREATE OR REPLACE DIRECTORY dpump_dir AS '/opt/oracle/labdata';
@@ -907,6 +990,14 @@ GRANT READ, WRITE ON DIRECTORY dpump_dir TO app_clone;
 ```
 
 ### Exportar schema com `expdp`
+
+Entrar no container:
+
+```bash
+podman exec -it oracle-free-full-23ai bash
+```
+
+Executar exportação:
 
 ```bash
 expdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
@@ -932,28 +1023,36 @@ expdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
 ### Validar arquivo gerado no container
 
 ```bash
-ls -lah /opt/oracle/labdata
+podman exec -it oracle-free-full-23ai ls -lah /opt/oracle/labdata
 ```
 
 ```bash
-cat /opt/oracle/labdata/exp_app_owner_m2.log
+podman exec -it oracle-free-full-23ai cat /opt/oracle/labdata/exp_app_owner_m2.log
 ```
 
 ### Copiar dump para o host
+
+Se ainda estiver dentro do container, sair para o terminal do host:
+
+```bash
+exit
+```
+
+No terminal do host:
 
 ```bash
 podman cp oracle-free-full-23ai:/opt/oracle/labdata/app_owner_m2.dmp .
 ```
 
-### Preparar o usuário clone
+### Importar com remapeamento usando `impdp`
 
-Conectar como usuário administrativo:
+Entrar no container, se ainda não estiver nele:
 
-```sql
-GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE TO app_clone;
+```bash
+podman exec -it oracle-free-full-23ai bash
 ```
 
-### Importar com remapeamento usando `impdp`
+Executar importação:
 
 ```bash
 impdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
@@ -979,7 +1078,7 @@ FROM produtos;
 ```
 
 ```bash
-cat /opt/oracle/labdata/imp_app_clone_m2.log
+podman exec -it oracle-free-full-23ai cat /opt/oracle/labdata/imp_app_clone_m2.log
 ```
 
 ## 14. Limpeza rápida do laboratório
