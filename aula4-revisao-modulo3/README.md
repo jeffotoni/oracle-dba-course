@@ -259,18 +259,43 @@ Conectar na PDB como `SYSTEM` pelo terminal do host:
 podman exec -it oracle-free-full-23ai sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
 ```
 
+Criar tablespace dedicada para o laboratorio:
+
+```sql
+CREATE TABLESPACE ts_rman_lab
+  DATAFILE '/opt/oracle/oradata/FREE/FREEPDB1/ts_rman_lab01.dbf'
+  SIZE 100M
+  AUTOEXTEND ON NEXT 50M MAXSIZE 500M;
+```
+
+Validar se a tablespace foi criada:
+
+```sql
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+SELECT file_id,
+       file_name,
+       tablespace_name,
+       status
+FROM dba_data_files
+WHERE tablespace_name = 'TS_RMAN_LAB';
+```
+
 Criar usuarios:
 
 ```sql
 CREATE USER app_rman IDENTIFIED BY AppRman123
-  DEFAULT TABLESPACE USERS
+  DEFAULT TABLESPACE ts_rman_lab
   TEMPORARY TABLESPACE TEMP
-  QUOTA UNLIMITED ON USERS;
+  QUOTA UNLIMITED ON ts_rman_lab;
 
 CREATE USER app_rman_clone IDENTIFIED BY AppRmanClone123
-  DEFAULT TABLESPACE USERS
+  DEFAULT TABLESPACE ts_rman_lab
   TEMPORARY TABLESPACE TEMP
-  QUOTA UNLIMITED ON USERS;
+  QUOTA UNLIMITED ON ts_rman_lab;
 
 GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO app_rman;
 GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO app_rman_clone;
@@ -328,6 +353,30 @@ Validar:
 SELECT *
 FROM pedidos_lab
 ORDER BY id_pedido;
+
+SELECT table_name,
+       tablespace_name
+FROM user_tables
+WHERE table_name = 'PEDIDOS_LAB';
+```
+
+O resultado esperado e:
+
+```text
+PEDIDOS_LAB  TS_RMAN_LAB
+```
+
+Se aparecer `USERS`, a tabela foi criada antes da correcao do laboratorio ou o usuario nao estava usando a tablespace correta.
+
+Corrigir antes de fazer o backup RMAN:
+
+```sql
+ALTER TABLE pedidos_lab MOVE TABLESPACE ts_rman_lab;
+
+SELECT table_name,
+       tablespace_name
+FROM user_tables
+WHERE table_name = 'PEDIDOS_LAB';
 ```
 
 Sair:
@@ -478,21 +527,512 @@ FETCH FIRST 10 ROWS ONLY;
 
 ## 13. Restore e recovery
 
-Para esta revisao, o foco pratico fica em:
+Para esta revisao, o restore deve usar uma tablespace dedicada.
 
-- criar backup;
-- listar backup;
-- validar backup;
-- validar restore com `RESTORE DATABASE VALIDATE`.
+Nao usar `USERS` neste laboratorio.
 
-Restore real de datafile, tablespace ou banco inteiro deve ser feito em uma simulacao controlada, porque envolve indisponibilidade, arquivos fisicos e risco de quebrar o laboratorio durante a aula.
+Motivo:
 
-Exemplos para explicar, sem executar como passo principal:
+- `USERS` pode existir no `CDB$ROOT` e na `PDB`;
+- em ambiente multitenant, isso pode confundir o alvo do restore;
+- o erro `ORA-19573` / `ORA-19890` aparece quando o datafile que o RMAN tentou restaurar ainda esta em uso;
+- com `TS_RMAN_LAB`, o alvo fica isolado, visivel e seguro para a demonstracao.
+
+Fluxo mental do teste:
+```mermaid
+flowchart TD
+    A[TS_RMAN_LAB OK]
+    B[Backup RMAN]
+    C[Offline]
+    D[Restore Datafile]
+    E[Recover Datafile]
+    F[Online]
+    G[Validação SQL]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+```
+
+### 13.1. Identificar o datafile correto
+
+Conectar como `SYSDBA`:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+Executar:
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+SELECT file_id,
+       file_name,
+       tablespace_name,
+       status
+FROM dba_data_files
+WHERE tablespace_name = 'TS_RMAN_LAB';
+```
+
+Anotar o `FILE_ID` retornado.
+
+Se retornar `no rows selected`, a tablespace `TS_RMAN_LAB` ainda nao existe na `FREEPDB1`.
+
+Nesse caso, ainda como `SYSDBA`, executar:
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+ORDER BY tablespace_name;
+
+CREATE TABLESPACE ts_rman_lab
+  DATAFILE '/opt/oracle/oradata/FREE/FREEPDB1/ts_rman_lab01.dbf'
+  SIZE 100M
+  AUTOEXTEND ON NEXT 50M MAXSIZE 500M;
+
+SELECT file_id,
+       file_name,
+       tablespace_name,
+       status
+FROM dba_data_files
+WHERE tablespace_name = 'TS_RMAN_LAB';
+```
+
+Se `APP_RMAN` e `APP_RMAN_CLONE` ja tinham sido criados antes usando outra tablespace, o caminho mais limpo para aula e recriar os usuarios:
+
+```sql
+DROP USER app_rman_clone CASCADE;
+DROP USER app_rman CASCADE;
+```
+
+Depois, voltar ao passo `8. Criar schema de laboratorio`, criar os usuarios novamente e refazer o backup antes do restore.
+
+Exemplo:
+
+```text
+FILE_ID  FILE_NAME                                              TABLESPACE_NAME  STATUS
+------   -----------------------------------------------------  ---------------  ---------
+18       /opt/oracle/oradata/FREE/FREEPDB1/ts_rman_lab01.dbf   TS_RMAN_LAB      AVAILABLE
+```
+
+Sair:
+
+```sql
+EXIT;
+```
+
+### 13.2. Fazer backup antes do teste
+
+Entrar no RMAN:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "rman target /"
+```
+
+Executar backup:
 
 ```rman
-RESTORE TABLESPACE users;
-RECOVER TABLESPACE users;
+BACKUP AS BACKUPSET DATABASE
+  FORMAT '/opt/oracle/labbackup/rman/db_%U.bkp';
+
+BACKUP AS BACKUPSET ARCHIVELOG ALL
+  FORMAT '/opt/oracle/labbackup/rman/arch_%U.bkp';
+
+LIST BACKUP SUMMARY;
+EXIT;
 ```
+
+### 13.3. Colocar a tablespace offline
+
+Conectar como `SYSDBA`:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+Executar:
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER TABLESPACE ts_rman_lab OFFLINE IMMEDIATE;
+
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+SELECT file#,
+       name,
+       status,
+       enabled
+FROM v$datafile
+WHERE name LIKE '%ts_rman_lab01.dbf';
+
+EXIT;
+```
+
+### 13.4. Restaurar e recuperar o datafile
+
+Antes de restaurar, confirmar novamente o `FILE_ID`.
+
+Conectar como `SYSDBA`:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+Executar:
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+SELECT file_id,
+       file_name,
+       tablespace_name,
+       status
+FROM dba_data_files
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+EXIT;
+```
+
+Entrar no RMAN:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "rman target /"
+```
+
+Executar usando o numero real do `FILE_ID` encontrado na etapa anterior.
+
+Importante: nao copiar `<FILE_ID>` literalmente. Ele e apenas um marcador para substituir pelo numero retornado na consulta.
+
+```rman
+RESTORE DATAFILE <FILE_ID>;
+RECOVER DATAFILE <FILE_ID>;
+EXIT;
+```
+
+Exemplo, se o `FILE_ID` for `18`:
+
+```rman
+RESTORE DATAFILE 18;
+RECOVER DATAFILE 18;
+EXIT;
+```
+
+### 13.5. Colocar a tablespace online novamente
+
+Importante: nao executar `ALTER SESSION SET CONTAINER` dentro do RMAN.
+
+O RMAN faz `RESTORE` e `RECOVER`.
+
+O comando para colocar a tablespace ou datafile online deve ser feito no `SQL*Plus`, conectado como `SYSDBA`.
+
+Conectar como `SYSDBA`:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+Executar:
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+ALTER TABLESPACE ts_rman_lab ONLINE;
+
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+SELECT file#,
+       name,
+       status,
+       enabled
+FROM v$datafile
+WHERE name LIKE '%ts_rman_lab01.dbf';
+
+EXIT;
+```
+
+Se a tablespace nao voltar com `ALTER TABLESPACE`, colocar o datafile online pelo caminho completo:
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+ALTER DATABASE DATAFILE '/opt/oracle/oradata/FREE/FREEPDB1/ts_rman_lab01.dbf' ONLINE;
+
+SELECT file#,
+       name,
+       status,
+       enabled
+FROM v$datafile
+WHERE name LIKE '%ts_rman_lab01.dbf';
+
+EXIT;
+```
+
+### 13.6. Validar os dados
+
+Conectar como `APP_RMAN`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus app_rman/AppRman123@//localhost:1521/FREEPDB1
+```
+
+Executar:
+
+```sql
+SELECT *
+FROM pedidos_lab
+ORDER BY id_pedido;
+
+SELECT table_name,
+       tablespace_name
+FROM user_tables
+WHERE table_name = 'PEDIDOS_LAB';
+
+EXIT;
+```
+
+### 13.7. Confirmação completa do fluxo
+
+Este bloco serve para repetir o teste de ponta a ponta depois que o ambiente ja esta preparado.
+
+Objetivo:
+
+```text
+backup -> offline -> restore -> recover -> online -> validacao
+```
+
+#### 13.7.1. Descobrir o `FILE_ID`
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+SELECT file_id,
+       file_name,
+       tablespace_name,
+       status
+FROM dba_data_files
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+EXIT;
+```
+
+Guardar o `FILE_ID` retornado.
+
+#### 13.7.2. Fazer backup RMAN
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "rman target /"
+```
+
+```rman
+BACKUP AS BACKUPSET DATABASE
+  FORMAT '/opt/oracle/labbackup/rman/db_%U.bkp';
+
+BACKUP AS BACKUPSET ARCHIVELOG ALL
+  FORMAT '/opt/oracle/labbackup/rman/arch_%U.bkp';
+
+LIST BACKUP SUMMARY;
+EXIT;
+```
+
+#### 13.7.3. Colocar a tablespace offline
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+ALTER TABLESPACE ts_rman_lab OFFLINE IMMEDIATE;
+
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+EXIT;
+```
+
+#### 13.7.4. Restaurar e recuperar
+
+Trocar `16` pelo `FILE_ID` real do ambiente.
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "rman target /"
+```
+
+```rman
+RESTORE DATAFILE 16;
+RECOVER DATAFILE 16;
+EXIT;
+```
+
+#### 13.7.5. Colocar online
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+ALTER TABLESPACE ts_rman_lab ONLINE;
+
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+SELECT file#,
+       name,
+       status,
+       enabled
+FROM v$datafile
+WHERE name LIKE '%ts_rman_lab01.dbf';
+
+EXIT;
+```
+
+#### 13.7.6. Validar dados
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus app_rman/AppRman123@//localhost:1521/FREEPDB1
+```
+
+```sql
+SELECT *
+FROM pedidos_lab
+ORDER BY id_pedido;
+
+SELECT table_name,
+       tablespace_name
+FROM user_tables
+WHERE table_name = 'PEDIDOS_LAB';
+
+EXIT;
+```
+
+Resultado esperado:
+
+```text
+PEDIDOS_LAB  TS_RMAN_LAB
+```
+
+### 13.8. Correção se a tabela ficou em `USERS`
+
+Este bloco nao faz parte do fluxo principal.
+
+Usar somente se o laboratorio foi executado antes da criacao da `TS_RMAN_LAB` e a tabela ficou em `USERS`.
+
+Diagnosticar como `SYSDBA`:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+SELECT owner,
+       table_name,
+       tablespace_name
+FROM dba_tables
+WHERE table_name = 'PEDIDOS_LAB'
+ORDER BY owner;
+
+SELECT file#,
+       name,
+       status,
+       enabled
+FROM v$datafile
+WHERE name LIKE '%users01.dbf';
+
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+WHERE tablespace_name = 'USERS';
+
+EXIT;
+```
+
+Se o datafile `users01.dbf` estiver offline ou em recovery, recuperar com RMAN:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "rman target /"
+```
+
+```rman
+RESTORE DATAFILE 15;
+RECOVER DATAFILE 15;
+EXIT;
+```
+
+Importante: trocar `15` pelo `FILE#` real do `users01.dbf`, se no seu ambiente for outro numero.
+
+Depois, colocar o datafile/tablespace online pelo `SQL*Plus`, nao pelo RMAN:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+ALTER DATABASE DATAFILE '/opt/oracle/oradata/FREE/FREEPDB1/users01.dbf' ONLINE;
+ALTER TABLESPACE users ONLINE;
+
+SELECT file#,
+       name,
+       status,
+       enabled
+FROM v$datafile
+WHERE name LIKE '%users01.dbf';
+
+EXIT;
+```
+
+Agora mover a tabela para a tablespace correta:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus app_rman/AppRman123@//localhost:1521/FREEPDB1
+```
+
+```sql
+ALTER TABLE pedidos_lab MOVE TABLESPACE ts_rman_lab;
+
+SELECT table_name,
+       tablespace_name
+FROM user_tables
+WHERE table_name = 'PEDIDOS_LAB';
+
+EXIT;
+```
+
+Depois dessa correção, refazer o backup RMAN antes de qualquer novo teste de restore.
+
+### 13.9. Restore completo do banco
+
+Restore completo do banco fica apenas como explicacao nesta aula.
+
+Ele exige janela controlada, banco montado, avaliacao de impacto e cuidado com arquivos fisicos.
+
+Exemplo conceitual:
 
 ```rman
 RESTORE DATABASE;
@@ -506,6 +1046,7 @@ Conectar como `SYSTEM` em `FREEPDB1`:
 ```sql
 DROP USER app_rman_clone CASCADE;
 DROP USER app_rman CASCADE;
+DROP TABLESPACE ts_rman_lab INCLUDING CONTENTS AND DATAFILES;
 DROP DIRECTORY dpump_mod3_dir;
 ```
 

@@ -55,7 +55,26 @@ Browser / curl / Insomnia
           ↓
        FREEPDB1
           ↓
- JEFF.LLM_MODELS / API_CLIENTS / API_REQUESTS
+ <SEU_USER>.LLM_MODELS / API_CLIENTS / API_REQUESTS
+```
+
+Na prática com `Podman`:
+
+```txt
+Browser / curl
+     |
+     | http://localhost:8181/ords/<seu-user>/
+     v
+Container ORDS
+     |
+     | DBHOST=host.containers.internal
+     | DBPORT=1522
+     | DBSERVICENAME=FREEPDB1
+     v
+Host local:1522
+     |
+     v
+Container Oracle:1521/FREEPDB1
 ```
 
 ## Ferramentas que podem ser usadas
@@ -104,6 +123,37 @@ Senha administrativa: OraclePwd123
 Porta ORDS: 8181
 ```
 
+## Usuário usado nos exemplos
+
+O padrão didático da aula é:
+
+```txt
+Usuário exemplo: jeff
+Senha exemplo: StrongPass123
+Schema Oracle: JEFF
+Base path ORDS: jeff
+URL final: http://localhost:8181/ords/jeff/
+```
+
+Se cada aluno criar seu próprio usuário, substituir:
+
+```txt
+jeff -> <seu-user>
+JEFF -> <SEU_USER>
+StrongPass123 -> <sua-senha>
+```
+
+Importante: `<seu-user>`, `<SEU_USER>` e `<sua-senha>` são marcadores didáticos. Não copiar os sinais `<` e `>` no SQL.
+
+Exemplo:
+
+```txt
+Usuário Oracle: maria
+Schema Oracle: MARIA
+Base path ORDS: maria
+URL final: http://localhost:8181/ords/maria/
+```
+
 ## Quick start
 
 ## 1. Subir Oracle
@@ -133,11 +183,15 @@ Password: OraclePwd123
 
 ## 2. Login no registry da Oracle
 
+Este passo pode ser opcional se a imagem já estiver disponível localmente ou se o registry não exigir autenticação no ambiente.
+
 ```bash
 podman login container-registry.oracle.com
 ```
 
 ## 3. Baixar a imagem do ORDS
+
+Este passo também pode ser opcional, porque o `podman run` tenta baixar a imagem se ela ainda não existir localmente.
 
 ```bash
 podman pull container-registry.oracle.com/database/ords:latest
@@ -150,6 +204,24 @@ podman volume create ords-config
 ```
 
 ## 5. Subir o ORDS
+
+Aqui acontece o ponto principal da comunicação entre containers.
+
+O Oracle está no container `oracle-free-full-23ai`, mas exposto no host pela porta `1522`.
+
+O ORDS sobe em outro container e acessa o Oracle usando:
+
+```txt
+DBHOST=host.containers.internal
+DBPORT=1522
+DBSERVICENAME=FREEPDB1
+```
+
+Ou seja:
+
+```txt
+ORDS container -> host.containers.internal:1522 -> Oracle container:1521/FREEPDB1
+```
 
 ```bash
 podman run -d \
@@ -183,6 +255,10 @@ Dentro do container:
 ords --config /etc/ords/config install
 ```
 
+Nesta instalação o ORDS grava a configuração em `/etc/ords/config` e cria/valida os metadados necessários no Oracle.
+
+É aqui que o ORDS confirma a conexão com o Oracle Database.
+
 ### Valores esperados na instalação
 
 ```txt
@@ -213,15 +289,72 @@ curl http://localhost:8181/ords/
 
 > Esta consulta deve ser executada com `SYSTEM` ou `SYS`, não com `JEFF`.
 
+Depois do comando `ords --config /etc/ords/config install`, o ORDS cria objetos internos dentro do Oracle.
+
+É por isso que depois conseguimos executar:
+
+```sql
+ORDS.ENABLE_SCHEMA
+ORDS.ENABLE_OBJECT
+```
+
+Antes da instalação, esses pacotes podem não existir no banco.
+
+Conectar como `SYSTEM`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
+```
+
+Executar:
+
 ```sql
 SELECT username
 FROM dba_users
 WHERE username LIKE 'ORDS%';
+
+SELECT owner,
+       object_name,
+       object_type,
+       status
+FROM all_objects
+WHERE object_name = 'ORDS'
+ORDER BY owner, object_type;
+
+EXIT;
 ```
 
 ## 11. Criar usuário da aula
 
-Conectar como `system` ou `sys` e executar:
+Conectar como `SYSTEM`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
+```
+
+Modelo para cada aluno:
+
+```sql
+CREATE USER <seu-user> IDENTIFIED BY <sua-senha>
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO <seu-user>;
+```
+
+Exemplo real de substituição:
+
+```sql
+CREATE USER maria IDENTIFIED BY StrongPass123
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO maria;
+```
+
+Exemplo usado na aula:
 
 ```sql
 CREATE USER jeff IDENTIFIED BY StrongPass123
@@ -230,11 +363,21 @@ CREATE USER jeff IDENTIFIED BY StrongPass123
   QUOTA UNLIMITED ON USERS;
 
 GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO jeff;
+
+EXIT;
 ```
 
 ## 12. Criar as tabelas da aula
 
-Conectar como `JEFF` e executar:
+Conectar com o usuário da aula.
+
+Exemplo com `jeff`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus jeff/StrongPass123@//localhost:1521/FREEPDB1
+```
+
+Executar no SQL*Plus aberto acima:
 
 ```sql
 CREATE TABLE llm_models (
@@ -274,6 +417,14 @@ CREATE TABLE api_requests (
 ```
 
 ## 13. Inserts iniciais da aula
+
+Executar ainda conectado como o usuário da aula.
+
+Exemplo:
+
+```txt
+Sessão atual: sqlplus jeff/StrongPass123@//localhost:1521/FREEPDB1
+```
 
 ### 13.1. Modelos
 
@@ -330,6 +481,8 @@ COMMIT;
 
 ## 14. Validar as tabelas e dados
 
+Executar ainda conectado como o usuário da aula.
+
 ```sql
 SELECT table_name
 FROM user_tables
@@ -353,7 +506,34 @@ FROM api_requests;
 
 ## 15. Habilitar o schema REST
 
-Conectar como `JEFF` e executar:
+Executar ainda conectado como o usuário da aula.
+
+Se a sessão foi encerrada, conectar novamente.
+
+Exemplo com `jeff`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus jeff/StrongPass123@//localhost:1521/FREEPDB1
+```
+
+Modelo para cada aluno:
+
+```sql
+BEGIN
+  ORDS.ENABLE_SCHEMA(
+    p_enabled             => TRUE,
+    p_schema              => '<SEU_USER>',
+    p_url_mapping_type    => 'BASE_PATH',
+    p_url_mapping_pattern => '<seu-user>',
+    p_auto_rest_auth      => FALSE
+  );
+END;
+/
+
+COMMIT;
+```
+
+Exemplo usado na aula:
 
 ```sql
 BEGIN
@@ -371,6 +551,22 @@ COMMIT;
 ```
 
 ## 16. Habilitar as tabelas REST
+
+Executar ainda no mesmo SQL*Plus do passo anterior.
+
+Exemplo:
+
+```txt
+Sessão atual: sqlplus jeff/StrongPass123@//localhost:1521/FREEPDB1
+```
+
+Se a sessão foi encerrada, conectar novamente:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus jeff/StrongPass123@//localhost:1521/FREEPDB1
+```
+
+Se cada aluno estiver usando outro usuário, trocar `JEFF` pelo schema em maiúsculo.
 
 ### 16.1. `LLM_MODELS`
 
@@ -420,13 +616,23 @@ END;
 COMMIT;
 ```
 
+Depois de habilitar as três tabelas, sair do SQL*Plus:
+
+```sql
+EXIT;
+```
+
 ## 17. Endpoints esperados
+
+Exemplo usando o usuário `jeff`:
 
 ```txt
 http://localhost:8181/ords/jeff/llm_models/
 http://localhost:8181/ords/jeff/api_clients/
 http://localhost:8181/ords/jeff/api_requests/
 ```
+
+Se o usuário for outro, trocar `jeff` pelo `base path` configurado no `ORDS.ENABLE_SCHEMA`.
 
 ## 18. Curls para teste
 
