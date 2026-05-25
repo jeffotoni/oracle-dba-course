@@ -387,7 +387,7 @@ CREATE TABLE llm_models (
   input_token_limit  NUMBER NOT NULL,
   output_token_limit NUMBER NOT NULL,
   ativo              CHAR(1) DEFAULT 'S' NOT NULL,
-  created_at         TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL
+  created_at         TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL
 );
 
 CREATE TABLE api_clients (
@@ -397,7 +397,7 @@ CREATE TABLE api_clients (
   email_responsavel  VARCHAR2(150) NOT NULL,
   api_key            VARCHAR2(100) NOT NULL,
   ativo              CHAR(1) DEFAULT 'S' NOT NULL,
-  created_at         TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL
+  created_at         TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL
 );
 
 CREATE TABLE api_requests (
@@ -408,12 +408,25 @@ CREATE TABLE api_requests (
   response_chars     NUMBER NOT NULL,
   status_code        NUMBER NOT NULL,
   latency_ms         NUMBER NOT NULL,
-  created_at         TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL,
+  created_at         TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL,
   CONSTRAINT fk_api_requests_client
     FOREIGN KEY (client_id) REFERENCES api_clients(id),
   CONSTRAINT fk_api_requests_model
     FOREIGN KEY (model_id) REFERENCES llm_models(id)
 );
+```
+
+Se as tabelas ja existiam e foram criadas sem `DEFAULT ON NULL`, aplicar ajuste:
+
+```sql
+ALTER TABLE llm_models
+  MODIFY (created_at TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL);
+
+ALTER TABLE api_clients
+  MODIFY (created_at TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL);
+
+ALTER TABLE api_requests
+  MODIFY (created_at TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL);
 ```
 
 ## 13. Inserts iniciais da aula
@@ -723,6 +736,12 @@ curl -X POST http://localhost:8181/ords/jeff/api_requests/ \
 
 ## 18.4. PUT
 
+No ORDS AutoREST, `PUT` costuma tratar o body como substituicao completa do registro.
+
+Se um campo `NOT NULL` nao for enviado, o ORDS pode tentar gravar `NULL` e retornar erro de integridade.
+
+Por isso, envie tambem `created_at` no `PUT`.
+
 ### Atualizar modelo
 
 ```bash
@@ -733,7 +752,8 @@ curl -X PUT http://localhost:8181/ords/jeff/llm_models/1 \
     "provider": "openai",
     "input_token_limit": 128000,
     "output_token_limit": 32768,
-    "ativo": "S"
+    "ativo": "S",
+    "created_at": "2026-05-25T00:00:00Z"
   }'
 ```
 
@@ -747,11 +767,24 @@ curl -X PUT http://localhost:8181/ords/jeff/api_clients/1 \
     "app_name": "portal-web",
     "email_responsavel": "produto-api@empresa.com",
     "api_key": "KEY-PORTAL-001-NEW",
-    "ativo": "S"
+    "ativo": "S",
+    "created_at": "2026-05-25T00:00:00Z"
   }'
 ```
 
-## 18.5. DELETE
+## 18.5. PATCH (recomendado para update parcial)
+
+### Atualizar somente o limite de saída do modelo
+
+```bash
+curl -X PATCH http://localhost:8181/ords/jeff/llm_models/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "output_token_limit": 32768
+  }'
+```
+
+## 18.6. DELETE
 
 ### Remover requisição
 
