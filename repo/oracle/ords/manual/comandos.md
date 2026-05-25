@@ -106,7 +106,8 @@ CREATE TABLE llm_model (
   provider           VARCHAR2(100),
   input_token_limit  NUMBER,
   output_token_limit NUMBER,
-  ativo              CHAR(1) DEFAULT 'S'
+  ativo              CHAR(1) DEFAULT 'S',
+  created_at         TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL
 );
 
 INSERT INTO llm_model (nome, provider, input_token_limit, output_token_limit, ativo)
@@ -122,6 +123,15 @@ INSERT INTO llm_model (nome, provider, input_token_limit, output_token_limit, at
 VALUES ('gemini-1.5-pro', 'google', 1000000, 8192, 'S');
 
 COMMIT;
+```
+
+## Ajuste para ambiente ja criado
+
+Se a tabela `LLM_MODEL` ja existia sem `DEFAULT ON NULL`, corrigir com:
+
+```sql
+ALTER TABLE llm_model
+  MODIFY (created_at TIMESTAMP DEFAULT ON NULL SYSTIMESTAMP NOT NULL);
 ```
 
 ## Habilitar schema REST
