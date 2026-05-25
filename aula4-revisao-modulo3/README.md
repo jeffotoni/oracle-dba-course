@@ -368,7 +368,72 @@ PEDIDOS_LAB  TS_RMAN_LAB
 
 Se aparecer `USERS`, a tabela foi criada antes da correcao do laboratorio ou o usuario nao estava usando a tablespace correta.
 
-Corrigir antes de fazer o backup RMAN:
+Corrigir antes de fazer o backup RMAN, na ordem abaixo.
+
+1) Garantir `TS_RMAN_LAB` online como `SYSDBA`:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "sqlplus / as sysdba"
+```
+
+```sql
+ALTER SESSION SET CONTAINER = FREEPDB1;
+
+ALTER TABLESPACE ts_rman_lab ONLINE;
+
+SELECT tablespace_name,
+       status
+FROM dba_tablespaces
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+SELECT file_id,
+       file_name,
+       status
+FROM dba_data_files
+WHERE tablespace_name = 'TS_RMAN_LAB';
+
+EXIT;
+```
+
+Se der `ORA-01113` / `needs media recovery`, recuperar no `RMAN`:
+
+```bash
+podman exec -it oracle-free-full-23ai bash -lc "rman target /"
+```
+
+```rman
+RECOVER DATAFILE 16;
+EXIT;
+```
+
+Importante: trocar `16` pelo `FILE_ID` real da `TS_RMAN_LAB`.
+
+2) Garantir quota do `APP_RMAN` na `TS_RMAN_LAB` como `SYSTEM`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
+```
+
+```sql
+ALTER USER app_rman QUOTA UNLIMITED ON ts_rman_lab;
+
+SELECT username,
+       tablespace_name,
+       max_bytes
+FROM dba_ts_quotas
+WHERE username = 'APP_RMAN'
+  AND tablespace_name = 'TS_RMAN_LAB';
+
+EXIT;
+```
+
+Se der `ORA-01950` (insufficient quota), este passo resolve.
+
+3) Mover a tabela como `APP_RMAN`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus app_rman/AppRman123@//localhost:1521/FREEPDB1
+```
 
 ```sql
 ALTER TABLE pedidos_lab MOVE TABLESPACE ts_rman_lab;
@@ -396,7 +461,23 @@ podman exec -it oracle-free-full-23ai expdp system/OraclePwd123@//localhost:1521
   DIRECTORY=dpump_mod3_dir \
   DUMPFILE=app_rman_m3.dmp \
   LOGFILE=app_rman_m3_exp.log \
-  SCHEMAS=APP_RMAN
+  SCHEMAS=APP_RMAN \
+  REUSE_DUMPFILES=Y
+```
+
+Ou executar direto no container
+
+```bash
+podman exec -it oracle-free-full-23ai bash
+```
+
+```bash
+expdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
+    DIRECTORY=dpump_mod3_dir \
+    DUMPFILE=app_rman_m3.dmp \
+    LOGFILE=app_rman_m3_exp.log \
+    SCHEMAS=APP_RMAN \
+    REUSE_DUMPFILES=Y
 ```
 
 Validar arquivos:
@@ -404,6 +485,7 @@ Validar arquivos:
 ```bash
 podman exec -it oracle-free-full-23ai ls -lah /opt/oracle/labbackup/dpump
 podman exec -it oracle-free-full-23ai cat /opt/oracle/labbackup/dpump/app_rman_m3_exp.log
+
 ```
 
 ### Importar com `impdp`
@@ -412,6 +494,20 @@ No terminal do host:
 
 ```bash
 podman exec -it oracle-free-full-23ai impdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
+  DIRECTORY=dpump_mod3_dir \
+  DUMPFILE=app_rman_m3.dmp \
+  LOGFILE=app_rman_m3_imp.log \
+  REMAP_SCHEMA=APP_RMAN:APP_RMAN_CLONE
+```
+
+Ou executar direto no container
+
+```bash
+podman exec -it oracle-free-full-23ai bash
+```
+
+```bash
+impdp system/OraclePwd123@//localhost:1521/FREEPDB1 \
   DIRECTORY=dpump_mod3_dir \
   DUMPFILE=app_rman_m3.dmp \
   LOGFILE=app_rman_m3_imp.log \
@@ -452,21 +548,19 @@ CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF 7 DAYS;
 SHOW ALL;
 ```
 
-Backup fisico do banco:
+**Backup fisico do banco:**
 
 ```rman
-BACKUP AS BACKUPSET DATABASE
-  FORMAT '/opt/oracle/labbackup/rman/db_%U.bkp';
+BACKUP AS BACKUPSET DATABASE FORMAT '/opt/oracle/labbackup/rman/db_%U.bkp';
 ```
 
-Backup dos archived logs:
+**Backup dos archived logs:**
 
 ```rman
-BACKUP AS BACKUPSET ARCHIVELOG ALL
-  FORMAT '/opt/oracle/labbackup/rman/arch_%U.bkp';
+BACKUP AS BACKUPSET ARCHIVELOG ALL FORMAT '/opt/oracle/labbackup/rman/arch_%U.bkp';
 ```
 
-Validar:
+**Validar:**
 
 ```rman
 LIST BACKUP SUMMARY;
@@ -482,13 +576,19 @@ Sair:
 EXIT;
 ```
 
-Validar arquivos no host:
+**Validar arquivos no host:**
 
 ```bash
 podman exec -it oracle-free-full-23ai ls -lah /opt/oracle/labbackup/rman
 ```
 
 ## 12. Consultas de observacao
+
+Usar usuário system
+```bash
+podman exec -it oracle-free-full-23ai bash
+sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
+```
 
 ### FRA
 
@@ -639,11 +739,9 @@ podman exec -it oracle-free-full-23ai bash -lc "rman target /"
 Executar backup:
 
 ```rman
-BACKUP AS BACKUPSET DATABASE
-  FORMAT '/opt/oracle/labbackup/rman/db_%U.bkp';
+BACKUP AS BACKUPSET DATABASE FORMAT '/opt/oracle/labbackup/rman/db_%U.bkp';
 
-BACKUP AS BACKUPSET ARCHIVELOG ALL
-  FORMAT '/opt/oracle/labbackup/rman/arch_%U.bkp';
+BACKUP AS BACKUPSET ARCHIVELOG ALL FORMAT '/opt/oracle/labbackup/rman/arch_%U.bkp';
 
 LIST BACKUP SUMMARY;
 EXIT;
@@ -1021,6 +1119,19 @@ SELECT table_name,
 FROM user_tables
 WHERE table_name = 'PEDIDOS_LAB';
 
+EXIT;
+```
+
+Se aparecer `ORA-01542` (tablespace offline), voltar ao passo de colocar `TS_RMAN_LAB` online.
+
+Se aparecer `ORA-01950` (insufficient quota), conceder quota com `SYSTEM`:
+
+```bash
+podman exec -it oracle-free-full-23ai sqlplus system/OraclePwd123@//localhost:1521/FREEPDB1
+```
+
+```sql
+ALTER USER app_rman QUOTA UNLIMITED ON ts_rman_lab;
 EXIT;
 ```
 

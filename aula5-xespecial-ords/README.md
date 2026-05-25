@@ -539,7 +539,7 @@ Exemplo usado na aula:
 BEGIN
   ORDS.ENABLE_SCHEMA(
     p_enabled             => TRUE,
-    p_schema              => 'JEFF',
+    p_schema              => 'jeff',
     p_url_mapping_type    => 'BASE_PATH',
     p_url_mapping_pattern => 'jeff',
     p_auto_rest_auth      => FALSE
