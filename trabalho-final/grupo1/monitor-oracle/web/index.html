@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Oracle - Monitoramento</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Dashboard Oracle</h1>
+      <p>Monitoramento simples de estatísticas do banco via ORDS</p>
+    </div>
+
+    <div class="topbar-actions">
+      <span id="status-pill" class="status-pill status-loading">Carregando</span>
+      <button id="refresh-button" type="button">Atualizar agora</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="info-panel">
+      <div>
+        <span class="label">API ORDS</span>
+        <strong id="api-base">-</strong>
+      </div>
+
+      <div>
+        <span class="label">Última atualização</span>
+        <strong id="last-updated">-</strong>
+      </div>
+
+      <div>
+        <span class="label">Atualização automática</span>
+        <strong>A cada 10 segundos</strong>
+      </div>
+    </section>
+
+    <section class="cards-grid">
+      <article class="card">
+        <span class="card-label">Healthcheck</span>
+        <strong id="card-health">-</strong>
+        <small>Valida se a API ORDS está respondendo.</small>
+      </article>
+
+      <article class="card">
+        <span class="card-label">Instância</span>
+        <strong id="card-instance-name">-</strong>
+        <small id="card-instance-status">Status: -</small>
+      </article>
+
+      <article class="card">
+        <span class="card-label">Banco</span>
+        <strong id="card-database-name">-</strong>
+        <small id="card-database-mode">Open mode: -</small>
+      </article>
+
+      <article class="card">
+        <span class="card-label">Container atual</span>
+        <strong id="card-container">-</strong>
+        <small>Contexto de execução da sessão Oracle.</small>
+      </article>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Sessões por usuário</h2>
+            <p>Agrupamento por usuário e status da sessão.</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Usuário</th>
+                <th>Status</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="sessions-table-body">
+              <tr>
+                <td colspan="3">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Waits principais</h2>
+            <p>Eventos de espera com maior tempo acumulado.</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Evento</th>
+                <th>Total waits</th>
+                <th>Tempo esperado</th>
+              </tr>
+            </thead>
+            <tbody id="waits-table-body">
+              <tr>
+                <td colspan="3">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <h2>SQLs mais custosos</h2>
+            <p>Consultas ordenadas por tempo acumulado de execução.</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>SQL ID</th>
+                <th>Execuções</th>
+                <th>Elapsed time</th>
+                <th>CPU time</th>
+                <th>Buffer gets</th>
+              </tr>
+            </thead>
+            <tbody id="sql-table-body">
+              <tr>
+                <td colspan="5">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="panel panel-wide">
+        <div class="panel-header">
+          <div>
+            <h2>Uso de tablespaces</h2>
+            <p>Percentual de uso dos espaços de armazenamento.</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Tablespace</th>
+                <th>Uso</th>
+                <th>Indicador</th>
+              </tr>
+            </thead>
+            <tbody id="tablespaces-table-body">
+              <tr>
+                <td colspan="3">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Projeto acadêmico - Monitoramento simples Oracle com ORDS</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
