@@ -1,5 +1,9 @@
 # Curso Oracle Database Administration (DBA)
 
+## Contribuindo
+
+Para contribuir com este repositório, leia as orientações em [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## ✦ Sobre o autor
 
 Desenvolvido por **Jefferson Otoni Lima (Jeffotoni)**, **Engenheiro de Software Sênior**, **Arquiteto de Soluções** e **instrutor técnico**, com mais de **22 anos de experiência** na construção de sistemas distribuídos de alta performance.
@@ -331,3 +335,7 @@ Para o curso, a linha principal continua sendo `Podman` com uma IDE SQL disponí
 - pratica Oracle: `modulo0-guia-pratico`, `podman` e `repo/oracle`;
 - pratica de aplicacao: `repo/go.oracle/v1`;
 - aprofundamento administrativo: `modulo1` ao `modulo5`.
+
+## Contribuindo
+
+Se quiser colaborar com conteúdo, correções ou exemplos, siga o guia em [CONTRIBUTING.md](./CONTRIBUTING.md).
