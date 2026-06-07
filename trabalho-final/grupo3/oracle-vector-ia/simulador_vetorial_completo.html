@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Vetorial - Layout Lado a Lado</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #8bc5ff;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            max-width: 1000px;
+            /* Largura total da aplicação */
+            width: 100%;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 0;
+            color: #2c3e50;
+        }
+
+        /* Texto azul ocupando 100% da largura no topo */
+        .explanation-box {
+            background-color: #e3f2fd;
+            border-left: 5px solid #0d6efd;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #084298;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Container que segura a esquerda e direita */
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            width: 100%;
+        }
+
+        /* Coluna da Esquerda (Controles) */
+        .controls {
+            flex: 1;
+            min-width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.95em;
+            font-weight: bold;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .dot-a {
+            background-color: #0d6efd;
+        }
+
+        .dot-b {
+            background-color: #dc3545;
+        }
+
+        .dot-line {
+            width: 20px;
+            height: 4px;
+            background-image: linear-gradient(to right, #6c757d 50%, transparent 50%);
+            background-size: 8px 100%;
+        }
+
+        .metrics {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .metric-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .highlight-cos {
+            font-weight: bold;
+            color: #198754;
+        }
+
+        .highlight-euc {
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .highlight-dot {
+            font-weight: bold;
+            color: #b55d00;
+        }
+
+        /* Coluna da Direita (Gráfico limitado) */
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f3f5;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            max-width: 450px;
+            /* Limita o tamanho máximo do gráfico na direita */
+            flex: 1;
+            box-sizing: border-box;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Comparação de Métricas Vetoriais</h2>
+
+        <div class="explanation-box">
+            <h3>Exemplo pratico:</h3>
+            <p>Imagine que você tem a sua pergunta de busca: "O que é MDM?" (um vetor curtinho).
+                No banco de dados, você tem um documento:
+                Um artigo denso de 50 páginas focado inteiramente em Master Data Management (um vetor muito longo).
+            </p>
+            <p style="margin-top: 0;">Se você usasse a <strong>Distância Euclidiana</strong> (que mede o espaço físico
+                com uma régua entre as pontas das setas), a sua pergunta "O que é MDM?" ficaria distante do artigo de 50
+                páginas sobre MDM, simplesmente porque um vetor é curto e o outro é enorme. O banco acharia que eles não
+                têm relação.</p>
+            <p style="margin-bottom: 0;">Ao usar a <strong>Métrica de Cosseno</strong>, o banco ignora os tamanhos. Ele
+                percebe que a sua pergunta e o artigo de 50 páginas sobre MDM estão apontando exatamente para a mesma
+                direção conceitual. O ângulo entre eles é próximo a zero. Portanto, eles dão "match".</p>
+        </div>
+
+        <div class="content-wrapper">
+
+            <div class="controls">
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="dot dot-a"></div> Vetor A (Fixo): Pergunta "O que é MDM?"
+                    </div>
+                    <div class="legend-item">
+                        <div class="dot dot-b"></div> Vetor B (Interativo): Artigo sobre MDM
+                    </div>
+                    <div class="legend-item">
+                        <div class="dot-line"></div> Distância Euclidiana
+                    </div>
+                </div>
+
+                <div>
+                    <label for="angleB">Ângulo do Artigo (Semântica): <span id="angleVal">45</span>°</label>
+                    <input type="range" id="angleB" min="0" max="360" value="45">
+                </div>
+
+                <div>
+                    <label for="magB">Tamanho do Artigo (Magnitude): <span id="magVal">160</span></label>
+                    <input type="range" id="magB" min="20" max="200" value="160">
+                </div>
+
+                <div class="metrics">
+                    <div class="metric-row">
+                        <span>Similaridade por Cosseno:</span>
+                        <span id="simVal" class="highlight-cos">1.000</span>
+                    </div>
+                    <div class="metric-row" style="font-size: 0.9em; color: #555;">
+                        <span>(Diferença Angular)</span>
+                        <span id="diffAngle">0°</span>
+                    </div>
+                    <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
+                    <div class="metric-row">
+                        <span>Distância Euclidiana:</span>
+                        <span id="distVal" class="highlight-euc">80.0</span>
+                    </div>
+                    <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
+                    <div class="metric-row">
+                        <span>Produto Escalar (Dot Product):</span>
+                        <span id="dotVal" class="highlight-dot">0.0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="vectorCanvas" width="400" height="400"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('vectorCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const angleSlider = document.getElementById('angleB');
+        const magSlider = document.getElementById('magB');
+
+        const angleVal = document.getElementById('angleVal');
+        const magVal = document.getElementById('magVal');
+        const simVal = document.getElementById('simVal');
+        const distVal = document.getElementById('distVal');
+        const dotVal = document.getElementById('dotVal');
+        const diffAngleVal = document.getElementById('diffAngle');
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        const angleA_deg = 45;
+        const magA = 70;
+
+        function drawArrow(fromX, fromY, toX, toY, color) {
+            const headlen = 10;
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3.5;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+            ctx.lineTo(toX, toY);
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        function drawGrid() {
+            ctx.strokeStyle = '#e9ecef';
+            ctx.lineWidth = 1;
+
+            for (let r = 40; r <= 160; r += 40) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+
+            ctx.beginPath();
+            ctx.moveTo(10, cy); ctx.lineTo(canvas.width - 10, cy);
+            ctx.moveTo(cx, 10); ctx.lineTo(cx, canvas.height - 10);
+            ctx.strokeStyle = '#ced4da';
+            ctx.stroke();
+        }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
+
+            const angleB_deg = parseFloat(angleSlider.value);
+            const magB = parseFloat(magSlider.value);
+
+            angleVal.innerText = angleB_deg;
+            magVal.innerText = magB;
+
+            const radA = (angleA_deg * Math.PI) / 180;
+            const radB = (angleB_deg * Math.PI) / 180;
+
+            const ax = cx + magA * Math.cos(radA);
+            const ay = cy - magA * Math.sin(radA);
+
+            const bx = cx + magB * Math.cos(radB);
+            const by = cy - magB * Math.sin(radB);
+
+            let diff_deg = Math.abs(angleA_deg - angleB_deg);
+            if (diff_deg > 180) { diff_deg = 360 - diff_deg; }
+            const diff_rad = (diff_deg * Math.PI) / 180;
+
+            const similarity = Math.cos(diff_rad);
+            simVal.innerText = similarity.toFixed(3);
+            diffAngleVal.innerText = diff_deg + "°";
+
+            const euclidean = Math.sqrt(Math.pow(bx - ax, 2) + Math.pow(by - ay, 2));
+            distVal.innerText = euclidean.toFixed(1);
+
+            const dotProduct = magA * magB * similarity;
+            dotVal.innerText = dotProduct.toFixed(1);
+
+            if (diff_deg > 0 && diff_deg < 360) {
+                ctx.beginPath();
+                let startArc = -radA;
+                let endArc = -radB;
+                let counterclockwise = false;
+                let diff = angleB_deg - angleA_deg;
+                if (diff < 0) diff += 360;
+                if (diff > 180) counterclockwise = true;
+
+                ctx.arc(cx, cy, 25, startArc, endArc, counterclockwise);
+                ctx.strokeStyle = '#198754';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+            }
+
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(bx, by);
+            ctx.strokeStyle = '#6c757d';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            drawArrow(cx, cy, bx, by, '#dc3545');
+            drawArrow(cx, cy, ax, ay, '#0d6efd');
+        }
+
+        angleSlider.addEventListener('input', update);
+        magSlider.addEventListener('input', update);
+
+        update();
+    </script>
+
+</body>
+
+</html>
