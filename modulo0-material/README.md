@@ -368,4 +368,4 @@ Mesmo com muitas opções no mercado, Oracle segue relevante por motivos objetiv
 
 ### 15.3 Material do curso
 - [Guia de Licenciamento e Custos Oracle](./oracle-custo.md)
-- [Hub de referências do repositório](../README.md#referências-e-links-úteis)
+- [Hub de referências do repositório](../README.md#referencias-uteis)

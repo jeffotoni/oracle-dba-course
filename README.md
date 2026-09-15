@@ -4,6 +4,12 @@
 
 Para contribuir com este repositório, leia as orientações em [CONTRIBUTING.md](./CONTRIBUTING.md).
 
+## Manual web
+
+Este curso também é publicado como um manual HTML navegável no GitHub Pages. O conteúdo é reconstruído automaticamente a cada `push` na branch `main`, convertendo os arquivos Markdown em páginas HTML.
+
+[Abrir o manual web](https://jeffotoni.github.io/oracle-dba-course/)
+
 ## ✦ Sobre o autor
 
 Desenvolvido por **Jefferson Otoni Lima (Jeffotoni)**, **Engenheiro de Software Sênior**, **Arquiteto de Soluções** e **instrutor técnico**, com mais de **22 anos de experiência** na construção de sistemas distribuídos de alta performance.

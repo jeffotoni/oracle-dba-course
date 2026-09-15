@@ -356,6 +356,6 @@ Ao final do módulo, o entendimento esperado é:
 
 Para evolução após este módulo introdutório, usar como referência complementar:
 
-- [Oracle - Guia Full](./oracle_guia_full.md)
+- [Oracle - Guia Full](./01-teoria-modulo1-guia.md)
 
 Este guia amplia tópicos como engenharia de dados, eventos, integração, segurança avançada, alta disponibilidade e recursos multimodelo.

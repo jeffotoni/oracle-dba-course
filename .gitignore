@@ -30,6 +30,7 @@ complemento.txt
 bin/
 dist/
 build/
+site/
 
 # Go
 *.test
