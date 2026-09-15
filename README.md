@@ -63,16 +63,13 @@ A abordagem do curso e direta e progressiva:
 
 Para apoiar estudo, revisão e introdução aos temas do curso, também foram publicados materiais complementares no NotebookLM:
 
-- Curso Oracle Database Administration - INTRODUÇÃO - 1  
-  https://notebooklm.google.com/notebook/b0d9512b-e112-43a1-b33f-15813ea5fca3
+- [Curso Oracle Database Administration - INTRODUÇÃO - 1](https://notebooklm.google.com/notebook/b0d9512b-e112-43a1-b33f-15813ea5fca3)
 
-- Curso Oracle Database Administration - modulo 0 - 2  
-  https://notebooklm.google.com/notebook/d068ae4e-0845-475e-a502-bbfc167c1966
+- [Curso Oracle Database Administration - modulo 0 - 2](https://notebooklm.google.com/notebook/d068ae4e-0845-475e-a502-bbfc167c1966)
 
-- Curso Oracle Database Administration - aula 2 - modulo 1 e revisao do modulo 0  
-  https://notebooklm.google.com/notebook/7e0bb07d-c5b0-413d-9ed8-0df128e2ef32
+- [Curso Oracle Database Administration - aula 2 - modulo 1 e revisao do modulo 0](https://notebooklm.google.com/notebook/7e0bb07d-c5b0-413d-9ed8-0df128e2ef32)
 
-Esses materiais funcionam como apoio complementar ao conteúdo escrito, especialmente para revisão conceitual, preparação de aula e reforço dos tópicos do `modulo0-material` e `modulo0-guia-pratico`.
+Esses materiais funcionam como apoio complementar ao conteúdo escrito, especialmente para revisão conceitual, preparação de aula e reforço dos tópicos do [`modulo0-material`](./modulo0-material/README.md) e do [`modulo0-guia-pratico`](./modulo0-guia-pratico/README.md).
 
 ## Regra central do curso
 
@@ -81,6 +78,8 @@ Se esta sequencia nao estiver clara:
 ```txt
 conexao -> PDB -> user/schema -> tabela -> query -> Oracle rodando
 ```
+
+![Regra central do curso: da conexão ao Oracle rodando](./assets/regra-central-curso.svg)
 
 o resto perde valor.
 
@@ -91,37 +90,37 @@ Por isso, o curso precisa comecar por duas bases ao mesmo tempo:
 
 Na pratica, isso significa que a entrada real do curso e:
 
-- `modulo0-material`
-- `modulo0-guia-pratico`
-- `podman`
-- `repo/oracle`
-- `repo/go.oracle/v1`
+- [`modulo0-material`](./modulo0-material/README.md)
+- [`modulo0-guia-pratico`](./modulo0-guia-pratico/README.md)
+- [`podman`](./podman/README.md)
+- [`repo/oracle/versoes`](./repo/oracle/versoes/README.md)
+- [`repo/go.oracle/v1`](./repo/go.oracle/v1/README.md)
 
-antes de entrar forte em `modulo1-material`.
+antes de entrar forte em [`modulo1-material`](./modulo1-material/README.md).
 
 ## Por onde comecar
 
 A trilha inicial recomendada e esta:
 
-1. ler `modulo0-material/README.md`;
-2. ler `modulo0-guia-pratico/README.md`;
-3. aprofundar a duvida sobre `CDB`, `PDB`, `SID`, `Service Name` e `CREATE DATABASE` em `modulo0-guia-pratico/oracle_create_database_guide-v2.md`;
-4. preparar ambiente com `podman/README.md`;
-5. subir Oracle com `repo/oracle/versoes/README.md`;
+1. ler [`modulo0-material/README.md`](./modulo0-material/README.md);
+2. ler [`modulo0-guia-pratico/README.md`](./modulo0-guia-pratico/README.md);
+3. aprofundar a duvida sobre `CDB`, `PDB`, `SID`, `Service Name` e `CREATE DATABASE` em [`oracle_create_database_guide-v2.md`](./modulo0-guia-pratico/oracle_create_database_guide-v2.md);
+4. preparar ambiente com [`podman/README.md`](./podman/README.md);
+5. subir Oracle com [`repo/oracle/versoes/README.md`](./repo/oracle/versoes/README.md);
 6. validar conexao e operacoes basicas na IDE;
-7. testar exemplo de aplicacao com `repo/go.oracle/v1/README.md`;
-8. entrar depois em `modulo1-material`.
+7. testar exemplo de aplicacao com [`repo/go.oracle/v1/README.md`](./repo/go.oracle/v1/README.md);
+8. entrar depois em [`modulo1-material`](./modulo1-material/README.md).
 
 ## Mapa do repositorio
 
 ### Base conceitual inicial
 
-- `modulo0-material/README.md`
+- [`modulo0-material/README.md`](./modulo0-material/README.md)
   - fundamentos de banco de dados;
   - contexto Oracle;
   - edicoes, custo, decisao tecnica e panorama atual.
 
-- `modulo0-guia-pratico/README.md`
+- [`modulo0-guia-pratico/README.md`](./modulo0-guia-pratico/README.md)
   - leitura da IDE;
   - conexao;
   - schemas;
@@ -129,7 +128,7 @@ A trilha inicial recomendada e esta:
   - roles;
   - sequencia correta de trabalho no Oracle Free / XE.
 
-- `modulo0-guia-pratico/oracle_create_database_guide-v2.md`
+- [`modulo0-guia-pratico/oracle_create_database_guide-v2.md`](./modulo0-guia-pratico/oracle_create_database_guide-v2.md)
   - explicacao robusta do ponto onde mais ha confusao no inicio:
   - `FREE`, `FREEPDB1`, `CDB`, `PDB`, `SID`, `Service Name`;
   - quando usar `CREATE DATABASE`;
@@ -137,50 +136,50 @@ A trilha inicial recomendada e esta:
 
 ### Base operacional inicial
 
-- `podman/README.md`
+- [`podman/README.md`](./podman/README.md)
   - uso de Podman no curso;
   - comandos base;
   - build, run, volumes e compose;
   - ponte para o laboratório Oracle e para os exemplos em Go.
 
-- `podman/go-exemplos.md`
+- [`podman/go-exemplos.md`](./podman/go-exemplos.md)
   - exemplos praticos com projetos Go;
   - continuação natural do laboratório depois do Oracle estar rodando.
 
-- `podman/oracle-exemplos.md`
+- [`podman/oracle-exemplos.md`](./podman/oracle-exemplos.md)
   - exemplos de Oracle rodando com Podman;
   - caminho mais direto para sair da teoria e entrar no ambiente real.
 
-- `repo/oracle/versoes/README.md`
+- [`repo/oracle/versoes/README.md`](./repo/oracle/versoes/README.md)
   - catalogo das versoes Oracle usadas no laboratorio;
   - visao macro das diferentes formas de subir Oracle;
   - referencia principal para escolher a imagem e o tipo de laboratório.
 
-- `repo/oracle/versoes/free-full-23ai/README.md`
+- [`repo/oracle/versoes/free-full-23ai`](./repo/oracle/versoes/free-full-23ai/manual/comandos.md)
   - versao mais completa e didatica do laboratorio Oracle;
   - referencia principal para demonstracao.
 
-- `repo/oracle/ords/README.md`
+- [`repo/oracle/ords/README.md`](./repo/oracle/ords/README.md)
   - laboratorio de `ORDS` com `Podman`;
   - exposicao REST do Oracle em `localhost:8181`;
   - ponte entre banco, browser, JSON e ecossistema web Oracle.
 
-- `repo/go.oracle/v1/README.md`
+- [`repo/go.oracle/v1/README.md`](./repo/go.oracle/v1/README.md)
   - exemplo simples de API em Go conectando ao Oracle;
   - CRUD HTTP para mostrar Oracle em uso real;
   - ajuda a conectar banco de dados, aplicação e operação no mesmo fluxo.
 
 ### Modulos do curso
 
-- `modulo1-material`
+- [`modulo1-material`](./modulo1-material/README.md)
   - arquitetura e configuracao do ambiente Oracle.
-- `modulo2-material`
+- [`modulo2-material`](./modulo2-material/02-teoria-modulo2.md)
   - seguranca, controle de acesso e carga.
-- `modulo3-material`
+- [`modulo3-material`](./modulo3-material/03-teoria-modulo3.md)
   - backup e recuperacao.
-- `modulo4-material`
+- [`modulo4-material`](./modulo4-material/04-teoria-modulo4.md)
   - monitoramento, tuning e otimizacao.
-- `modulo5-material`
+- [`modulo5-material`](./modulo5-material/05-teoria-modulo5.md)
   - multitenant e nuvem.
 
 ### Primeiro bloco: vamos rodar e entender
@@ -201,7 +200,7 @@ Este bloco vem antes do aprofundamento administrativo:
 
 So depois disso entra com mais forca:
 
-- `modulo1-material`;
+- [`modulo1-material`](./modulo1-material/README.md);
 - parametros;
 - instancia;
 - memoria;
@@ -226,7 +225,7 @@ Instancia vs banco de dados, estruturas de memoria, processos de background, arq
 
 - [Modulo 1 - Conteudo teorico](./modulo1-material/01-teoria-modulo1.md)
 - [Modulo 1 - Guia pratico](./modulo1-material/02-pratica-modulo1.md)
-- [Modulo 1 - Scripts SQL](./modulo1-material/scripts/)
+- [Modulo 1 - Scripts SQL](./modulo1-material/scripts/01-validacao-ambiente.sql)
 
 ### Modulo 2: Seguranca, Controle de Acesso e Carga de Dados
 
@@ -234,7 +233,7 @@ Autenticacao, autorizacao, usuarios, perfis, privilegios, roles, ferramentas de 
 
 - [Modulo 2 - Conteudo teorico](./modulo2-material/02-teoria-modulo2.md)
 - [Modulo 2 - Guia pratico](./modulo2-material/02-pratica-modulo2.md)
-- [Modulo 2 - Laboratorio de carga](./modulo2-material/modulo2-seguranca-carga/)
+- [Modulo 2 - Laboratorio de carga](./modulo2-material/modulo2-seguranca-carga/scripts/01-up.sh)
 - [Laboratorio ORDS com Podman](./repo/oracle/ords/README.md)
 
 ### Modulo 3: Rotinas de Backup e Recuperacao
@@ -281,15 +280,15 @@ Para acompanhar as praticas, e recomendavel ter pelo menos:
 
 Fluxo minimo recomendado para a primeira pratica:
 
-1. abrir `podman/README.md`;
-2. escolher uma versao em `repo/oracle/versoes/README.md`;
-3. subir preferencialmente `repo/oracle/versoes/free-full-23ai/README.md`;
+1. abrir [`podman/README.md`](./podman/README.md);
+2. escolher uma versao em [`repo/oracle/versoes/README.md`](./repo/oracle/versoes/README.md);
+3. subir preferencialmente [`free-full-23ai`](./repo/oracle/versoes/free-full-23ai/manual/comandos.md);
 4. conectar na IDE usando `Service Name`;
 5. validar ambiente com `SELECT` em `v$instance`, `v$database`, `v$pdbs` e `SYS_CONTEXT`;
 6. criar usuario;
 7. criar tabela;
 8. inserir e consultar dados;
-9. opcionalmente testar a API em `repo/go.oracle/v1/README.md`.
+9. opcionalmente testar a API em [`repo/go.oracle/v1/README.md`](./repo/go.oracle/v1/README.md).
 
 ## Ferramentas Oracle e ecossistema SQL Developer
 
@@ -338,9 +337,9 @@ Para o curso, a linha principal continua sendo `Podman` com uma IDE SQL disponí
 ## Uso do repositorio
 
 - teoria: arquivos dos modulos;
-- pratica Oracle: `modulo0-guia-pratico`, `podman` e `repo/oracle`;
-- pratica de aplicacao: `repo/go.oracle/v1`;
-- aprofundamento administrativo: `modulo1` ao `modulo5`.
+- pratica Oracle: [`modulo0-guia-pratico`](./modulo0-guia-pratico/README.md), [`podman`](./podman/README.md) e [`repo/oracle/versoes`](./repo/oracle/versoes/README.md);
+- pratica de aplicacao: [`repo/go.oracle/v1`](./repo/go.oracle/v1/README.md);
+- aprofundamento administrativo: [`modulo1`](./modulo1-material/README.md) ao [`modulo5`](./modulo5-material/05-teoria-modulo5.md).
 
 ## Contribuindo
 

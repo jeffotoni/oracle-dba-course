@@ -506,19 +506,19 @@ ORDER BY role;
 
 ## Arquivos de apoio
 
-- `modulo1-material/01-teoria-modulo1.md`
-- `modulo1-material/02-pratica-modulo1.md`
-- `modulo1-material/scripts/01-validacao-ambiente.sql`
-- `modulo1-material/scripts/03-memoria-processos-arquivos.sql`
-- `modulo1-material/scripts/04-parametros-e-privilegios.sql`
+- [`modulo1-material/01-teoria-modulo1.md`](../modulo1-material/01-teoria-modulo1.md)
+- [`modulo1-material/02-pratica-modulo1.md`](../modulo1-material/02-pratica-modulo1.md)
+- [`modulo1-material/scripts/01-validacao-ambiente.sql`](../modulo1-material/scripts/01-validacao-ambiente.sql)
+- [`modulo1-material/scripts/03-memoria-processos-arquivos.sql`](../modulo1-material/scripts/03-memoria-processos-arquivos.sql)
+- [`modulo1-material/scripts/04-parametros-e-privilegios.sql`](../modulo1-material/scripts/04-parametros-e-privilegios.sql)
 
 ## Scripts originais do módulo
 
 Se for necessário aprofundar a revisão ou repetir a prática completa, estes scripts ajudam bastante:
 
-- `modulo1-material/scripts/01-validacao-ambiente.sql`
+- [`modulo1-material/scripts/01-validacao-ambiente.sql`](../modulo1-material/scripts/01-validacao-ambiente.sql)
   - usar para validar instância, banco, container atual e componentes instalados.
-- `modulo1-material/scripts/03-memoria-processos-arquivos.sql`
+- [`modulo1-material/scripts/03-memoria-processos-arquivos.sql`](../modulo1-material/scripts/03-memoria-processos-arquivos.sql)
   - usar para revisar memória, processos, tablespaces, datafiles, redo logs e control files.
-- `modulo1-material/scripts/04-parametros-e-privilegios.sql`
+- [`modulo1-material/scripts/04-parametros-e-privilegios.sql`](../modulo1-material/scripts/04-parametros-e-privilegios.sql)
   - usar para revisar parâmetros, `SPFILE`, containers e privilégios de laboratório.

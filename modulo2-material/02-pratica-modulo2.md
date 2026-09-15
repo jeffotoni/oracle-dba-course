@@ -515,7 +515,7 @@ SELECT * FROM produtos_ext_import ORDER BY id_produto;
 
 Neste módulo, o Data Pump aparece como ferramenta de exportação e importação lógica ligada a carga, cópia e movimentação de dados.
 
-No `modulo3-material`, esse mesmo tema é retomado no contexto correto de:
+No [modulo3-material](../modulo3-material/03-teoria-modulo3.md), esse mesmo tema é retomado no contexto correto de:
 
 - dump lógico;
 - restore seletivo;

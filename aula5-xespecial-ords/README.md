@@ -160,9 +160,7 @@ URL final: http://localhost:8181/ords/maria/
 
 ### Recomendação para a aula
 
-Use:
-
-- `repo/oracle/versoes/free-full-23ai`
+Use o [laboratório `free-full-23ai`](../repo/oracle/versoes/free-full-23ai/manual/comandos.md):
 
 ### Comando
 

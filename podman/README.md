@@ -15,12 +15,12 @@ O objetivo aqui nao e apenas mostrar comandos soltos. A ideia e documentar como 
 
 | Area | Objetivo | Caminho |
 | :--- | :--- | :--- |
-| Guia principal de Podman | Conceitos, instalacao, comandos base e fluxo geral | `podman/README.md` |
-| Exemplos Go com Podman | Subir APIs Go, buildar imagem e testar HTTP | `podman/go-exemplos.md` |
-| Exemplos Oracle com Podman | Subir Oracle por `podman run`, `Containerfile` e `podman compose` | `podman/oracle-exemplos.md` |
-| CRUD Go + Oracle | API HTTP em Go conectando no Oracle | `repo/go.oracle/v1` |
-| Catalogo Oracle | Varias versoes Oracle para laboratorio | `repo/oracle/versoes` |
-| ORDS com Podman | Expor Oracle via REST em `localhost:8181` | `repo/oracle/ords` |
+| Guia principal de Podman | Conceitos, instalacao, comandos base e fluxo geral | [README.md](./README.md) |
+| Exemplos Go com Podman | Subir APIs Go, buildar imagem e testar HTTP | [go-exemplos.md](./go-exemplos.md) |
+| Exemplos Oracle com Podman | Subir Oracle por `podman run`, `Containerfile` e `podman compose` | [oracle-exemplos.md](./oracle-exemplos.md) |
+| CRUD Go + Oracle | API HTTP em Go conectando no Oracle | [repo/go.oracle/v1](../repo/go.oracle/v1/README.md) |
+| Catalogo Oracle | Varias versoes Oracle para laboratorio | [repo/oracle/versoes](../repo/oracle/versoes/README.md) |
+| ORDS com Podman | Expor Oracle via REST em `localhost:8181` | [repo/oracle/ords](../repo/oracle/ords/README.md) |
 
 ## Visao Geral
 
@@ -195,7 +195,7 @@ Conteudo principal:
 - subir API Go com `podman run`;
 - buildar imagem local com `podman build`;
 - testar endpoints com `curl`;
-- conectar Go com Oracle no exemplo `repo/go.oracle/v1`.
+- conectar Go com Oracle no exemplo [`repo/go.oracle/v1`](../repo/go.oracle/v1/README.md).
 
 ### Oracle
 
@@ -224,7 +224,7 @@ Isso torna o aprendizado progressivo:
 - depois entende a imagem;
 - depois entende a orquestracao basica.
 
-No catalogo `repo/oracle/versoes`, a versao mais completa hoje e:
+No catalogo [`repo/oracle/versoes`](../repo/oracle/versoes/README.md), a versao mais completa hoje e:
 
 ```txt
 repo/oracle/versoes/free-full-23ai
@@ -238,7 +238,7 @@ Ela foi usada como modelo para:
 
 As outras versoes Oracle continuam uteis para comparacao, mas foram mantidas com foco no fluxo simples de laboratorio.
 
-Uma versao adicional importante no catalogo agora e:
+Uma versao adicional importante no catalogo agora e [`oracle-12c`](../repo/oracle/versoes/oracle-12c/):
 
 ```txt
 repo/oracle/versoes/oracle-12c

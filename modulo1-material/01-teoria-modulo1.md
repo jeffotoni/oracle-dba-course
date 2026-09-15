@@ -31,6 +31,8 @@ Ao final desta unidade, precisaremos sair com cinco percepções claras:
 4. existe diferença entre memória, processos e estruturas em disco;
 5. a configuração do banco influencia disponibilidade, desempenho e operação.
 
+![Instância Oracle formada por memória, processos e arquivos persistentes](../assets/oracle-instancia.svg)
+
 ---
 
 ## 3. Papel do administrador Oracle

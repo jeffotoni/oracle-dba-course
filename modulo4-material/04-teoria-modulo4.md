@@ -10,6 +10,8 @@ A administração de desempenho exige disciplina analítica. Antes de alterar qu
 
 Este módulo organiza essa visão em uma estrutura teórica que prepara o terreno para a prática de diagnóstico, análise e otimização.
 
+![Ciclo de tuning Oracle orientado por evidências](../assets/oracle-tuning-loop.svg)
+
 ---
 
 ## Carga horária sugerida

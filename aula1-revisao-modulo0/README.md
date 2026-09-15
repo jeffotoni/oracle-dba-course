@@ -200,7 +200,7 @@ ORDER BY table_name;
 
 ## Arquivos de apoio
 
-- `modulo0-guia-pratico/README.md`
-- `modulo0-guia-pratico/oracle_create_database_guide-v2.md`
-- `podman/README.md`
-- `repo/oracle/versoes/free-full-23ai/README.md`
+- [`modulo0-guia-pratico/README.md`](../modulo0-guia-pratico/README.md)
+- [`modulo0-guia-pratico/oracle_create_database_guide-v2.md`](../modulo0-guia-pratico/oracle_create_database_guide-v2.md)
+- [`podman/README.md`](../podman/README.md)
+- [`repo/oracle/versoes/free-full-23ai`](../repo/oracle/versoes/free-full-23ai/manual/comandos.md)

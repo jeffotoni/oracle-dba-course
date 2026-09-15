@@ -2,8 +2,8 @@
 
 Este pacote contém o material do Módulo 1 dividido em duas partes:
 
-- `01-teoria-modulo1.md` - conteúdo teórico explicado do módulo;
-- `02-pratica-modulo1.md` - ambiente, comandos, visões de sistema e roteiro prático.
+- [01-teoria-modulo1.md](./01-teoria-modulo1.md) - conteúdo teórico explicado do módulo;
+- [02-pratica-modulo1.md](./02-pratica-modulo1.md) - ambiente, comandos, visões de sistema e roteiro prático.
 
 ## Objetivo
 

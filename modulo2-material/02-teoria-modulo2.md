@@ -9,6 +9,8 @@ Este módulo deverá introduzir dois pilares centrais da administração de banc
 
 A lógica deste módulo é importante porque administrar banco de dados não significa apenas manter o ambiente em funcionamento. Também deveríamos garantir que o acesso aos dados esteja corretamente controlado e que grandes volumes de informação possam ser carregados com segurança, desempenho e rastreabilidade.
 
+![Fluxo de segurança Oracle: identidade, autenticação, autorização, objeto e auditoria](../assets/oracle-security.svg)
+
 ## Carga horária sugerida
 
 4 horas
@@ -372,6 +374,8 @@ Carga em volume não é apenas tema de desenvolvimento. É tema de administraç�
 - planejamento operacional;
 - janelas de execução;
 - controle de falhas.
+
+![Ferramentas Oracle para movimentação de dados: SQL*Loader, tabela externa e Data Pump](../assets/oracle-data-movement.svg)
 
 # 9. SQL*Loader
 

@@ -97,13 +97,13 @@ class MarkdownRenderer:
         except ValueError:
             return raw_url
 
-        if candidate.is_dir() and (candidate / "README.md").exists():
-            relative_target = relative_target / "README.md"
         if not candidate.exists():
             return raw_url
 
-        if candidate.suffix.lower() == ".md":
-            target_output = output_path(ROOT / relative_target)
+        if candidate.is_dir() and (candidate / "README.md").exists():
+            target_output = output_path(candidate / "README.md")
+        elif candidate.suffix.lower() == ".md":
+            target_output = output_path(candidate)
         else:
             target_output = relative_target
         href = posixpath.relpath(
@@ -280,6 +280,10 @@ CSS = r"""
 .landing{position:relative;margin:-18px 0 35px;padding:42px clamp(25px,5vw,62px);overflow:hidden;background:linear-gradient(120deg,#123554,#1b2c42 48%,#3c2a25);border:1px solid #4d6b80;border-radius:24px}.landing:after{content:"";position:absolute;right:-80px;top:-120px;width:330px;height:330px;border:1px solid #ef9b4f66;border-radius:50%;box-shadow:0 0 0 35px #ef9b4f12,0 0 0 70px #ef9b4f08}.landing h1{position:relative;z-index:1;margin:0 0 10px;max-width:780px;font-size:clamp(2.2rem,5vw,4.5rem);line-height:1.03}.landing p{position:relative;z-index:1;max-width:760px;margin:0;color:#bcd0df;font-size:1.08rem}.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 32px}.quick-card{padding:18px;background:#ffffff08;border:1px solid var(--line);border-radius:15px}.quick-card strong{display:block;color:var(--accent);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}.quick-card span{display:block;margin-top:5px;color:var(--muted);font-size:.91rem}.empty{display:none}
 html.light{color-scheme:light;--bg:#eef5f8;--panel:#fff;--panel-2:#fff;--text:#17283a;--muted:#557086;--line:#aac2d0;--accent:#b45e14;--accent-2:#087da6;--green:#087957}html.light .site-header{background:#eef5f8e8}html.light .article{background:#fffffff2}html.light .article>h1{color:#122333}html.light .article h2{color:#075e7a}html.light .article h3{color:#087957}html.light .landing{background:linear-gradient(120deg,#d7eef5,#fff9ef)}html.light .landing p{color:#456277}
 @media(max-width:980px){.header-inner,.layout,.site-footer{width:min(calc(100% - 28px),760px)}.layout{display:block;padding-top:20px}.sidebar{position:static;max-height:none;margin-bottom:20px;padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:15px}.sidebar nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.toolbar input{width:170px}}@media(max-width:620px){.header-inner{min-height:68px}.brand strong{font-size:.76rem}.brand span{display:none}.toolbar input{display:none}.layout{width:min(calc(100% - 20px),600px)}.article{padding:25px 18px;font-size:15px}.quick-grid{grid-template-columns:1fr}.sidebar nav{display:block}.landing{padding:30px 22px}.landing h1{font-size:2.35rem}}
+.brand .brand-mark{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;margin:0;border:1px solid #62d6ff80;border-radius:14px;background:linear-gradient(145deg,#123653,#0b1929);box-shadow:0 8px 24px #00000035}.brand .brand-mark svg{display:block;width:30px;height:30px}.brand>span:last-child{display:block;margin:0}.brand>span:last-child>span{display:block;margin-top:3px;color:var(--muted);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase}
+html.light body{background:linear-gradient(135deg,#f4f9fb 0%,#e9f3f6 52%,#fff8ef 100%)}html.light .site-header{background:#ffffffed;border-bottom-color:#c4d9e2}html.light .toolbar input{background:#f7fbfc;border-color:#b6ced9;color:#1b3445}html.light .toolbar button{background:#ffffff;border-color:#b6ced9;color:#24485c}html.light .sidebar{background:#ffffffc9;border-color:#c4d9e2;box-shadow:0 12px 30px #47758b18}html.light .sidebar a{color:#4a6879}html.light .sidebar a:hover,html.light .sidebar a.active{color:#123d53;background:#dff3f8;border-left-color:#087da6}html.light .article{border-color:#c4d9e2;box-shadow:0 20px 60px #47758b1c}html.light .article code{color:#164d60;background:#e8f4f7;border-color:#c2dce4}html.light .article pre{background:#edf6f8;border-color:#b8d5df}html.light .article pre code{color:#214759}html.light .article blockquote{color:#3d6072;background:#e5f6f1;border-left-color:#087957}html.light .quick-card{background:#ffffffb8;border-color:#c4d9e2}html.light .landing{border-color:#b9d4df;box-shadow:0 15px 40px #47758b18}
+html.light .brand .brand-mark{background:linear-gradient(145deg,#e1f5f8,#fff1df);border-color:#9acbd8;box-shadow:0 8px 24px #47758b20}
+.article p:has(> img[src$=".svg"]){width:100%;max-width:none}.article img[src$=".svg"]{width:100%;max-width:none}
 """
 
 
@@ -395,7 +399,7 @@ def page(source: Path, body: str, nav: list[tuple[str, list[tuple[Path, str]]]])
 </head>
 <body>
 <header class="site-header"><div class="header-inner">
-<a class="brand" href="{html.escape(root_href, quote=True)}"><span class="brand-mark">DB</span><span><strong>ORACLE DBA COURSE</strong><span>aprender · operar · administrar</span></span></a>
+<a class="brand" href="{html.escape(root_href, quote=True)}"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48" focusable="false"><ellipse cx="24" cy="10" rx="15" ry="5" fill="#ef9b4f"/><path d="M9 10v10c0 2.8 6.7 5 15 5s15-2.2 15-5V10" fill="none" stroke="#62d6ff" stroke-width="3"/><path d="M9 20v10c0 2.8 6.7 5 15 5s15-2.2 15-5V20" fill="none" stroke="#62d6ff" stroke-width="3"/><path d="M9 30v8c0 2.8 6.7 5 15 5s15-2.2 15-5v-8" fill="none" stroke="#5be0bd" stroke-width="3"/></svg></span><span><strong>ORACLE DBA COURSE</strong><span>aprender · operar · administrar</span></span></a>
 <div class="toolbar"><input id="nav-search" type="search" placeholder="Buscar no manual..."><button id="theme-toggle" type="button">Modo claro</button></div>
 </div></header>
 <div class="layout"><aside class="sidebar" aria-label="Navegação do manual"><p class="sidebar-title">Manual do curso</p><nav>{"".join(nav_html)}</nav></aside>

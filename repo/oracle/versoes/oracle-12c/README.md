@@ -85,7 +85,7 @@ REMOVE_VOLUME=true ./down.sh
 
 ## Subir Manualmente Com `podman run`
 
-O arquivo `manual/comandos.md` mantem o comando manual principal.
+O arquivo [manual/comandos.md](./manual/comandos.md) mantem o comando manual principal.
 
 ```bash
 podman run -d \

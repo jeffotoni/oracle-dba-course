@@ -8,6 +8,8 @@ Em ambientes corporativos, não basta manter o banco disponível em condições 
 
 A administração de backup e recuperação envolve técnica, planejamento e disciplina operacional. Este módulo organiza esses elementos em uma visão teórica estruturada, preparando o caminho para a prática com rotinas de backup, restauração e recuperação.
 
+![Fluxo Oracle de backup, falha, restore, recover, online e validação](../assets/oracle-backup-recovery.svg)
+
 ---
 
 ## Carga horária sugerida

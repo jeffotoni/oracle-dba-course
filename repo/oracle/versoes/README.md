@@ -155,11 +155,7 @@ REMOVE_VOLUME=true ./down.sh
 
 ## Como Usar A Versão Completa `free-full-23ai`
 
-Leia o guia específico:
-
-```txt
-repo/oracle/versoes/free-full-23ai/README.md
-```
+Leia o [manual de comandos da versão `free-full-23ai`](./free-full-23ai/manual/comandos.md).
 
 Subir via script:
 
@@ -175,11 +171,7 @@ cd repo/oracle/versoes/free-full-23ai/compose
 podman compose up -d
 ```
 
-Comando manual direto:
-
-```txt
-repo/oracle/versoes/free-full-23ai/manual/comandos.md
-```
+Comando manual direto em [free-full-23ai/manual/comandos.md](./free-full-23ai/manual/comandos.md).
 
 ## Oracle SQL Developer, CloudBeaver, DBeaver e clientes SQL
 

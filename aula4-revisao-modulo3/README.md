@@ -1181,5 +1181,5 @@ Ao final da revisao, precisa ficar claro:
 
 ## Referencias internas
 
-- `modulo3-material/03-teoria-modulo3.md`
-- `modulo3-material/03-pratica-modulo3.md`
+- [`modulo3-material/03-teoria-modulo3.md`](../modulo3-material/03-teoria-modulo3.md)
+- [`modulo3-material/03-pratica-modulo3.md`](../modulo3-material/03-pratica-modulo3.md)

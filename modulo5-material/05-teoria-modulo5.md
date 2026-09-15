@@ -10,6 +10,8 @@ Além disso, a estratégia Oracle passou a incorporar fortemente o conceito de *
 
 Este módulo deverá organizar essa transição conceitual e preparar a base para compreender como o Oracle se posiciona em ambientes modernos de banco de dados.
 
+![Evolução do Oracle: ambiente local, multitenant, DBaaS e Autonomous Database](../assets/oracle-multitenant-cloud.svg)
+
 ---
 
 ## Carga horária sugerida

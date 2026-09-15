@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" role="img" aria-labelledby="title desc">
+  <title id="title">Regra central do curso Oracle DBA</title>
+  <desc id="desc">Fluxo didático: conexão, PDB, usuário e schema, tabela, query e Oracle rodando.</desc>
+  <defs>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffbd70"/>
+      <stop offset="1" stop-color="#e36f2d"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8be9ff"/>
+      <stop offset="1" stop-color="#198fb9"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#92f5d0"/>
+      <stop offset="1" stop-color="#159b7d"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity=".28"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef9b4f"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="300" rx="28" fill="#f4fafb" stroke="#b8d5df" stroke-width="2"/>
+  <text x="48" y="48" fill="#b45e14" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="3">REGRA CENTRAL DO CURSO</text>
+  <text x="48" y="78" fill="#2a5368" font-family="Arial, sans-serif" font-size="20">Entender a sequência vale mais do que decorar comandos isolados.</text>
+  <g stroke="#ef9b4f" stroke-width="4" marker-end="url(#arrow)" fill="none">
+    <path d="M200 174H220"/>
+    <path d="M410 174H430"/>
+    <path d="M620 174H640"/>
+    <path d="M830 174H850"/>
+    <path d="M1040 174H1060"/>
+  </g>
+  <g filter="url(#shadow)" font-family="Arial, sans-serif" text-anchor="middle">
+    <g>
+      <rect x="25" y="125" width="175" height="98" rx="18" fill="url(#orange)"/>
+      <text x="112" y="165" fill="#351a0c" font-size="17" font-weight="700">CONEXÃO</text>
+      <text x="112" y="190" fill="#542710" font-size="13">host · porta · credencial</text>
+    </g>
+    <g>
+      <rect x="235" y="125" width="175" height="98" rx="18" fill="url(#cyan)"/>
+      <text x="322" y="165" fill="#072c3d" font-size="18" font-weight="700">PDB</text>
+      <text x="322" y="190" fill="#0d465b" font-size="13">Service Name</text>
+    </g>
+    <g>
+      <rect x="445" y="125" width="175" height="98" rx="18" fill="url(#green)"/>
+      <text x="532" y="160" fill="#07382d" font-size="16" font-weight="700">USER / SCHEMA</text>
+      <text x="532" y="190" fill="#0c5645" font-size="13">dono dos objetos</text>
+    </g>
+    <g>
+      <rect x="655" y="125" width="175" height="98" rx="18" fill="url(#orange)"/>
+      <text x="742" y="165" fill="#351a0c" font-size="18" font-weight="700">TABELA</text>
+      <text x="742" y="190" fill="#542710" font-size="13">dados e relacionamentos</text>
+    </g>
+    <g>
+      <rect x="865" y="125" width="175" height="98" rx="18" fill="url(#cyan)"/>
+      <text x="952" y="165" fill="#072c3d" font-size="18" font-weight="700">QUERY</text>
+      <text x="952" y="190" fill="#0d465b" font-size="13">consultar e validar</text>
+    </g>
+    <g>
+      <rect x="1075" y="125" width="175" height="98" rx="18" fill="url(#green)"/>
+      <text x="1162" y="157" fill="#07382d" font-size="16" font-weight="700">ORACLE</text>
+      <text x="1162" y="181" fill="#07382d" font-size="16" font-weight="700">RODANDO</text>
+      <text x="1162" y="205" fill="#0c5645" font-size="13">ambiente validado</text>
+    </g>
+  </g>
+</svg>

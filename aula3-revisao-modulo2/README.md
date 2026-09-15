@@ -472,9 +472,9 @@ Para a revisão ficar próxima da prática real do módulo, vale manter um labor
 
 ### Subir o Oracle com Podman
 
-No repositório, já existem versões prontas em:
+No repositório, já existem versões prontas em [`repo/oracle/versoes`](../repo/oracle/versoes/README.md):
 
-- `repo/oracle/versoes/free-full-23ai/script/up.sh`
+- [`repo/oracle/versoes/free-full-23ai/script/up.sh`](../repo/oracle/versoes/free-full-23ai/script/up.sh)
 
 ### Versão adotada - `free-full-23ai`
 
@@ -1117,13 +1117,13 @@ Ao final da revisão, o que precisa ficar claro é:
 
 ## Scripts originais do módulo
 
-- `modulo2-material/02-teoria-modulo2.md`
+- [`modulo2-material/02-teoria-modulo2.md`](../modulo2-material/02-teoria-modulo2.md)
   - base conceitual do módulo.
-- `modulo2-material/02-pratica-modulo2.md`
+- [`modulo2-material/02-pratica-modulo2.md`](../modulo2-material/02-pratica-modulo2.md)
   - roteiro prático completo com usuários, roles, auditoria e carga.
-- `modulo2-material/modulo2-seguranca-carga/scripts/03-sqlldr.sh`
+- [`modulo2-material/modulo2-seguranca-carga/scripts/03-sqlldr.sh`](../modulo2-material/modulo2-seguranca-carga/scripts/03-sqlldr.sh)
   - apoio para carga com `SQL*Loader`.
-- `modulo2-material/modulo2-seguranca-carga/scripts/04-expdp.sh`
+- [`modulo2-material/modulo2-seguranca-carga/scripts/04-expdp.sh`](../modulo2-material/modulo2-seguranca-carga/scripts/04-expdp.sh)
   - apoio para exportação lógica com `Data Pump`.
-- `modulo2-material/modulo2-seguranca-carga/scripts/05-impdp.sh`
+- [`modulo2-material/modulo2-seguranca-carga/scripts/05-impdp.sh`](../modulo2-material/modulo2-seguranca-carga/scripts/05-impdp.sh)
   - apoio para importação lógica com `Data Pump`.

@@ -71,6 +71,8 @@ A história dos dados não começa no relacional. A evolução aconteceu em etap
 
 Esse caminho explica por que o modelo relacional segue central em sistemas críticos, mesmo com novas tecnologias no mercado.
 
+![Evolução dos modelos de dados: arquivos, hierárquico, relacional, NoSQL e vetorial](../assets/modelos-dados-evolucao.svg)
+
 ## 8. Regras que Governam os Dados
 
 ### 8.0 Nascimento dos SGBDs e conceitos gerais
@@ -171,7 +173,7 @@ Em linguagem prática:
 - em vez de pensar primeiro em `CREATE DATABASE`, o fluxo inicial é pensar em `CREATE USER`, `CREATE TABLE` e queries dentro da `FREEPDB1`;
 - `CREATE PLUGGABLE DATABASE` existe, mas entra como tema avançado, não como primeiro passo do laboratório.
 
-Essa ponte é importante porque prepara a entrada no `modulo0-guia-pratico`, onde essa estrutura passa a ser observada na IDE e nas queries do ambiente.
+Essa ponte é importante porque prepara a entrada no [modulo0-guia-pratico](../modulo0-guia-pratico/README.md), onde essa estrutura passa a ser observada na IDE e nas queries do ambiente.
 
 ## 9. Edições Oracle e Decisão Inicial
 

@@ -1,6 +1,6 @@
 # Aula 4 Especial - APIs com Go + Oracle
 
-> Aula prática para rodar, testar e entender uma API HTTP em Go conectada ao Oracle usando `repo/go.oracle/v1`.
+> Aula prática para rodar, testar e entender uma API HTTP em Go conectada ao Oracle usando [`repo/go.oracle/v1`](../repo/go.oracle/v1/README.md).
 
 ## Objetivo da aula
 
@@ -18,8 +18,8 @@ O objetivo é:v
 
 ## Projeto usado na aula
 
-- código-fonte: `repo/go.oracle/v1/main.go`
-- guia técnico do projeto: `repo/go.oracle/v1/README.md`
+- código-fonte: [`repo/go.oracle/v1/main.go`](../repo/go.oracle/v1/main.go)
+- guia técnico do projeto: [`repo/go.oracle/v1/README.md`](../repo/go.oracle/v1/README.md)
 - rota principal: `/api/v1/llm`
 
 ## Linha de raciocínio da aula
@@ -124,9 +124,9 @@ O ideal é escolher **uma** versão para toda a aula e manter o mesmo padrão de
 
 As mais adequadas aqui são:
 
-- `repo/oracle/versoes/free-full-23ai`
-- `repo/oracle/versoes/free-lite-23ai`
-- `repo/oracle/versoes/oracle-12c`
+- [`repo/oracle/versoes/free-full-23ai`](../repo/oracle/versoes/free-full-23ai/manual/comandos.md)
+- [`repo/oracle/versoes/free-lite-23ai`](../repo/oracle/versoes/free-lite-23ai/script/up.sh)
+- [`repo/oracle/versoes/oracle-12c`](../repo/oracle/versoes/oracle-12c/)
 
 ### Recomendação para a aula
 
@@ -340,4 +340,4 @@ ORDS mostra a API controlada pelo ecossistema Oracle
 
 ## Material principal de apoio
 
-- `repo/go.oracle/v1/README.md`
+- [`repo/go.oracle/v1/README.md`](../repo/go.oracle/v1/README.md)

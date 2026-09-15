@@ -10,10 +10,10 @@ A ideia aqui e usar Go como continuação natural do laboratório:
 
 Os exemplos abaixo usam os projetos reais do workspace:
 
-- `repo/go.server`
-- `repo/go.oracle/v1`
+- [`repo/go.server`](../repo/go.server/README.md)
+- [`repo/go.oracle/v1`](../repo/go.oracle/v1/README.md)
 
-## 1. Exemplo Basico: `repo/go.server`
+## 1. Exemplo Basico: [`repo/go.server`](../repo/go.server/README.md)
 
 Esse projeto sobe uma API HTTP simples em Go na porta `8080`.
 
@@ -70,7 +70,7 @@ Esses arquivos sao bons para explicar diferenca entre:
 - imagem distroless;
 - imagem scratch.
 
-## 2. Exemplo Go + Oracle: `repo/go.oracle/v1`
+## 2. Exemplo Go + Oracle: [`repo/go.oracle/v1`](../repo/go.oracle/v1/README.md)
 
 Esse projeto sobe uma API em Go conectando no Oracle Free Full 23ai.
 
@@ -195,7 +195,7 @@ curl -s -X DELETE 'http://localhost:8080/api/v1/llm?id=1'
 
 ## 3. Testes
 
-O projeto `repo/go.oracle/v1` possui testes com biblioteca padrao.
+O projeto [`repo/go.oracle/v1`](../repo/go.oracle/v1/README.md) possui testes com biblioteca padrao.
 
 ```bash
 cd repo/go.oracle/v1
@@ -204,15 +204,15 @@ go test ./...
 
 ## 4. Quando usar cada exemplo
 
-- `repo/go.server`: primeiro contato com Podman + Go + HTTP simples.
-- `repo/go.oracle/v1`: segundo passo, agora com Oracle real e CRUD.
+- [`repo/go.server`](../repo/go.server/README.md): primeiro contato com Podman + Go + HTTP simples.
+- [`repo/go.oracle/v1`](../repo/go.oracle/v1/README.md): segundo passo, agora com Oracle real e CRUD.
 - `podman run` com `golang`: bom para demonstracao e desenvolvimento rapido.
 - `podman build`: bom para empacotar uma imagem local.
 
 ## 5. Sequência recomendada
 
-1. subir o Oracle pelo guia `podman/oracle-exemplos.md`;
+1. subir o Oracle pelo guia [`podman/oracle-exemplos.md`](./oracle-exemplos.md);
 2. validar a conexão em Oracle SQL Developer, CloudBeaver, DBeaver ou equivalente;
 3. criar a tabela `modelos_llms`;
-4. rodar `repo/go.oracle/v1`;
+4. rodar [`repo/go.oracle/v1`](../repo/go.oracle/v1/README.md);
 5. testar o CRUD com `curl`.

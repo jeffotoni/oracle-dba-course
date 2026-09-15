@@ -554,7 +554,7 @@ Ao final da revisão, o que precisa ficar claro é:
 
 ## Scripts originais do módulo
 
-- `modulo4-material/04-teoria-modulo4.md`
+- [`modulo4-material/04-teoria-modulo4.md`](../modulo4-material/04-teoria-modulo4.md)
   - base conceitual de monitoramento, tuning e desempenho.
-- `modulo4-material/04-pratica-modulo4.md`
+- [`modulo4-material/04-pratica-modulo4.md`](../modulo4-material/04-pratica-modulo4.md)
   - roteiro prático completo com massa de dados, waits, locks, planos, estatísticas e alert log.

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">Arquitetura CDB e PDB do Oracle</title>
+  <desc id="desc">Um CDB contém PDBs, e o usuário conectado à PDB trabalha com schema, tabelas e queries.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4fafb"/><stop offset="1" stop-color="#edf5ff"/></linearGradient>
+    <linearGradient id="cdb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b9efff"/><stop offset="1" stop-color="#62d6ff"/></linearGradient>
+    <linearGradient id="pdb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b4f5dc"/><stop offset="1" stop-color="#5be0bd"/></linearGradient>
+    <linearGradient id="user" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd394"/><stop offset="1" stop-color="#ef9b4f"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#087da6"/></marker>
+  </defs>
+  <rect width="1200" height="340" rx="24" fill="url(#bg)" stroke="#b8d5df" stroke-width="2"/>
+  <text x="38" y="42" fill="#087da6" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="2">ARQUITETURA ORACLE</text>
+  <rect x="35" y="70" width="720" height="225" rx="20" fill="url(#cdb)" stroke="#198fb9" stroke-width="2"/>
+  <text x="65" y="105" fill="#073b50" font-family="Arial,sans-serif" font-size="22" font-weight="700">CDB - Container Database</text>
+  <text x="65" y="129" fill="#12546b" font-family="Arial,sans-serif" font-size="13">container administrativo que organiza os bancos conectáveis</text>
+  <g font-family="Arial,sans-serif" text-anchor="middle">
+    <g><rect x="65" y="158" width="195" height="95" rx="15" fill="url(#pdb)"/><text x="162" y="195" fill="#073b30" font-size="18" font-weight="700">PDB</text><text x="162" y="219" fill="#0c5c48" font-size="13">FREEPDB1</text><text x="162" y="239" fill="#0c5c48" font-size="12">ambiente de trabalho</text></g>
+    <g><rect x="295" y="158" width="195" height="95" rx="15" fill="url(#pdb)"/><text x="392" y="195" fill="#073b30" font-size="18" font-weight="700">PDB</text><text x="392" y="219" fill="#0c5c48" font-size="13">aplicacao_a</text><text x="392" y="239" fill="#0c5c48" font-size="12">isolamento lógico</text></g>
+    <g><rect x="525" y="158" width="195" height="95" rx="15" fill="url(#pdb)"/><text x="622" y="195" fill="#073b30" font-size="18" font-weight="700">PDB</text><text x="622" y="219" fill="#0c5c48" font-size="13">aplicacao_b</text><text x="622" y="239" fill="#0c5c48" font-size="12">ciclo de vida próprio</text></g>
+  </g>
+  <g fill="none" stroke="#087da6" stroke-width="4" marker-end="url(#arrow)"><path d="M755 180h55"/><path d="M940 180h45"/><path d="M1085 180h45"/></g>
+  <g font-family="Arial,sans-serif" text-anchor="middle"><rect x="810" y="130" width="130" height="100" rx="15" fill="url(#user)"/><text x="875" y="168" fill="#4b2812" font-size="16" font-weight="700">USER</text><text x="875" y="193" fill="#633817" font-size="13">JEFF</text><text x="875" y="213" fill="#633817" font-size="12">login</text><rect x="985" y="130" width="130" height="100" rx="15" fill="url(#pdb)"/><text x="1050" y="168" fill="#073b30" font-size="16" font-weight="700">SCHEMA</text><text x="1050" y="193" fill="#0c5c48" font-size="13">tabelas</text><text x="1050" y="213" fill="#0c5c48" font-size="12">objetos</text><text x="1145" y="168" fill="#087da6" font-size="14" font-weight="700">QUERY</text><text x="1145" y="193" fill="#496879" font-size="12">SELECT</text></g>
+  <text x="600" y="320" fill="#496879" font-family="Arial,sans-serif" font-size="14" text-anchor="middle">Conexão com Service Name aponta para a PDB onde o trabalho acontece.</text>
+</svg>

@@ -23,11 +23,11 @@ Antes de entrar em schemas, tablespaces, roles e objetos da IDE, existe uma duvi
 - quando usar `SID` e quando usar `Service Name`;
 - quando criar usuario e schema em vez de criar outro banco.
 
-Essa linha de raciocinio comeca aqui no `README.md`, e o aprofundamento dessa duvida esta em [oracle_create_database_guide-v2.md](oracle_create_database_guide-v2.md).
+Essa linha de raciocinio comeca neste guia, e o aprofundamento dessa duvida esta em [oracle_create_database_guide-v2.md](oracle_create_database_guide-v2.md).
 
 Fluxo recomendado:
 
-1. ler este `README.md` para entender a navegacao inicial na IDE;
+1. ler este guia para entender a navegacao inicial na IDE;
 2. abrir [oracle_create_database_guide-v2.md](oracle_create_database_guide-v2.md) para aprofundar `CDB`, `PDB`, `SID`, `Service Name` e `CREATE DATABASE`;
 3. preparar o ambiente em [podman/README.md](../podman/README.md), porque este guia depende do Oracle ja estar rodando;
 4. voltar para este guia e seguir a sequencia pratica de usuario, schema, tabela e consultas.
@@ -341,6 +341,8 @@ Oracle Instance
                      ├── Views
                      └── Other Objects
 ```
+
+![Arquitetura Oracle: CDB, PDB, usuário, schema, tabela e query](../assets/oracle-cdb-pdb.svg)
 
 ### 2.1 Arquitetura mental para nao se perder
 

@@ -1,6 +1,6 @@
 # ORDS com Podman - comandos rápidos
 
-> Este arquivo é um guia de copiar e colar. A explicação completa fica em `repo/oracle/ords/README.md`.
+> Este arquivo é um guia de copiar e colar. A explicação completa fica no [README principal do ORDS](../README.md).
 
 ## Login no registry
 

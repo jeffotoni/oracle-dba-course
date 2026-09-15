@@ -10,11 +10,7 @@ O foco aqui e usar:
 
 sem depender de `script/up.sh` e `script/down.sh`.
 
-O catalogo completo de versoes esta em:
-
-```txt
-repo/oracle/versoes/README.md
-```
+O catalogo completo de versoes esta em [`repo/oracle/versoes/README.md`](../repo/oracle/versoes/README.md).
 
 Para o curso, a sequência mais útil e:
 
@@ -26,7 +22,7 @@ Para o curso, a sequência mais útil e:
 
 ## 1. Versao Mais Completa
 
-A versao mais completa hoje e:
+A versao mais completa hoje e [`repo/oracle/versoes/free-full-23ai`](../repo/oracle/versoes/free-full-23ai/manual/comandos.md):
 
 ```txt
 repo/oracle/versoes/free-full-23ai
@@ -85,11 +81,7 @@ podman volume rm oracle-free-full-23ai-data
 
 ## 3. Oracle Free Full 23ai com `Containerfile`
 
-Arquivo:
-
-```txt
-repo/oracle/versoes/free-full-23ai/containerfile/Containerfile
-```
+Arquivo: [`repo/oracle/versoes/free-full-23ai/containerfile/Containerfile`](../repo/oracle/versoes/free-full-23ai/containerfile/Containerfile)
 
 Build:
 
@@ -113,11 +105,7 @@ podman run -d \
 
 ## 4. Oracle Free Full 23ai com `podman compose`
 
-Arquivo:
-
-```txt
-repo/oracle/versoes/free-full-23ai/compose/compose.yaml
-```
+Arquivo: [`repo/oracle/versoes/free-full-23ai/compose/compose.yaml`](../repo/oracle/versoes/free-full-23ai/compose/compose.yaml)
 
 Subir:
 
@@ -278,7 +266,7 @@ podman run -d \
   container-registry.oracle.com/database/enterprise:12.2.0.1
 ```
 
-No catalogo `repo/oracle/versoes`, essa versao foi organizada como `oracle-12c` usando a porta `1529` para evitar conflito com `oracle-xe-11g`, que ja ocupa `1528`.
+No catalogo [`repo/oracle/versoes`](../repo/oracle/versoes/README.md), essa versao foi organizada como `oracle-12c` usando a porta `1529` para evitar conflito com `oracle-xe-11g`, que ja ocupa `1528`.
 
 ### Oracle XE 11g Legacy
 
@@ -340,4 +328,4 @@ SELECT * FROM teste_chatgpt;
 - Se o nome do container ja existir, remova antes com `podman rm -f nome`.
 - Se a porta estiver ocupada, altere o mapeamento no host.
 - Se uma nova versao conflitar com uma porta antiga, ajuste a porta do host e mantenha a porta interna Oracle.
-- Para comparacao entre versoes, o catalogo principal continua em `repo/oracle/versoes/README.md`.
+- Para comparacao entre versoes, o catalogo principal continua em [`repo/oracle/versoes/README.md`](../repo/oracle/versoes/README.md).
