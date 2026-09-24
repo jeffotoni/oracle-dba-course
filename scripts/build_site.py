@@ -22,6 +22,9 @@ SKIP_DIRS = {
     "dist",
     "build",
     "__pycache__",
+    ".kilo",
+    ".codex",
+    ".agents",
     "professor",
     "nao-precisa",
     ".vscode",
@@ -334,6 +337,8 @@ def group_name(source: Path) -> str:
         return "Aulas e revisões"
     if top.startswith("modulo"):
         return "Módulos"
+    if top == "novos-modulos-enxutos":
+        return "Aulas enxutas"
     if top == "repo":
         return "Laboratórios"
     if top == "podman":
@@ -354,7 +359,16 @@ def navigation(files: list[Path]) -> list[tuple[str, list[tuple[Path, str]]]]:
             continue
         group = group_name(source)
         groups.setdefault(group, []).append((source, first_heading(source)))
-    order = ["Início", "Aulas e revisões", "Módulos", "Ambiente", "Laboratórios", "Trabalho final", "Referências"]
+    order = [
+        "Início",
+        "Aulas e revisões",
+        "Aulas enxutas",
+        "Módulos",
+        "Ambiente",
+        "Laboratórios",
+        "Trabalho final",
+        "Referências",
+    ]
     return [(name, groups[name]) for name in order if name in groups]
 
 

@@ -4,48 +4,21 @@ Esta área organiza aulas que conectam explicação, execução e validação em
 
 ## Aula disponível
 
-- [Aula 1 - Módulo 1: Fundam  entos do Oracle](./aula-1-modulo1/README.md)
+- [Aula 1 - Módulo 1: Fundamentos do Oracle](./aula-1-modulo1/README.md)
   - [Laboratório principal: conexão, usuário, schema e tabela](./aula-1-modulo1/pratica.md)
   - [Extensão prática: criação e administração de PDB](./aula-1-modulo1/pdb.md)
   - [Revisão e consolidação](./aula-1-modulo1/revisao.md)
 
 
-## RESUMO DO QUE VEREMOS..
+## Estrutura da aula
 
-  1. [README.md](./aula-1-modulo1/README.md))
-      - Teoria.
-      - Fluxo mental.
-      - Comandos básicos.
-      - Explicação dos parâmetros do Podman.
-      - CDB, PDB, SID, Service Name, usuários, schemas, PFILE e SPFILE.
-      - Direcionamento explícito para as duas práticas.
+1. [`README.md`](./aula-1-modulo1/README.md): teoria, fluxo mental, comandos básicos, Podman, CDB, PDB, SID, Service Name, usuários, schemas, PFILE e SPFILE.
 
-  2. [pratica.md](./aula-1-modulo1/pratica.md)
-      - Laboratório principal:
-          - subir Oracle;
-          - conectar na FREEPDB1;
-          - validar ambiente;
-          - criar usuário;
-          - criar tabela;
-          - executar CRUD;
-          - observar instância e arquivos.
+2. [`pratica.md`](./aula-1-modulo1/pratica.md): laboratório principal para subir o Oracle, conectar na `FREEPDB1`, criar usuário, tabela, executar CRUD e observar a instância.
 
-  3. [pdb.md](./aula-1-modulo1/pdb.md)
-      - Extensão administrativa:
-          - CDB$ROOT;
-          - PDB$SEED;
-          - FILE_NAME_CONVERT;
-          - criação da DBJEFFOTONI;
-          - erros ORA-65016 e ORA-01031;
-          - abertura com SYS AS SYSDBA;
-          - troca entre containers;
-          - usuários e schemas.
+3. [`pdb.md`](./aula-1-modulo1/pdb.md): extensão administrativa com `CDB$ROOT`, `PDB$SEED`, `FILE_NAME_CONVERT`, criação da `DBJEFFOTONI`, erros, `SYS AS SYSDBA`, containers, usuários e schemas.
 
-  4. [revisao.md](./aula-1-modulo1/revisao.md)
-      - Consolidação dos conceitos.
-      - Consultas essenciais.
-      - Diagnóstico por camadas.
-      - Revisão da administração de PDB.
+4. [`revisao.md`](./aula-1-modulo1/revisao.md): consolidação dos conceitos, consultas essenciais, diagnóstico por camadas e revisão de PDB.
 
 ## Como usar
 
