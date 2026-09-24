@@ -1,4 +1,52 @@
 # Aula 1 - Módulo 1: Fundamentos do Oracle
+ ### Teoria principal
+
+  - Diferença entre SGBD, banco de dados e arquivos.
+  - Instância, banco, CDB e PDB.
+  - SID, Service Name e campos da conexão.
+  - Por que usamos FREE, FREEPDB1 e porta 1522.
+  - Usuário, schema, tabela e objeto.
+  - SYSTEM, SYS, SYSDBA e SYSOPER.
+  - Tablespaces, datafiles, processos e memória.
+  - PFILE e SPFILE.
+  - O que já existe dentro da FREEPDB1.
+
+  ### Prática principal
+
+  1. Subir o Oracle com Podman.
+  2. Conectar como SYSTEM.
+  3. Validar instância, banco, PDB e sessão.
+  4. Criar o usuário APP_AULA1.
+  5. Conectar como usuário da aplicação.
+  6. Criar uma tabela.
+  7. Inserir, consultar, alterar e remover dados.
+  8. Observar o schema e os objetos.
+  9. Consultar memória, processos e arquivos Oracle.
+
+  ### Extensão prática de PDB
+
+  - Acessar o CDB$ROOT.
+  - Identificar a PDB$SEED.
+  - Consultar os datafiles.
+  - Criar a DBJEFFOTONI.
+  - Entender o erro ORA-65016.
+  - Usar FILE_NAME_CONVERT.
+  - Entender o erro ORA-01031 com SYSTEM.
+  - Abrir a PDB com SYS AS SYSDBA.
+  - Validar READ ONLY e READ WRITE.
+  - Alternar entre CDB$ROOT, FREEPDB1 e DBJEFFOTONI.
+
+  ### Revisão
+
+  - Consultas essenciais.
+  - Ordem correta de login.
+  - Diagnóstico por camadas.
+  - Diferença entre usuário e schema.
+  - Diferença entre instância e banco.
+  - Regra para não começar com CREATE DATABASE.
+
+  Arquivos principais:
+
 
 Esta aula estabelece a base para trabalhar com Oracle de forma segura e consciente. A proposta é sair da conexão inicial e chegar a uma tabela consultável, entendendo o que existe por trás de cada etapa.
 

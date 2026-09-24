@@ -2,7 +2,7 @@
 
 Esta área organiza aulas que conectam explicação, execução e validação em uma única sequência de aprendizagem.
 
-## Aula disponível
+## Aulas disponíveis
 
 - [Aula 1 - Módulo 1: Fundamentos do Oracle](./aula-1-modulo1/README.md)
   - [Laboratório principal: conexão, usuário, schema e tabela](./aula-1-modulo1/pratica.md)
@@ -19,6 +19,9 @@ Esta área organiza aulas que conectam explicação, execução e validação em
 3. [`pdb.md`](./aula-1-modulo1/pdb.md): extensão administrativa com `CDB$ROOT`, `PDB$SEED`, `FILE_NAME_CONVERT`, criação da `DBJEFFOTONI`, erros, `SYS AS SYSDBA`, containers, usuários e schemas.
 
 4. [`revisao.md`](./aula-1-modulo1/revisao.md): consolidação dos conceitos, consultas essenciais, diagnóstico por camadas e revisão de PDB.
+
+- [Aula 3 - Módulo 2: Segurança e carga de dados](./aula-3-modulo2/README.md)
+  - [Laboratório completo](./aula-3-modulo2/pratica.md)
 
 ## Como usar
 
