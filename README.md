@@ -169,6 +169,13 @@ A trilha inicial recomendada e esta:
   - CRUD HTTP para mostrar Oracle em uso real;
   - ajuda a conectar banco de dados, aplicação e operação no mesmo fluxo.
 
+### Trilha de aulas práticas
+
+- [`novos-modulos-enxutos`](./novos-modulos-enxutos/README.md)
+  - aulas organizadas por explicação, execução e validação;
+  - exemplos práticos para acompanhar passo a passo;
+  - primeira aula combinando os fundamentos do Módulo 0 com a entrada no Módulo 1.
+
 ### Modulos do curso
 
 - [`modulo1-material`](./modulo1-material/README.md)
