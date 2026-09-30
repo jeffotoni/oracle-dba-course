@@ -23,6 +23,9 @@ Esta área organiza aulas que conectam explicação, execução e validação em
 - [Aula 3 - Módulo 2: Segurança e carga de dados](./aula-3-modulo2/README.md)
   - [Laboratório completo](./aula-3-modulo2/pratica.md)
 
+- [Aula bônus - Idempotência e concorrência no Oracle](./aula-bonus-idempotencia-concorrencia/README.md)
+  - [Laboratório bônus](./aula-bonus-idempotencia-concorrencia/pratica.md)
+
 ## Como usar
 
 1. Leia o fluxo mental no início da aula.
