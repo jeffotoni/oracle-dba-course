@@ -8,17 +8,23 @@ Ela pode começar ao final da Aula 3 - Módulo 2 e ser concluída em outro encon
 
 Ao terminar a aula, deve ser possível:
 
+### Problema 1 - A mesma operação sendo processada duas vezes
+
 - explicar o conceito de idempotência;
-- entender por que uma requisição pode ser processada duas vezes;
+- entender por que uma requisição pode ser repetida após uma falha de comunicação;
 - identificar a função de uma chave de idempotência;
 - explicar por que `SELECT COUNT(*)` antes do `INSERT` não garante exclusividade;
-- usar uma constraint `UNIQUE` para proteger uma regra de negócio;
+- usar uma constraint `UNIQUE` para impedir pagamentos duplicados;
+- reconhecer o erro de duplicidade e relacioná-lo à regra de negócio.
+
+### Problema 2 - Duas operações alterando o mesmo registro
+
 - observar o comportamento de duas sessões concorrentes;
 - diferenciar idempotência de lock;
 - usar `SELECT ... FOR UPDATE` para proteger uma alteração de saldo;
-- usar `CHECK` para impedir um estado inválido no banco;
+- usar `CHECK` para impedir um saldo inválido no banco;
 - organizar `COMMIT` e `ROLLBACK` dentro de uma transação;
-- relacionar uma API, uma aplicação Go e uma restrição no Oracle.
+- relacionar uma API, uma aplicação Go e o controle de concorrência no Oracle.
 
 ## Relação com as aulas anteriores
 
