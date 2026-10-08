@@ -348,6 +348,14 @@ Para o curso, a linha principal continua sendo `Podman` com uma IDE SQL disponí
 - pratica de aplicacao: [`repo/go.oracle/v1`](./repo/go.oracle/v1/README.md);
 - aprofundamento administrativo: [`modulo1`](./modulo1-material/README.md) ao [`modulo5`](./modulo5-material/05-teoria-modulo5.md).
 
+### Trabalho final
+
+Os projetos práticos dos alunos estão organizados por grupo em [`trabalho-final/README.md`](./trabalho-final/README.md):
+
+- [Grupo 1 - Dashboard de monitoramento Oracle](./trabalho-final/grupo1/README.md);
+- [Grupo 2 - Cache key-value com Oracle](./trabalho-final/grupo2/README.md);
+- [Grupo 3 - Busca vetorial com Oracle](./trabalho-final/grupo3/README.md).
+
 ## Contribuindo
 
 Se quiser colaborar com conteúdo, correções ou exemplos, siga o guia em [CONTRIBUTING.md](./CONTRIBUTING.md).
