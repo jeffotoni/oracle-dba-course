@@ -23,6 +23,11 @@ Esta área organiza aulas que conectam explicação, execução e validação em
 - [Aula 3 - Módulo 2: Segurança e carga de dados](./aula-3-modulo2/README.md)
   - [Laboratório completo](./aula-3-modulo2/pratica.md)
 
+- [Aula 4 - Módulo 3: CLI, carga e backup lógico no Oracle](./aula-4-modulo3/README.md)
+  - [Arquivo SQL com 500 inserts](./aula-4-modulo3/produtos-500.sql)
+  - [Dados CSV para SQL*Loader](./aula-4-modulo3/produtos.csv)
+  - [Control file do SQL*Loader](./aula-4-modulo3/produtos.ctl)
+
 - [Aula bônus - Idempotência e concorrência no Oracle](./aula-bonus-idempotencia-concorrencia/README.md)
   - [Laboratório bônus](./aula-bonus-idempotencia-concorrencia/pratica.md)
 
